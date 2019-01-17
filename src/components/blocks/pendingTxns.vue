@@ -69,7 +69,7 @@
 						:tableData="{
 							th: '[TxFee]',
 							width: '3',
-							params: [{param: 'gas', type: 2}],
+							params: [{param: 'gas', param2: 'gasPrice', type: 3}],
 							html: '<div class=\'trans_style\'><p class=\'rowItem\'>{{param}}</p></div>'
 						}"
 					></table-data>

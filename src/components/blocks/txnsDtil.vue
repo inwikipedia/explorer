@@ -68,6 +68,7 @@
 </style>
 
 <script>
+// let BigNumber = require('bignumber.js')
 export default {
 	name: 'BlockDetails',
 	data () {
@@ -96,6 +97,14 @@ export default {
 	},
 	mounted () {
 		this.hash = this.$route.query.params
+		window.toUrl = (params) => {
+			this.$router.push({
+				path: '/blockIndex/accountDtil',
+				query: {
+					params: params
+				}
+			})
+		}
 	},
 	methods: {
 		getBlocksInfo (number) {
@@ -114,32 +123,39 @@ export default {
 					return
 				}
 				let hashData = this.hash
-				let blockData = this.web3.eth.getBlock(hashData)
+				let blockNumData = res.info.blockNumber
+				// console.log(hashData)
+				let blockData = this.web3.eth.getBlock(blockNumData)
 				if (blockData === null) {
 					blockData = {
 						gasLimit: 0,
 						gasUsed: 0
 					}
 				}
-				let transData = this.web3.eth.getTransaction(hashData)
-				if (transData === null) {
-					transData = {
-						gasPrice: 0
-					}
-				}
+				let transGasPrice = res.info.gasPrice && res.info.gasPrice.c && res.info.gasPrice.c[0] ? res.info.gasPrice.c[0] : 0
+// 				if (transData === null) {
+// 					transData = {
+// 						gasPrice: 0
+// 					}
+// 				}
+				// console.log(this.web3.createBatch())
+				// console.log(blockData.gasUsed)
+				// console.log(res.info.gasPrice.c[0])
+				// console.log(this.toNonExponential(res.info.gasPrice))
+				// console.log(new BigNumber(res.info.gasPrice).toNumber())
 				let nowTime = Date.parse(new Date())
 				this.blocksInfo = [
 					{name: 'TxHash:', value: res.info.hash},
 					{name: 'TxReceipt Status:', value: res.info.hash ? '<span style="color:#3bad4b">Success</span>' : '<span style="color:#ff5959">Pending</span>'},
-					{name: 'Block Height:', value: res.info.blockNumber},
+					{name: 'Block Height:', value: this.$$.thousandBit(res.info.blockNumber, 'no')},
 					{name: 'Timestamp:', value: this.$$.timesFun(res.info.timestamp, nowTime)},
-					{name: 'From:', value: '<span style="color:#1665d8">' + res.info.from + '</span'},
-					{name: 'To:', value: '<span style="color:#1665d8">' + res.info.to + '</span'},
+					{name: 'From:', value: '<span style="color:#1665d8" onclick=toUrl("' + res.info.from + '") class="cursorP">' + res.info.from + '</span'},
+					{name: 'To:', value: '<span style="color:#1665d8" onclick=toUrl("' + res.info.from + '") class="cursorP">' + res.info.to + '</span'},
 					{name: 'Value:', value: this.$$.thousandBit(res.info.value, 'no')},
 					{name: 'Gas Limit:', value: this.$$.thousandBit(blockData.gasLimit, 'no')},
-					{name: 'Gas Used By Transaction:', value: blockData.gasUsed === 0 ? '100%' : (this.$$.thousandBit(Number(res.info.gas) / Number(blockData.gasUsed), 'no') + '%')},
-					{name: 'Gas Price:', value: this.$$.thousandBit(transData.gasPrice, 'no')},
-					{name: 'Actual Tx Cost/Fee:', value: this.$$.thousandBit(Number(blockData.gasLimit) * Number(transData.gasPrice), 'no')},
+					{name: 'Gas Used By Transaction:', value: blockData.gasUsed === 0 ? '100%' : (this.$$.thousandBit(Number(res.info.gas) / Number(blockData.gasUsed) * 100, 'no') + '%')},
+					{name: 'Gas Price:', value: this.$$.thousandBit(transGasPrice, 'no')},
+					{name: 'Actual Tx Cost/Fee:', value: this.$$.thousandBit(Number(blockData.gasLimit) * Number(transGasPrice), 'no')},
 					{name: 'Nonce & {Position}:', value: this.$$.thousandBit(res.info.nonce, 'no')},
 					{name: 'Input Data:', value: '<textarea class="textarea" disabled>' + res.info.input + '</textarea>'},
 					{name: 'Private Note: ', value: '&ltTo access the Private Note Feature, you must be Logged In&gt'}
@@ -147,6 +163,10 @@ export default {
 				this.timestamp = res.info.timestamp
 			})
 		},
+// 		toNonExponential (num) {
+//         let m = num.toExponential().match(/\d(?:\.(\d*))?e([+-]\d+)/)
+//         return num.toFixed(Math.max(0, (m[1] || '').length - m[2]))
+// 		},
 		prevBtn () {
 			let _params = {
 				timestamp: this.timestamp,

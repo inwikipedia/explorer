@@ -15,7 +15,7 @@ router.post('/transfer', (req, res) => {
 		startTime: req.body.startTime ? req.body.startTime : (Date.parse(new Date()) / 1000 - (1 * 60 * 60 * 24 * 60)),
 		endTime: req.body.endTime ? req.body.endTime : (Date.parse(new Date()) / 1000),
 	}
-	Transaction.find({'timestamp': {'$gte': setData.startTime, '$lt': setData.endTime}}).sort({"timestamp": 1}).exec((err, result) => {
+	Transaction.find({'timestamp': {'$gte': setData.startTime, '$lt': setData.endTime}}).lean(true).sort({"timestamp": 1}).exec((err, result) => {
 		if (!err) {
 			// total()
 			data.msg = 'Success'

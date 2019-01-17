@@ -46,7 +46,7 @@
 											th: 'TxHash',
 											width: '4',
 											params: [{param: 'hash'}, {param: 'hash', type: 1, start: 10, end: 8}],
-											html: '<div class=\'trans_style\'><p class=\'rowItem\'><span class=\'blue cursorP\' onclick=toUrl(\'/blockIndex/txnsDtil\',\'{{param}}\')>{{param}}</span></p></div>'
+											html: '<div class=\'trans_style\'><p class=\'rowItem cursorP\' onclick=toUrl(\'/blockIndex/txnsDtil\',\'{{param}}\')><span class=\'blue\'>{{param}}</span></p></div>'
 										}"
 									></table-data>
 									<table-data :tableData="{
@@ -68,15 +68,15 @@
 											th: 'From',
 											width: '4',
 											params: [{param: 'from'}, {param: 'from', type: 1, start: 10, end: 8}],
-											html: '<div class=\'trans_style\'><p class=\'rowItem\'><a onclick=toUrl(\'/blocks?id={{param}}\') class=\'cursorP\'><span class=\'blue\'>{{param}}</span></a></p></div>'
+											html: '<div class=\'trans_style\'><p class=\'rowItem cursorP\' onclick=toUrl2(\'/blockIndex/accountDtil\',\'{{param}}\')><span class=\'blue\'>{{param}}</span></p></div>'
 										}"
 									></table-data>
 									<table-data 
 										:tableData="{
 											th: 'To',
 											width: '4',
-											params: [{param: 'to', type: 1, start: 10, end: 8}],
-											html: '<div class=\'trans_style\'><p class=\'rowItem\'><span class=\'blue\'>{{param}}</span></p></div>'
+											params: [{param: 'to'},{param: 'to', type: 1, start: 10, end: 8}],
+											html: '<div class=\'trans_style\'><p class=\'rowItem cursorP\' onclick=toUrl2(\'/blockIndex/accountDtil\',\'{{param}}\')><span class=\'blue\'>{{param}}</span></p></div>'
 										}"
 									></table-data>
 									<table-data 
@@ -91,7 +91,7 @@
 										:tableData="{
 											th: '[TxFee]',
 											width: '3',
-											params: [{param: 'gas', type: 2}],
+											params: [{param: 'gas', param2: 'gasPrice', type: 3}],
 											html: '<div class=\'trans_style\'><p class=\'rowItem\'>{{param}}</p></div>'
 										}"
 									></table-data>
@@ -136,32 +136,17 @@
 </template>
 
 <style>
-.iconCopy{width: 10px;height: 10px;}
-.iconCopy img{max-width: 100%;max-height: 100%;}
-.accountHeader_box{padding: 36px 16px;}
-.accountHeader_item{width: 100%;border-bottom: 1px solid #eee;padding:6px 0;}
-.accountHeader_item .p{font-size: 14px;color:#3e3f42;padding-left: 10px;}
-.accountHeader_item .p1{width:40%;}
-.accountHeader_item .p2{width:60%;}
-.accountHeader_item .icon{width: 16px;height: 16px;margin-left: 10px;}
-.qrCode_box .el-dialog__title{font-size:12px;color:#666;}
-.accountInfo_tab{width: 100%;margin-top: 30px;}
-.accountInfo_tab .el-tabs__header{border: none!important;}
-.accountInfo_tab .el-tabs__nav{border: none!important;}
-.accountInfo_tab .el-tabs__item{border: none!important;padding: 0!important;}
-.accountInfo_tab .el-tabs__item .tab{width:150px;height:30px;line-height: 30px;margin-right: 5px;border: none!important;background: #e6e6e6;color:#3e3f42;border-radius: 5px;text-align: center;font-weight: bold;margin-bottom:10px;cursor:pointer;}
-.accountInfo_tab .item .arrow{width:100%;position: absolute;bottom: -3px;left: 0;font-size: 20px;line-height: 20px;text-align: center;color:#3371d7;display: none;}
-.accountInfo_tab .is-active .tab{background: #3371d7;color: #fff;}
-.accountInfo_tab .is-active .arrow{display: block;}
+
 </style>
 
 <script>
 import QRCode from "qrcodejs2"
 export default {
+	inject: ['reload'],
 	name: 'accountDtil',
 	data() {
 		return {
-			address: '0x98d26e065C56e5A366a4d84Aee08f4b26Bc901FA  ',
+			address: '0x98d26e065C56e5A366a4d84Aee08f4b26Bc901FA',
 			codeViewVisible: false,
 			headerData: [
 				{
@@ -199,12 +184,26 @@ export default {
 					icon: ''
 				}
 			],
-			dataUrl: this.$$.serverUrl + '/data/transaction',
+			dataUrl: this.$$.serverUrl + '/data/accountTxn',
 			blockData: [],
 			params: {
 				pageSize: 20,
-				count: 0
+				count: 0,
+				addr: this.$route.query.params
 			}
+		}
+	},
+	mounted () {
+		this.address = this.$route.query.params
+		window.toUrl2 = (url, params) => {
+			this.$router.push({
+				path: url,
+				query: {
+					params: params
+				}
+			})
+			// history.go(0)
+			this.reload()
 		}
 	},
 	methods: {

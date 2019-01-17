@@ -141,7 +141,8 @@ export default {
 		selectValue (cur, old) {
 			let _params = {
 				pageNum: this.currPage,
-				pageSize: cur
+				pageSize: cur,
+				addr: this.params.addr ? this.params.addr : ''
 			}
 			this.getData(_params)
 		}
@@ -177,7 +178,8 @@ export default {
 			if (!this.params) return
 			let _params = {
 				pageNum: this.params.pageNum ? this.params.pageNum : 1,
-				pageSize: this.selectValue
+				pageSize: this.selectValue,
+				addr: this.params.addr ? this.params.addr : ''
 			}
 			this.getData(_params)
 		},
@@ -188,7 +190,8 @@ export default {
 			this.currPage --
 			let _params = {
 				pageNum: this.currPage,
-				pageSize: this.selectValue
+				pageSize: this.selectValue,
+				addr: this.params.addr ? this.params.addr : ''
 			}
 			this.getData(_params)
 		},
@@ -199,7 +202,8 @@ export default {
 			this.currPage ++
 			let _params = {
 				pageNum: this.currPage,
-				pageSize: this.selectValue
+				pageSize: this.selectValue,
+				addr: this.params.addr ? this.params.addr : ''
 			}
 			this.getData(_params)
 		},
@@ -246,6 +250,7 @@ export default {
 					this.isNext = true
 				}
 				if (res.info.length <= 0) {
+					// console.log(res.info.length)
 					this.$message({
 						showClose: true,
 						message: 'Temporarily no data!',
@@ -330,6 +335,12 @@ export default {
 				callback = this.$$.cutStr(data[param.param], param.start, param.end)
 			} else if (Number(param.type) === 2) { //number
 				callback = this.$$.thousandBit(data[param.param], 'no')
+			} else if (Number(param.type) === 3) { //multiplication
+				// console.log(Number(data[param.param2].c[0]))
+				this.$$.web3(this)
+				let _number = Number(data[param.param]) * Number(data[param.param2].c[0])
+				// _number = this.web3.fromWei(_number, "ether")
+				callback = this.$$.thousandBit(_number, 'no')
 			}
 			return callback
 		},

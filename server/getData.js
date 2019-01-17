@@ -21,7 +21,7 @@ router.post('/transaction', (req, res) => {
 	}
 	setData.skip = req.body.pageNum ? (Number(req.body.pageNum - 1) * Number(setData.pageSize)) : 0
 	console.log('setData')
-	console.log(setData)
+	// console.log(setData)
 	let total = () => {		
 		Transaction.find({}).countDocuments((err, result) => {
 			if (!err) {
@@ -35,7 +35,7 @@ router.post('/transaction', (req, res) => {
 		})
 	}
 	let info = () => {			
-		Transaction.find({}).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.body.pageSize)).exec((err, result) => {
+		Transaction.find({}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.body.pageSize)).exec((err, result) => {
 			if (!err) {
 				data.msg = 'Success'
 				data.info = result
@@ -58,12 +58,13 @@ router.post('/transferDtil', (req, res) => {
 		info: ''
 	}
 	let info = () => {			
-		Transaction.find({'hash': setData.hash}).exec((err,result) => {
+		Transaction.find({'hash': setData.hash}).lean(true).exec((err,result) => {
 			if (!err) {
 				// total()
 				data.msg = 'Success'
 				data.info = result[0]
-				
+				// console.log(result[0])
+// 				console.log(result[0].gasPrice)
 			} else {
 				data.msg = 'Error'
 				data.info = ''
@@ -73,6 +74,7 @@ router.post('/transferDtil', (req, res) => {
 	}
 	info()
 })
+
 router.post('/transferPage', (req, res) => {
 	let setData = {
 		timestamp: req.body.timestamp ? req.body.timestamp : 0
@@ -87,7 +89,7 @@ router.post('/transferPage', (req, res) => {
 		info: ''
 	}
 	let info = () => {			
-		Transaction.find({'timestamp': setData.page}).limit(1).exec((err,result) => {
+		Transaction.find({'timestamp': setData.page}).lean(true).limit(1).exec((err,result) => {
 			if (!err) {
 				// total()
 				data.msg = 'Success'
@@ -129,7 +131,7 @@ router.post('/blocks', (req, res) => {
 		})
 	}
 	let info = () => {			
-		Block.find({}).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.body.pageSize)).exec((err,result) => {
+		Block.find({}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.body.pageSize)).exec((err,result) => {
 			if (!err) {
 				// total()
 				data.msg = 'Success'
@@ -169,7 +171,7 @@ router.post('/pendingBlocks', (req, res) => {
 		})
 	}
 	let info = () => {			
-		Block.find({"hash": ""}).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.body.pageSize)).exec((err,result) => {
+		Block.find({"hash": ""}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.body.pageSize)).exec((err,result) => {
 			if (!err) {
 				// total()
 				data.msg = 'Success'
@@ -193,7 +195,7 @@ router.post('/blockNum', (req, res) => {
 		info: ''
 	}
 	let info = () => {			
-		Block.find({'number': Number(setData.number)}).exec((err, result) => {
+		Block.find({'number': Number(setData.number)}).lean(true).exec((err, result) => {
 			if (!err) {
 				// total()
 				data.msg = 'Success'
@@ -233,7 +235,89 @@ router.post('/topAccounts', (req, res) => {
 		})
 	}
 	let info = () => {			
-		Account.find({}).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.body.pageSize)).exec((err,result) => {
+		Account.find({}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.body.pageSize)).exec((err,result) => {
+			if (!err) {
+				// total()
+				data.msg = 'Success'
+				data.info = result
+			} else {
+				data.msg = 'Error'
+				data.info = ''
+			}
+			res.json(data)
+		})
+	}
+	total()
+})
+
+router.post('/topAccounts', (req, res) => {
+	let setData = {
+		pageSize: req.body.pageSize ? req.body.pageSize : 20,
+		skip: 0
+	}
+	let data = {
+		msg: '',
+		info: '',
+		total: ''
+	}
+	setData.skip = req.body.pageNum ? (Number(req.body.pageNum - 1) * Number(setData.pageSize)) : 0
+	
+	let total = () => {		
+		Account.find({}).countDocuments((err, result) => {
+			if (!err) {
+				data.msg = 'Success'
+				data.total = result
+			} else {
+				data.msg = 'Error'
+				data.info = ''
+			}
+			info()
+		})
+	}
+	let info = () => {			
+		Account.find({}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.body.pageSize)).exec((err,result) => {
+			if (!err) {
+				// total()
+				data.msg = 'Success'
+				data.info = result
+			} else {
+				data.msg = 'Error'
+				data.info = ''
+			}
+			res.json(data)
+		})
+	}
+	total()
+})
+
+router.post('/accountTxn', (req, res) => {
+	let setData = {
+		pageSize: req.body.pageSize ? req.body.pageSize : 20,
+		skip: 0,
+		addr: req.body.addr
+	}
+	let data = {
+		msg: '',
+		info: '',
+		total: ''
+	}
+	setData.skip = req.body.pageNum ? (Number(req.body.pageNum - 1) * Number(setData.pageSize)) : 0
+	
+	let total = () => {		
+		Transaction.find({ $or: [{"to": setData.addr}, {"from": setData.addr}] }).countDocuments((err, result) => {
+			if (!err) {
+				data.msg = 'Success'
+				data.total = result
+				// console.log(result)
+			} else {
+				data.msg = 'Error'
+				data.info = ''
+			}
+			info()
+		})
+	}
+	let info = () => {			
+		Transaction.find({ $or: [{"to": setData.addr}, {"from": setData.addr}] }).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.body.pageSize)).exec((err,result) => {
 			if (!err) {
 				// total()
 				data.msg = 'Success'

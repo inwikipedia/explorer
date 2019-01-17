@@ -103,7 +103,7 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/blockDB', {
   useNewUrlParser: true
 });
 //
-//  mongoose.connect(process.env.MONGO_URI || 'mongodb://54.169.254.177:40415/blockDB', {
+//  mongoose.connect(process.env.MONGO_URI || 'mongodb://54.169.254.177:27017/blockDB', {
 //    useNewUrlParser: true
 //  });
  
