@@ -12,12 +12,18 @@ const blockIndex = resolve =>
 	require.ensure([], () => resolve(require('@/components/blocks/index')), 'group-explorer')
 const blocks = resolve =>
 	require.ensure([], () => resolve(require('@/components/blocks/blocks')), 'group-explorer')
+const blocksDtil = resolve =>
+	require.ensure([], () => resolve(require('@/components/blocks/blocksDtil')), 'group-explorer')
 const pendingTxns = resolve =>
 	require.ensure([], () => resolve(require('@/components/blocks/pendingTxns')), 'group-explorer')
 const topAccounts = resolve =>
 	require.ensure([], () => resolve(require('@/components/blocks/topAccounts')), 'group-explorer')
+const accountDtil = resolve =>
+	require.ensure([], () => resolve(require('@/components/blocks/accountDtil')), 'group-explorer')
 const txns = resolve =>
 	require.ensure([], () => resolve(require('@/components/blocks/txns')), 'group-explorer')
+const txnsDtil = resolve =>
+	require.ensure([], () => resolve(require('@/components/blocks/txnsDtil')), 'group-explorer')
 
 const assetsIndex = resolve =>
 	require.ensure([], () => resolve(require('@/components/assets/index')), 'group-explorer')
@@ -71,11 +77,16 @@ const routers = new Router({
 					component: blockIndex,
 					children: [{
 						path: '/blocks',
+						name: 'blocks',
 						component: blocks
 					}, {
 						path: '/blockIndex/blocks',
-						name: 'blocks',
+						// name: 'blocks',
 						component: blocks
+					}, {
+						path: '/blockIndex/blocksDtil',
+						name: 'blocksDtil',
+						component: blocksDtil
 					}, {
 						path: '/blockIndex/pendingTxns',
 						name: 'pendingTxns',
@@ -85,9 +96,17 @@ const routers = new Router({
 						name: 'topAccounts',
 						component: topAccounts
 					}, {
+						path: '/blockIndex/accountDtil',
+						name: 'accountDtil',
+						component: accountDtil
+					}, {
 						path: '/blockIndex/txns',
 						name: 'txns',
 						component: txns
+					}, {
+						path: '/blockIndex/txnsDtil',
+						name: 'txnsDtil',
+						component: txnsDtil
 					}]
 				}, {
 					path: '/assetsIndex',

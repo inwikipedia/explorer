@@ -27,6 +27,12 @@ app.all('*', function (req, res, next) {
 app.use(bodyParser.json({limit: '50mb'}))
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}))
 
+// const getData = require('./server/getData')
+let getData = require('./server/getData')
+let chartView = require('./server/getChartData')
+app.use('/data', getData)
+app.use('/chart', chartView)
+
 const httpsServer = https.createServer(credenticals, app)
 httpsServer.listen(httpsPort)
 
@@ -37,18 +43,18 @@ const httpServer = http.createServer(app).listen(httpPort)
 //   console.log('a user')
 // })
 
-let io
-/*
+// let io
+
 net.createServer(function (socket) {
   socket.once('data', function (buf) {
     // console.log(buf[0])
     var address = buf[0] === 22 ? httpsPort : httpPort
     // var httpInfo = buf[0] === 22 ? httpsServer : httpServer
-    if (buf[0] === 22) {
-      io = require('socket.io')(httpsServer)
-    } else {
-      io = require('socket.io')(httpServer)
-    }
+//     if (buf[0] === 22) {
+//       io = require('socket.io')(httpsServer)
+//     } else {
+//       io = require('socket.io')(httpServer)
+//     }
     var proxy = net.createConnection(address, function () {
       proxy.write(buf)
       socket.pipe(proxy).pipe(socket)
@@ -62,9 +68,9 @@ net.createServer(function (socket) {
   })
   // console.log('success')
 }, app).listen(8083)
-*/
-io = require('socket.io')(httpServer)
 
-io.on('connection', function (socket) {
-  console.log('a user')
-})
+// io = require('socket.io')(httpServer)
+// 
+// io.on('connection', function (socket) {
+//   console.log('a user')
+// })

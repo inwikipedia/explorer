@@ -7,33 +7,35 @@ if (process.env.NODE_ENV === 'development') {
 	$$.baseUrl = 'https://explorer.dcrm.network'
 }
 
+$$.serverUrl = 'http://localhost:8083'
+
 $$.timesFun = function (time, now) {
 	// let nowTime = Date.parse(now)
 	let nowTime = now
 	// console.log(nowTime)
-	time = isNaN(time) ? time : (time.length > 10 ? time : (time * 1000))
-	let dataTime, callback
+	time = isNaN(time) ? time : (time.length >= 10 ? time : (time * 1000))
+	let dataTime = 0, callback = 0
 	if (isNaN(time)) {
 		dataTime = Date.parse(time)
 	} else {
 		dataTime = time
 	}
-// 	console.log(time)
-// 	console.log(dataTime)
-	// dataTime = 1546758343000
-	// dataTime = 1547004847000
 	let timeDiffer = (nowTime - dataTime) / 1000
-	// console.log(timeDiffer)
+	timeDiffer = timeDiffer > 0 ? timeDiffer : 1
+// 	console.log(nowTime)
+// 	console.log(dataTime)
+// 	console.log(timeDiffer)
 	if (timeDiffer < 60) { //seconds
-		// console.log('seconds:' + timeDiffer)
+		// console.log(1)
 		callback = this.timeSec(timeDiffer)
 	} else if (timeDiffer < (60 * 60)) { //minute
-		// console.log('minute:' + (timeDiffer < 3600))
+		// console.log(2)
 		callback = this.timeMin(timeDiffer)
 	} else if (timeDiffer < (60 * 60 * 24)) { //hours
-		// console.log('hours:' + timeDiffer)
+		// console.log(3)
 		callback = this.timeHour(timeDiffer, 'min')
 	} else { //day
+		// console.log(4)
 		callback = this.timeDay(timeDiffer, 'hour')
 	}
 	// console.log(callback)
@@ -74,8 +76,28 @@ $$.timeDay = function (time, type) {
 	return callback
 }
 
+$$.timeToEN = (time, type) => {
+	let weeks = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat ']
+	let mounth = ['Jan\'', 'Feb\'', 'Mar\'', 'Apr\'', 'May\'', 'Jun\'', 'Jul\'', 'Aug\'', 'Sept\'', 'Oct\'', 'Nov\'', 'Dec\'']
+	let date = new Date(time * 1000)
+	let Y = date.getFullYear()
+	let M = date.getMonth()
+	let D = date.getDate()
+	let W = date.getDay()
+	if (type === 'all') {
+		weeks = ['Sunday', 'Monday', 'Tuesday', 'Wednesday ', 'Thursday', 'Friday', 'Saturday ']
+		mounth = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+// 		console.log(M)
+// 		console.log(mounth[M])
+		return weeks[W] + ', ' + mounth[M] + ' ' + D + ', ' + Y
+	}
+	return mounth[M] + ' ' + D
+}
+
 $$.cutStr = (str, start, end) => {
+	if (!str) return ''
 	end = end ? end : start
+	// console.log(str)
 	let str1 = str.substr(0, start)
 	let str2 = str.substr(str.length - end)
 	return str1 + '...' + str2
@@ -103,6 +125,34 @@ $$.thousandBit = (num, dec = 2) => {
     }
   }
   return num
+}
+
+$$.web3 = function (that) {
+  let Web3 = require('web3')
+  let web3
+	// let url = this.baseUrl
+	let url = 'http://54.169.254.177:40415'
+	// console.log(this.baseUrl)
+  try {
+    web3 = new Web3(new Web3.providers.HttpProvider(url))
+  } catch (error) {
+    web3 = new Web3()
+    console.log(error)
+  }
+  that.web3 = web3
+}
+
+$$.ajax = function ($http, url, param) {
+	let Qs = require('qs')
+	let callback = new Promise(function (resolve) {		
+		$http.post(url, Qs.stringify(param), {
+			headers: {'Content-Type':'application/x-www-form-urlencoded'}
+		}).then(res => {
+			let data = res.data ? res.data : []
+			resolve(data)
+		})
+	})
+	return callback
 }
 
 export default $$

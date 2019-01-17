@@ -3,40 +3,40 @@
 		<el-container>
 			<el-header class="headerTop_box">
 				<div class="headerNav_box flex-bc container">
-					<div class="logo"><img src="@/assets/img/logo.svg"></div>
+					<div class="logo"><router-link to="/"><img src="@/assets/img/logo.svg"></router-link></div>
 					<div class="flex-bc">
 						<el-menu class="el-menu-demo" mode="horizontal">
-							<el-menu-item index="1"><router-link to="/" class="item" exact>Home</router-link></el-menu-item>
+							<el-menu-item index="1"><router-link to="/" class="itemNav" exact>Home</router-link></el-menu-item>
 							<!-- <el-submenu index="1">
-								<template slot="title"><router-link class="item" to="/">Home</router-link></template>
+								<template slot="title"><router-link class="itemNav" to="/">Home</router-link></template>
 							</el-submenu> -->
 							<el-submenu index="2">
-								<template slot="title"><router-link class="item" to="/blocks">Blocks<div class="icon"><img src="@/assets/img/updown.svg"></div></router-link></template>
-								<el-menu-item index="2-1"><router-link class="item" to="/blockIndex/txns">Txns</router-link></el-menu-item>
-								<el-menu-item index="2-2"><router-link class="item" to="/blockIndex/pendingTxns">Pending Txns</router-link></el-menu-item>
-								<el-menu-item index="2-3"><router-link class="item" to="/blockIndex/blocks">Blocks</router-link></el-menu-item>
-								<el-menu-item index="2-4"><router-link class="item" to="/blockIndex/topAccounts">Top Accounts</router-link></el-menu-item>
+								<template slot="title">Blocks<div class="icon"><img src="@/assets/img/updown.svg"></div></template>
+								<el-menu-item index="2-1"><router-link class="itemNav" to="/blockIndex/txns">Txns</router-link></el-menu-item>
+								<el-menu-item index="2-2"><router-link class="itemNav" to="/blockIndex/pendingTxns">Pending Txns</router-link></el-menu-item>
+								<el-menu-item index="2-3"><router-link class="itemNav" to="/blockIndex/blocks">Blocks</router-link></el-menu-item>
+								<el-menu-item index="2-4"><router-link class="itemNav" to="/blockIndex/topAccounts">Top Accounts</router-link></el-menu-item>
 							</el-submenu>
 							<el-submenu index="3">
-								<template slot="title"><router-link class="item" to="/assetsIndex">Assets<div class="icon"><img src="@/assets/img/updown.svg"></div></router-link></template>
-								<el-menu-item index="3-1"><router-link class="item" to="/assetsIndex/erc20Tokens">ERC-20 Tokens</router-link></el-menu-item>
-								<el-menu-item index="3-2"><router-link class="item" to="/assetsIndex/erc20Transfers">ERC-20 Transfers</router-link></el-menu-item>
-								<el-menu-item index="3-3"><router-link class="item" to="/assetsIndex/liloAssets">LILO Assets</router-link></el-menu-item>
-								<el-menu-item index="3-4"><router-link class="item" to="/assetsIndex/liloTransfers">LILO Transfers</router-link></el-menu-item>
+								<template slot="title">Assets<div class="icon"><img src="@/assets/img/updown.svg"></div></template>
+								<el-menu-item index="3-1"><router-link class="itemNav" to="/assetsIndex/erc20Tokens">ERC-20 Tokens</router-link></el-menu-item>
+								<el-menu-item index="3-2"><router-link class="itemNav" to="/assetsIndex/erc20Transfers">ERC-20 Transfers</router-link></el-menu-item>
+								<el-menu-item index="3-3"><router-link class="itemNav" to="/assetsIndex/liloAssets">LILO Assets</router-link></el-menu-item>
+								<el-menu-item index="3-4"><router-link class="itemNav" to="/assetsIndex/liloTransfers">LILO Transfers</router-link></el-menu-item>
 							</el-submenu>
 							<el-submenu index="4">
-								<template slot="title"><router-link class="item" to="/statsIndex">Stats<div class="icon"><img src="@/assets/img/updown.svg"></div></router-link></template>
-								<el-menu-item index="4-1"><router-link class="item" to="/statsIndex/transactionChart">Transaction History Chart</router-link></el-menu-item>
-								<el-menu-item index="4-2"><router-link class="item" to="/statsIndex/addressChart">Address Growth Chart</router-link></el-menu-item>
-								<el-menu-item index="4-3"><router-link class="item" to="/statsIndex/totalFSNSupply">Total FSN Supply</router-link></el-menu-item>
-								<el-menu-item index="4-4"><router-link class="item" to="/statsIndex/FSNhistoryPrices">FSN Historical Prices</router-link></el-menu-item>
-								<el-menu-item index="4-5"><router-link class="item" to="/statsIndex/FSNmarketChart">FSN Market Capitalization Chart</router-link></el-menu-item>
-								<el-menu-item index="4-6"><router-link class="item" to="/statsIndex/nodesTracker">Nodes Tracker</router-link></el-menu-item>
+								<template slot="title">Stats<div class="icon"><img src="@/assets/img/updown.svg"></div></template>
+								<el-menu-item index="4-1"><router-link class="itemNav" to="/statsIndex/transactionChart">Transaction History Chart</router-link></el-menu-item>
+								<el-menu-item index="4-2"><router-link class="itemNav" to="/statsIndex/addressChart">Address Growth Chart</router-link></el-menu-item>
+								<el-menu-item index="4-3"><router-link class="itemNav" to="/statsIndex/totalFSNSupply">Total FSN Supply</router-link></el-menu-item>
+								<el-menu-item index="4-4"><router-link class="itemNav" to="/statsIndex/FSNhistoryPrices">FSN Historical Prices</router-link></el-menu-item>
+								<el-menu-item index="4-5"><router-link class="itemNav" to="/statsIndex/FSNmarketChart">FSN Market Capitalization Chart</router-link></el-menu-item>
+								<el-menu-item index="4-6"><router-link class="itemNav" to="/statsIndex/nodesTracker">Nodes Tracker</router-link></el-menu-item>
 							</el-submenu>
 							<el-submenu index="5">
-								<template slot="title"><router-link class="item" to="/moreIndex">More<div class="icon"><img src="@/assets/img/updown.svg"></div></router-link></template>
-								<el-menu-item index="5-1"><router-link class="item" to="/moreIndex/broadcastTXN">Broadcast TXN</router-link></el-menu-item>
-								<el-menu-item index="5-2"><router-link class="item" to="/moreIndex/verifyContracts">Verify Contracts</router-link></el-menu-item>
+								<template slot="title">More<div class="icon"><img src="@/assets/img/updown.svg"></div></template>
+								<el-menu-item index="5-1"><router-link class="itemNav" to="/moreIndex/broadcastTXN">Broadcast TXN</router-link></el-menu-item>
+								<el-menu-item index="5-2"><router-link class="itemNav" to="/moreIndex/verifyContracts">Verify Contracts</router-link></el-menu-item>
 							</el-submenu>
 						</el-menu>
 						<el-col :span="8" class="headerNav_search">

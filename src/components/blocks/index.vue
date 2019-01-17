@@ -1,6 +1,5 @@
 <template>
 	<div>
-		blocks
 		<router-view></router-view>
 	</div>
 </template>
