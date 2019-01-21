@@ -11,7 +11,7 @@ $$.serverUrl = 'http://localhost:8083'
 
 $$.timesFun = function (time, now) {
 	// let nowTime = Date.parse(now)
-	let nowTime = now
+	let nowTime = now ? now : Date.parse(new Date())
 	// console.log(nowTime)
 	time = isNaN(time) ? time : (time.length >= 10 ? time : (time * 1000))
 	let dataTime = 0, callback = 0
@@ -94,6 +94,33 @@ $$.timeToEN = (time, type) => {
 	return mounth[M] + ' ' + D
 }
 
+$$.timeChange = (data) => {
+  let time = data.date ? new Date(data.date) : new Date()
+  let formatType = data.format ? data.format : '/'
+  let Y = time.getFullYear()
+  let M = (time.getMonth() + 1) < 10 ? ('0' + (time.getMonth() + 1)) : (time.getMonth() + 1)
+  let D = time.getDate() < 10 ? ('0' + time.getDate()) : time.getDate()
+  let h = time.getHours() < 10 ? ('0' + time.getHours()) : time.getHours()
+  let m = time.getMinutes() < 10 ? ('0' + time.getMinutes()) : time.getMinutes()
+  let s = time.getSeconds() < 10 ? ('0' + time.getSeconds()) : time.getSeconds()
+  // console.log(Date.parse(data.date))
+  // console.log(new Date(Date.parse(data.date)).getDate())
+  if (data.type === 'yyyy-mm-dd') {
+    time = Y + formatType + M + formatType + D
+  } else if (data.type === 'yyyy-mm-dd hh:mm') {
+    time = Y + formatType + M + formatType + D + ' ' + h + ':' + m
+  } else if (data.type === 'yyyy-mm-dd hh:mm:ss') {
+    time = Y + formatType + M + formatType + D + ' ' + h + ':' + m + ':' + s
+  } else if (data.type === 'yyyy-mm-dd hh') {
+    time = Y + formatType + M + formatType + D + ' ' + h
+  } else if (data.type === 'yyyy-mm') {
+    time = Y + formatType + M
+  } else if (data.type === 'yyyy') {
+    time = Y
+  }
+  return time
+}
+
 $$.cutStr = (str, start, end) => {
 	if (!str) return ''
 	end = end ? end : start
@@ -115,8 +142,9 @@ $$.thousandBit = (num, dec = 2) => {
         num = num.toLocaleString().replace(/(\d)(?=(\d{3})+\.)/g, '$1,').toLocaleString()
       } else {
         let numSplit = num.toString().split('.')
+//         console.log(numSplit[1].toString())
+//         console.log(numSplit[1].substr(0, 8))
         numSplit[1] = numSplit[1].length > 9 ? numSplit[1].substr(0, 8) : numSplit[1]
-        // console.log(numSplit)
         num = numSplit[0].toLocaleString().replace(/(\d)(?=(\d{3})+\.)/g, '$1,').toLocaleString()
         num = num + '.' + numSplit[1]
       }

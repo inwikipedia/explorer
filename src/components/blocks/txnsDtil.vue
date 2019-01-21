@@ -105,6 +105,7 @@ export default {
 				}
 			})
 		}
+		
 	},
 	methods: {
 		getBlocksInfo (number) {
@@ -112,7 +113,10 @@ export default {
 			let _params = {
 				hash: this.hash
 			}
-			this.$$.ajax(this.$http, this.$$.serverUrl + '/data/transferDtil', _params).then(res => {
+			// this.$$.ajax(this.$http, this.$$.serverUrl + '/data/transferDtil', _params).then(res => {
+			socket.emit('transferDtil', _params)
+			socket.on('transferDtil', (res) => {
+				console.log(res)
 				if (!res.info) {
 					this.$message({
 						showClose: true,
@@ -122,16 +126,16 @@ export default {
 					this.blocksInfo = []
 					return
 				}
-				let hashData = this.hash
-				let blockNumData = res.info.blockNumber
-				// console.log(hashData)
-				let blockData = this.web3.eth.getBlock(blockNumData)
-				if (blockData === null) {
-					blockData = {
-						gasLimit: 0,
-						gasUsed: 0
-					}
-				}
+				// let hashData = this.hash
+// 				let blockNumData = res.info.blockNumber
+// 				// console.log(hashData)
+// 				let blockData = this.web3.eth.getBlock(blockNumData)
+// 				if (blockData === null) {
+// 					blockData = {
+// 						gasLimit: 0,
+// 						gasUsed: 0
+// 					}
+// 				}
 				let transGasPrice = res.info.gasPrice && res.info.gasPrice.c && res.info.gasPrice.c[0] ? res.info.gasPrice.c[0] : 0
 // 				if (transData === null) {
 // 					transData = {
@@ -152,10 +156,10 @@ export default {
 					{name: 'From:', value: '<span style="color:#1665d8" onclick=toUrl("' + res.info.from + '") class="cursorP">' + res.info.from + '</span'},
 					{name: 'To:', value: '<span style="color:#1665d8" onclick=toUrl("' + res.info.from + '") class="cursorP">' + res.info.to + '</span'},
 					{name: 'Value:', value: this.$$.thousandBit(res.info.value, 'no')},
-					{name: 'Gas Limit:', value: this.$$.thousandBit(blockData.gasLimit, 'no')},
-					{name: 'Gas Used By Transaction:', value: blockData.gasUsed === 0 ? '100%' : (this.$$.thousandBit(Number(res.info.gas) / Number(blockData.gasUsed) * 100, 'no') + '%')},
+					{name: 'Gas Limit:', value: this.$$.thousandBit(res.info.gasLimit, 'no')},
+					{name: 'Gas Used By Transaction:', value: res.info.gasUsed === 0 ? '100%' : (this.$$.thousandBit(Number(res.info.gas) / Number(res.info.gasUsed) * 100, 'no') + '%')},
 					{name: 'Gas Price:', value: this.$$.thousandBit(transGasPrice, 'no')},
-					{name: 'Actual Tx Cost/Fee:', value: this.$$.thousandBit(Number(blockData.gasLimit) * Number(transGasPrice), 'no')},
+					{name: 'Actual Tx Cost/Fee:', value: this.$$.thousandBit(Number(res.info.gasLimit) * Number(transGasPrice), 'no')},
 					{name: 'Nonce & {Position}:', value: this.$$.thousandBit(res.info.nonce, 'no')},
 					{name: 'Input Data:', value: '<textarea class="textarea" disabled>' + res.info.input + '</textarea>'},
 					{name: 'Private Note: ', value: '&ltTo access the Private Note Feature, you must be Logged In&gt'}
@@ -182,7 +186,9 @@ export default {
 			this.getPageUrl(_params)
 		},
 		getPageUrl (_params) {
-			this.$$.ajax(this.$http, this.$$.serverUrl + '/data/transferPage', _params).then(res => {
+			// this.$$.ajax(this.$http, this.$$.serverUrl + '/data/transferPage', _params).then(res => {
+			socket.emit('transferPage', _params)
+			socket.on('transferPage', (res) => {
 				if (!res.info) {
 					this.$message({
 						message: 'Temporarily no data!',

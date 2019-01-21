@@ -46,7 +46,7 @@
 							th: 'From',
 							width: '4',
 							params: [{param: 'from'}, {param: 'from', type: 1, start: 10, end: 8}],
-							html: '<div class=\'trans_style\'><p class=\'rowItem\'><span class=\'blue cursorP\' onclick=toUrl(\'/blockIndex/accountDtil\',\'{{param}}\')>{{param}}</span></p></div>'
+							html: '<div class=\'trans_style\'><p class=\'rowItem flex-bc\'><span class=\'blue cursorP\' onclick=toUrl(\'/blockIndex/accountDtil\',\'{{param}}\')>{{param}}</span><i class=\'el-icon-caret-right\' style=\'color:#3bad4b;font-size:16px\'></i></p></div>'
 						}"
 					></table-data>
 					<table-data 
@@ -89,7 +89,8 @@ export default {
 	name: '',
 	data () {
 		return {
-			dataUrl: this.$$.serverUrl + '/data/pendingBlocks',
+			// dataUrl: this.$$.serverUrl + '/data/pendingBlocks',
+			dataUrl: 'pendingBlocks',
 			blockData: [],
 			params: {
 				pageSize: 20,

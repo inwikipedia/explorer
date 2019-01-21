@@ -28,49 +28,70 @@ app.use(bodyParser.json({limit: '50mb'}))
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}))
 
 // const getData = require('./server/getData')
-let getData = require('./server/getData')
-let chartView = require('./server/getChartData')
-app.use('/data', getData)
-app.use('/chart', chartView)
+// let getData = require('./server/getData')
+// let chartView = require('./server/getChartData')
+// app.use('/data', getData)
+// app.use('/chart', chartView)
 
 const httpsServer = https.createServer(credenticals, app)
 httpsServer.listen(httpsPort)
 
 const httpServer = http.createServer(app).listen(httpPort)
 
-// console.log(io)
-// io.sockets.on('connection', function (socket) {
-//   console.log('a user')
-// })
+// net.createServer(function (socket) {
+//   socket.once('data', function (buf) {
+//     var address = buf[0] === 22 ? httpsPort : httpPort
+//     var proxy = net.createConnection(address, function () {
+//       proxy.write(buf)
+//       socket.pipe(proxy).pipe(socket)
+//     })
+//     proxy.on('error', function (err) {
+//       console.log(err)
+//     })
+//   })
+//   socket.on('error', function (err) {
+//     console.log(err)
+//   })
+// }, app).listen(8083)
 
-// let io
-
-net.createServer(function (socket) {
-  socket.once('data', function (buf) {
-    // console.log(buf[0])
-    var address = buf[0] === 22 ? httpsPort : httpPort
-    // var httpInfo = buf[0] === 22 ? httpsServer : httpServer
-//     if (buf[0] === 22) {
-//       io = require('socket.io')(httpsServer)
-//     } else {
-//       io = require('socket.io')(httpServer)
-//     }
-    var proxy = net.createConnection(address, function () {
-      proxy.write(buf)
-      socket.pipe(proxy).pipe(socket)
-    })
-    proxy.on('error', function (err) {
-      console.log(err)
-    })
-  })
-  socket.on('error', function (err) {
-    console.log(err)
-  })
-  // console.log('success')
-}, app).listen(8083)
-
-// io = require('socket.io')(httpServer)
-// 
-// io.on('connection', function (socket) {
-//   console.log('a user')
-// })
+let io = require('socket.io')(httpServer)
+let getSocketIoData = require('./server/getSocketIoData')
+let getSocketIoChart = require('./server/getSocketIoChart')
+io.on('connection', function (socket) {
+  console.log('a user')
+	getSocketIoData.sendData(socket)
+	getSocketIoChart.sendData(socket)
+// 	socket.on('transaction', (req) => {
+// 		getSocketIoData.transaction(socket, req)
+// 	})
+// 	socket.on('transferDtil', (req) => {
+// 		getSocketIoData.transferDtil(socket, req)
+// 	})
+// 	socket.on('transferPage', (req) => {
+// 		getSocketIoData.transferPage(socket, req)
+// 	})
+// 	socket.on('transferAvg', (req) => {
+// 		getSocketIoData.transferAvg(socket, req)
+// 	})
+// 	socket.on('blocks', (req) => {
+// 		getSocketIoData.blocks(socket, req)
+// 	})
+// 	socket.on('pendingBlocks', (req) => {
+// 		getSocketIoData.pendingBlocks(socket, req)
+// 	})
+// 	socket.on('blockNum', (req) => {
+// 		getSocketIoData.blockNum(socket, req)
+// 	})
+// 	socket.on('blockAvg', (req) => {
+// 		getSocketIoData.blockAvg(socket, req)
+// 	})
+// 	socket.on('blockTime', (req) => {
+// 		getSocketIoData.blockTime(socket, req)
+// 	})
+// 	socket.on('topAccounts', (req) => {
+// 		getSocketIoData.topAccounts(socket, req)
+// 	})
+// 	socket.on('accountTxn', (req) => {
+// 		getSocketIoData.accountTxn(socket, req)
+// 	})
+})

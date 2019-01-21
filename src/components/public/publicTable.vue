@@ -1,8 +1,8 @@
 <template>
-	<div class="pubTable_box" :style="!isThead ? '' : 'padding:0'" :class="className">
+	<div class="pubTable_box" :style="!isPageTop ? '' : 'padding:0'" :class="className">
 		<slot></slot>
 		<div class="pageView_box pageView_top flex-bc" v-if="!isPageTop">
-			<h3 class="title">{{titleTxt}}</h3>
+			<h3 class="title" v-html="titleTxt"></h3>
 			<ul class="pageView_btn">
 				<li class="prev" @click="prevBtn" :class="isPrev ? 'active' : ''"><span>First</span></li>
 				<li class="now">
@@ -13,13 +13,18 @@
 				<li class="next" @click="nextBtn" :class="isNext ? 'active' : ''"><span>Next</span></li>
 			</ul>
 		</div>
-		<div class="pubTable_thead pubTable_theadAbso" v-if="!isThead">
+		<!-- <div class="pubTable_thead pubTable_theadAbso" v-if="!isThead">
 			<el-col :span="Number(item.width)" class="th flex-ai-c" v-for="(item, index) in thead" :key="item.index">{{item.th}}</el-col>
-		</div>
+		</div> -->
 		<div class="pubTable_tbody">						
-			<el-scrollbar style="height:100%;width: 100%;" v-if="tableFlag">
+			<el-scrollbar style="height:100%;width: 100%;">
 				<table>
-					<tbody v-html="tableHtml"></tbody>
+					<thead v-if="!isThead">
+						<tr>
+							<th class="th" v-for="(item, index) in thead" :key="item.index">{{item.th}}</th>
+						</tr>
+					</thead>
+					<tbody v-html="tableHtml" v-if="tableFlag"></tbody>
 				</table>
 			</el-scrollbar>
 			<div v-if="!tableFlag" class="dataEmpty flex-c">Null</div>
@@ -54,7 +59,7 @@
 .pageView_box{width:100%;padding:20px 15px;}
 .pageView_box .title{font-size:14px;color: #3e3f42;font-weight: bold;}
 .pageView_top{position: absolute;top:0px;left:0;border-bottom: 1px solid #eaedf3;}
-.pageView_bottom{position: absolute;bottom:0px;left:0;}
+.pageView_bottom{}
 .pageView_btn{}
 .pageView_btn li{display: inline-block;font-size: 12px;line-height: 16px;color:#333;border:1px solid #cccccc;color:#3e3f42;}
 .pageView_btn .prev, .pageView_btn .next{padding:0px 15px;cursor: pointer;}
@@ -211,7 +216,12 @@ export default {
 			// this.addLoading()
 			this.tableData = []
 			this.tableHtml = ''
-			this.$$.ajax(this.$http, this.dataUrl, params).then(res => {
+			// this.titleTxt = ''
+			// console.log(this.titleTxt)
+			// this.$$.ajax(this.$http, this.dataUrl, params).then(res => {
+			socket.emit(this.dataUrl, params)
+			socket.on(this.dataUrl, (res) => {
+				console.log(res)
 				let data
 				if (this.resData) {
 					data = res && res.info && res.info[this.resData] ? res.info[this.resData] : []
@@ -224,6 +234,7 @@ export default {
 				this.totalPage = Math.ceil(Number(pageTatal / pageSizeNum))
 				if (this.title) {
 					let _html = this.title.txt.split('{{param}}')
+					this.titleTxt = ''
 					for (let i = 0; i < _html.length; i++) {
 						if (i === (_html.length - 1)) {
 							this.titleTxt += _html[i]
@@ -242,6 +253,7 @@ export default {
 								this.titleTxt += _html[i] + ' ' + data[0][endArr[1]]
 							}
 						}
+						// console.log(this.titleTxt)
 					}
 				}
 				if (this.currPage < this.totalPage) {
@@ -339,7 +351,7 @@ export default {
 				// console.log(Number(data[param.param2].c[0]))
 				this.$$.web3(this)
 				let _number = Number(data[param.param]) * Number(data[param.param2].c[0])
-				// _number = this.web3.fromWei(_number, "ether")
+				_number = this.web3.fromWei(_number, "ether")
 				callback = this.$$.thousandBit(_number, 'no')
 			}
 			return callback

@@ -73,7 +73,8 @@ export default {
 	name: '',
 	data () {
 		return {
-			dataUrl: this.$$.serverUrl + '/data/topAccounts',
+			// dataUrl: this.$$.serverUrl + '/data/topAccounts',
+			dataUrl: 'topAccounts',
 			blockData: [],
 			params: {
 				pageSize: 20,

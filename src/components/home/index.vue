@@ -52,7 +52,7 @@
 						<h3 class="title">Transactions</h3>
 						<div class="echarData flex-jc-sb">
 							<h4 class="big">{{txnsData}}</h4>
-							<p class="small">+6.9%</p>
+							<p class="small" v-html="transferPerent"></p>
 						</div>
 						<div class="echarView flex-jc-sb">
 							<div class="icon"><img src="@/assets/img/Transactions.svg"></div>
@@ -113,7 +113,7 @@
 					<el-card class="box-card">
 						<div slot="header" class="clearfix">
 							<span class="title">Transactions</span>
-							<el-button style="float: right; padding: 3px 0;color:#3e3f42" type="text" @click="toUrl('/assetsIndex/erc20Transfers')">View All</el-button>
+							<el-button style="float: right; padding: 3px 0;color:#3e3f42" type="text" @click="toUrl('/blockIndex/txns')">View All</el-button>
 						</div>
 						<div class="newBlock_table">
 							<public-table 
@@ -180,7 +180,10 @@ export default {
 			blockHeight: 0,
 			blockTime: 0,
 			txnsData: '',
-			blockChart: [9, 3, 6, 4, 2],
+			blockHeightChart: [],
+			blockTimeChart: [],
+			transferChart: [],
+			transferPerent: 0,
 			web3: '',
 			refreshSetInterval: ''
 		}
@@ -188,17 +191,29 @@ export default {
 	mounted () {
 		this.getData()
 		this.setIintervalGetData()
-		this.barChart('blockHeight', this.blockChart, 'Block Helght')
-		this.barChart('blockTime', this.blockChart, 'Block Helght')
-		this.barChart('priceChart', this.blockChart, 'Block Helght')
-		this.barChart('transactionsChart', this.blockChart, 'Block Helght')
-		this.refreshSetInterval = setInterval(() => {
-			this.setIintervalGetData()
-		}, 3000)
+// 		this.refreshSetInterval = setInterval(() => {
+// 			this.setIintervalGetData()
+// 		}, 3000)
+// 		let dataArr = {
+// 			dataArr: [this.getBeforeDate(0), this.getBeforeDate(1), this.getBeforeDate(2), this.getBeforeDate(3), this.getBeforeDate(4), this.getBeforeDate(5)]
+// 		}
+// 		socket.emit('blockAvg', dataArr)
+// 		socket.on('blockAvg', (data) => {
+// 			console.log(data)
+// 		})
+		this.getAvgChart()
 	},
 	methods: {
 		getData () {
 			this.$http.get('https://api.coinmarketcap.com/v1/ticker/fusion/').then(res => {
+			// this.$http.get('https://api.coinmarketcap.com/v1/ticker/fusion/1547727261000/1547813661000/').then(res => {
+// 			this.$http.get('https://sandbox.coinmarketcap.com/currencies/listings/latest',
+// 			{
+// 				headers: {
+// 					'X-CMC_PRO_API_KEY': 'b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c'
+// 				}
+// 			}
+// 			).then(res => {
 				if (res.data.length > 0) {
 					this.dollerPrice = '$ ' + Number(res.data[0].price_usd).toFixed(2)
 					this.dollerPerent = res.data[0].percent_change_24h + '%'
@@ -210,33 +225,164 @@ export default {
 				}
 			})
     },
+		getAvgChart () {
+			let dataArr = {
+				dataArr: [this.getBeforeDate(0), this.getBeforeDate(1), this.getBeforeDate(2), this.getBeforeDate(3), this.getBeforeDate(4), this.getBeforeDate(5)]
+			}
+			this.blockHeightChart = []
+			this.blockTimeChart = []
+			this.transferChart = []
+			socket.emit('blockAvg', dataArr)
+			socket.on('blockAvg', (data) => {
+				// console.log(data)
+				let resData = data
+				if (resData && resData.info) {
+					for (let i = resData.info.length - 1; i >= 0 ; i--) {
+						if (i === 0) break
+						let blockDayHeight = Number(resData.info[i - 1].data.number) - Number(resData.info[i].data.number)
+						let blockDayTimeAvg = Number(resData.info[i - 1].data.timestamp) - Number(resData.info[i].data.timestamp)
+						blockDayTimeAvg = Number(blockDayTimeAvg / blockDayHeight).toFixed(2)
+						this.blockHeightChart.push(blockDayHeight)
+						this.blockTimeChart.push(blockDayTimeAvg)
+					}
+					this.barChart('blockHeight', this.blockHeightChart, 'Avg Block Helght')
+					this.barChart('blockTime', this.blockTimeChart, 'Avg Block Time')
+				} 
+			})
+// 			this.$$.ajax(this.$http, this.$$.serverUrl + '/data/blockAvg', dataArr).then(res => {
+// 				// console.log(res)
+// 				if (res && res.info) {
+// 					for (let i = res.info.length - 1; i >= 0 ; i--) {
+// 						if (i === 0) break
+// 						let blockDayHeight = Number(res.info[i - 1].data.number) - Number(res.info[i].data.number)
+// 						let blockDayTimeAvg = Number(res.info[i - 1].data.timestamp) - Number(res.info[i].data.timestamp)
+// 						blockDayTimeAvg = Number(blockDayTimeAvg / blockDayHeight).toFixed(2)
+// 						this.blockHeightChart.push(blockDayHeight)
+// 						this.blockTimeChart.push(blockDayTimeAvg)
+// 					}
+// 					this.barChart('blockHeight', this.blockHeightChart, 'Avg Block Helght')
+// 					this.barChart('blockTime', this.blockTimeChart, 'Avg Block Time')
+// 				} 
+// 			})
+			socket.emit('transferAvg', dataArr)
+			socket.on('transferAvg', (data) => {
+				// console.log(data)
+				let resData = data
+				if (resData && resData.info) {
+					for (let i = resData.info.length - 1; i >= 0 ; i--) {
+						// if (i === 0) break
+						let transferNum = resData.info[i].data
+						// blockDayTimeAvg = Number(blockDayTimeAvg / blockDayHeight).toFixed(2)
+						this.transferChart.push(transferNum)
+						
+						// console.log(this.$$.timeChange({date: res.info[i].timestamp * 1000, type: 'yyyy-mm-dd hh:mm:ss'}))
+					}
+					// console.log(this.transferChart)
+					if (this.transferChart[3] === 0) {
+						this.transferPerent = 0
+					} else {
+						this.transferPerent = (Number(this.transferChart[4]) - Number(this.transferChart[3])) / Number(this.transferChart[3])
+					}
+					if (this.transferPerent >= 0) {
+						this.transferPerent = '<span style="color:red">+' + this.transferPerent + '%</span>'
+					} else {
+						this.transferPerent = '<span>' + this.transferPerent + '%</span>'
+					}
+					this.barChart('transactionsChart', this.transferChart, 'Transactions')
+				}  
+			})
+// 			this.$$.ajax(this.$http, this.$$.serverUrl + '/data/transferAvg', dataArr).then(res => {
+// 				console.log(res)
+// 				if (res && res.info) {
+// 					for (let i = res.info.length - 1; i >= 0 ; i--) {
+// 						// if (i === 0) break
+// 						let transferNum = res.info[i].data
+// 						// blockDayTimeAvg = Number(blockDayTimeAvg / blockDayHeight).toFixed(2)
+// 						this.transferChart.push(transferNum)
+// 						
+// 						// console.log(this.$$.timeChange({date: res.info[i].timestamp * 1000, type: 'yyyy-mm-dd hh:mm:ss'}))
+// 					}
+// 					// console.log(this.transferChart)
+// 					if (this.transferChart[3] === 0) {
+// 						this.transferPerent = 0
+// 					} else {
+// 						this.transferPerent = (Number(this.transferChart[4]) - Number(this.transferChart[3])) / Number(this.transferChart[3])
+// 					}
+// 					if (this.transferPerent >= 0) {
+// 						this.transferPerent = '<span style="color:red">+' + this.transferPerent + '%</span>'
+// 					} else {
+// 						this.transferPerent = '<span>' + this.transferPerent + '%</span>'
+// 					}
+// 					this.barChart('transactionsChart', this.transferChart, 'Transactions')
+// 				} 
+// 			})
+			
+			socket.emit('blockTime', dataArr)
+			socket.on('blockTime', (data) => {
+				// console.log(data)
+				let resData = data
+				if (resData && resData.info) {
+					this.blockTime = Number(resData.info).toFixed(2)
+				}
+			})
+// 			this.$http.get(this.$$.serverUrl + '/data/blockTime').then(res => {
+// 				if (res && res.data && res.data.info) {
+// 					this.blockTime = Number(res.data.info).toFixed(2)
+// 				}
+// 				// console.log(res)
+// 			})
+		},
 		setIintervalGetData () {
 			let _params = {
 				pageNum: 1,
 				pageSize: 20
 			}
-			this.$$.ajax(this.$http, this.blockUrl, _params).then(res => {
-				// console.log(res)
-				let data = res.info
-				if (data.length > 0) {
-					this.blockData = data
-					this.blockHeight = this.$$.thousandBit(data[0].number, 'no')
+			socket.emit('blocksRefresh', _params)
+			socket.on('blocksRefresh', (data) => {
+				// console.log(data)
+				let resData = data
+				if (resData.info.length > 0) {
+					this.blockData = resData.info
+					this.blockHeight = this.$$.thousandBit(resData.info[0].number, 'no')
 				} else {
 					this.blockData = []
 					this.blockHeight = 0
 				}
 			})
-			this.$$.ajax(this.$http, this.transUrl, _params).then(res => {
-				// console.log(res)
-				let data = res.info
-				if (data) {
-					this.transData = data
-					this.txnsData = this.$$.thousandBit(res.total, 'no')
+			socket.emit('transactionRefresh', _params)
+			socket.on('transactionRefresh', (data) => {
+				// console.log(data)
+				let resData = data
+				if (resData.info) {
+					this.transData = resData.info
+					this.txnsData = this.$$.thousandBit(resData.total, 'no')
 				} else {
 					this.transData = []
 					this.txnsData = 0
 				}
 			})
+// 			this.$$.ajax(this.$http, this.blockUrl, _params).then(res => {
+// 				// console.log(res)
+// 				let data = res.info
+// 				if (data.length > 0) {
+// 					this.blockData = data
+// 					this.blockHeight = this.$$.thousandBit(data[0].number, 'no')
+// 				} else {
+// 					this.blockData = []
+// 					this.blockHeight = 0
+// 				}
+// 			})
+// 			this.$$.ajax(this.$http, this.transUrl, _params).then(res => {
+// 				// console.log(res)
+// 				let data = res.info
+// 				if (data) {
+// 					this.transData = data
+// 					this.txnsData = this.$$.thousandBit(res.total, 'no')
+// 				} else {
+// 					this.transData = []
+// 					this.txnsData = 0
+// 				}
+// 			})
 		},
 		toUrl (url) {
 			this.$router.push(url)

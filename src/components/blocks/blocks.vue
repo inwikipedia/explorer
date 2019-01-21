@@ -105,7 +105,8 @@ export default {
 	name: '',
 	data () {
 		return {
-			dataUrl: this.$$.serverUrl + '/data/blocks',
+			// dataUrl: this.$$.serverUrl + '/data/blocks',
+			dataUrl: 'blocks',
 			blockData: [],
 			params: {
 				pageSize: 20,

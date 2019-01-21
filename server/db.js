@@ -56,6 +56,7 @@ var Transaction = new Schema(
     "value": String,
     "gas": Number,
     "gasPrice": String,
+    "gasLimit": String,
     "timestamp": Number,
     "input": String
 }, {collection: "Transaction"});

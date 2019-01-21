@@ -3,15 +3,14 @@ let mongoose = require( 'mongoose' )
 let Block = mongoose.model( 'Block' )
 let Transaction = mongoose.model( 'Transaction' )
 let Account = mongoose.model( 'Account' )
-let express = require('express')
-let router = express.Router()
-mongoose.connection.on("open", () => {  
-  console.log("数据库连接成功"); 
-})
 
-router.post('/transaction', (req, res) => {
+let Web3 = require('web3')
+let web3 = new Web3(new Web3.providers.HttpProvider('http://54.169.254.177:40415'))
+
+// router.post('/transaction', (req, res) => {
+function transaction(socket, req, type) {
 	let setData = {
-		pageSize: req.body.pageSize ? req.body.pageSize : 20,
+		pageSize: req.pageSize ? req.pageSize : 20,
 		skip: 0
 	}
 	let data = {
@@ -19,7 +18,8 @@ router.post('/transaction', (req, res) => {
 		info: '',
 		total: ''
 	}
-	setData.skip = req.body.pageNum ? (Number(req.body.pageNum - 1) * Number(setData.pageSize)) : 0
+	type = type ? type : 'transaction'
+	setData.skip = req.pageNum ? (Number(req.pageNum - 1) * Number(setData.pageSize)) : 0
 	// console.log('setData')
 	// console.log(setData)
 	let total = () => {		
@@ -35,7 +35,7 @@ router.post('/transaction', (req, res) => {
 		})
 	}
 	let info = () => {			
-		Transaction.find({}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.body.pageSize)).exec((err, result) => {
+		Transaction.find({}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err, result) => {
 			if (!err) {
 				data.msg = 'Success'
 				data.info = result
@@ -43,15 +43,17 @@ router.post('/transaction', (req, res) => {
 				data.msg = 'Error'
 				data.info = ''
 			}
-			res.json(data)
+			// socket.emit('transaction', data)
+			socket.emit(type, data)
 		})
 	}
 	total()
-})
+}
 
-router.post('/transferDtil', (req, res) => {
+// router.post('/transferDtil', (req, res) => {
+function transferDtil(socket, req) {
 	let setData = {
-		hash: req.body.hash ? req.body.hash : 0
+		hash: req.hash ? req.hash : 0
 	}
 	let data = {
 		msg: '',
@@ -63,23 +65,27 @@ router.post('/transferDtil', (req, res) => {
 				// total()
 				data.msg = 'Success'
 				data.info = result[0]
+				let blockData = web3.eth.getBlock(result[0].blockNumber)
+				data.info.gasLimit = blockData.gasLimit
+				data.info.gasUsed = blockData.gasUsed
 				// console.log(result[0])
 // 				console.log(result[0].gasPrice)
 			} else {
 				data.msg = 'Error'
 				data.info = ''
 			}
-			res.json(data)
+			socket.emit('transferDtil', data)
 		})
 	}
 	info()
-})
+}
 
-router.post('/transferPage', (req, res) => {
+// router.post('/transferPage', (req, res) => {
+function transferPage(socket, req) {
 	let setData = {
-		timestamp: req.body.timestamp ? req.body.timestamp : 0
+		timestamp: req.timestamp ? req.timestamp : 0
 	}
-	if (req.body.page === 'next') {
+	if (req.page === 'next') {
 		setData.page = {'$gt': setData.timestamp}
 	} else {
 		setData.page = {'$lt': setData.timestamp}
@@ -99,14 +105,15 @@ router.post('/transferPage', (req, res) => {
 				data.msg = 'Error'
 				data.info = ''
 			}
-			res.json(data)
+			socket.emit('transferPage', data)
 		})
 	}
 	info()
-})
+}
 
-router.post('/transferAvg', (req, res) => {
-	let dataArr = req.body.dataArr.length > 0 ? req.body.dataArr : []
+// router.post('/transferAvg', (req, res) => {
+function transferAvg(socket, req) {
+	let dataArr = req.dataArr.length > 0 ? req.dataArr : []
 	// console.log('blockAvg:')
 	let data = {
 		msg: '',
@@ -133,7 +140,7 @@ router.post('/transferAvg', (req, res) => {
 						}
 					}
 					data.info.sort(compare('timestamp'))
-					res.json(data)
+					socket.emit('transferAvg', data)
 					// total()
 				}
 			} else {
@@ -148,11 +155,12 @@ router.post('/transferAvg', (req, res) => {
 		let endTime = Date.parse(dataArr[i] + ' ' + '00:00:00') / 1000
 		info(startTime, endTime, i)
 	}
-})
+}
 
-router.post('/blocks', (req, res) => {
+// router.post('/blocks', (req, res) => {
+function blocks(socket, req, type) {
 	let setData = {
-		pageSize: req.body.pageSize ? req.body.pageSize : 20,
+		pageSize: req.pageSize ? req.pageSize : 20,
 		skip: 0
 	}
 	let data = {
@@ -160,8 +168,8 @@ router.post('/blocks', (req, res) => {
 		info: '',
 		total: ''
 	}
-	setData.skip = req.body.pageNum ? (Number(req.body.pageNum - 1) * Number(setData.pageSize)) : 0
-	
+	setData.skip = req.pageNum ? (Number(req.pageNum - 1) * Number(setData.pageSize)) : 0
+	type = type ? type : 'blocks'
 	let total = () => {		
 		Block.find({}).countDocuments((err, result) => {
 			if (!err) {
@@ -175,7 +183,7 @@ router.post('/blocks', (req, res) => {
 		})
 	}
 	let info = () => {			
-		Block.find({}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.body.pageSize)).exec((err,result) => {
+		Block.find({}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
 			if (!err) {
 				// total()
 				data.msg = 'Success'
@@ -184,15 +192,16 @@ router.post('/blocks', (req, res) => {
 				data.msg = 'Error'
 				data.info = ''
 			}
-			res.json(data)
+			socket.emit(type, data)
 		})
 	}
 	total()
-})
+}
 
-router.post('/pendingBlocks', (req, res) => {
+// router.post('/pendingBlocks', (req, res) => {
+function pendingBlocks(socket, req) {
 	let setData = {
-		pageSize: req.body.pageSize ? req.body.pageSize : 20,
+		pageSize: req.pageSize ? req.pageSize : 20,
 		skip: 0
 	}
 	let data = {
@@ -200,7 +209,7 @@ router.post('/pendingBlocks', (req, res) => {
 		info: '',
 		total: ''
 	}
-	setData.skip = req.body.pageNum ? (Number(req.body.pageNum - 1) * Number(setData.pageSize)) : 0
+	setData.skip = req.pageNum ? (Number(req.pageNum - 1) * Number(setData.pageSize)) : 0
 	
 	let total = () => {		
 		Block.find({"hash": ""}).countDocuments((err, result) => {
@@ -215,7 +224,7 @@ router.post('/pendingBlocks', (req, res) => {
 		})
 	}
 	let info = () => {			
-		Block.find({"hash": ""}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.body.pageSize)).exec((err,result) => {
+		Block.find({"hash": ""}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
 			if (!err) {
 				// total()
 				data.msg = 'Success'
@@ -224,15 +233,16 @@ router.post('/pendingBlocks', (req, res) => {
 				data.msg = 'Error'
 				data.info = ''
 			}
-			res.json(data)
+			socket.emit('pendingBlocks', data)
 		})
 	}
 	total()
-})
+}
 
-router.post('/blockNum', (req, res) => {
+// router.post('/blockNum', (req, res) => {
+function blockNum(socket, req) {
 	let setData = {
-		number: req.body.number ? req.body.number : 0
+		number: req.number ? req.number : 0
 	}
 	let data = {
 		msg: '',
@@ -248,15 +258,16 @@ router.post('/blockNum', (req, res) => {
 				data.msg = 'Error'
 				data.info = ''
 			}
-			res.json(data)
+			socket.emit('blockNum', data)
 		})
 	}
 	info()
-})
+}
 
-router.post('/blockAvg', (req, res) => {
-	let dataArr = req.body.dataArr.length > 0 ? req.body.dataArr : []
-	console.log('blockAvg:')
+// router.post('/blockAvg', (req, res) => {
+function blockAvg(socket, req) {
+	let dataArr = req.dataArr.length > 0 ? req.dataArr : []
+	// console.log('blockAvg:')
 	let data = {
 		msg: '',
 		info: []
@@ -282,7 +293,7 @@ router.post('/blockAvg', (req, res) => {
 						}
 					}
 					data.info.sort(compare('timestamp'))
-					res.json(data)
+					socket.emit('blockAvg', data)
 				}
 			} else {
 				data.msg = 'Error'
@@ -294,9 +305,10 @@ router.post('/blockAvg', (req, res) => {
 		let dateTime = Date.parse(dataArr[i] + ' ' + '00:00:00') / 1000
 		info(dateTime, i)
 	}
-})
+}
 
-router.get('/blockTime', (req, res) => {
+// router.get('/blockTime', (req, res) => {
+function blockTime(socket, req) {
 	let nowTime = Date.parse(new Date())
 	let data = {
 		msg: '',
@@ -312,16 +324,17 @@ router.get('/blockTime', (req, res) => {
 				data.msg = 'Error'
 				data.info = ''
 			}
-			res.json(data)
+			socket.emit('blockTime', data)
 		})
 	}
 	info()
-})
+}
 
 
-router.post('/topAccounts', (req, res) => {
+// router.post('/topAccounts', (req, res) => {
+function topAccounts(socket, req) {
 	let setData = {
-		pageSize: req.body.pageSize ? req.body.pageSize : 20,
+		pageSize: req.pageSize ? req.pageSize : 20,
 		skip: 0
 	}
 	let data = {
@@ -329,7 +342,7 @@ router.post('/topAccounts', (req, res) => {
 		info: '',
 		total: ''
 	}
-	setData.skip = req.body.pageNum ? (Number(req.body.pageNum - 1) * Number(setData.pageSize)) : 0
+	setData.skip = req.pageNum ? (Number(req.pageNum - 1) * Number(setData.pageSize)) : 0
 	
 	let total = () => {		
 		Account.find({}).countDocuments((err, result) => {
@@ -344,7 +357,7 @@ router.post('/topAccounts', (req, res) => {
 		})
 	}
 	let info = () => {			
-		Account.find({}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.body.pageSize)).exec((err,result) => {
+		Account.find({}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
 			if (!err) {
 				// total()
 				data.msg = 'Success'
@@ -353,64 +366,25 @@ router.post('/topAccounts', (req, res) => {
 				data.msg = 'Error'
 				data.info = ''
 			}
-			res.json(data)
+			socket.emit('topAccounts', data)
 		})
 	}
 	total()
-})
+}
 
-router.post('/topAccounts', (req, res) => {
+// router.post('/accountTxn', (req, res) => {
+function accountTxn(socket, req) {
 	let setData = {
-		pageSize: req.body.pageSize ? req.body.pageSize : 20,
-		skip: 0
-	}
-	let data = {
-		msg: '',
-		info: '',
-		total: ''
-	}
-	setData.skip = req.body.pageNum ? (Number(req.body.pageNum - 1) * Number(setData.pageSize)) : 0
-	
-	let total = () => {		
-		Account.find({}).countDocuments((err, result) => {
-			if (!err) {
-				data.msg = 'Success'
-				data.total = result
-			} else {
-				data.msg = 'Error'
-				data.info = ''
-			}
-			info()
-		})
-	}
-	let info = () => {			
-		Account.find({}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.body.pageSize)).exec((err,result) => {
-			if (!err) {
-				// total()
-				data.msg = 'Success'
-				data.info = result
-			} else {
-				data.msg = 'Error'
-				data.info = ''
-			}
-			res.json(data)
-		})
-	}
-	total()
-})
-
-router.post('/accountTxn', (req, res) => {
-	let setData = {
-		pageSize: req.body.pageSize ? req.body.pageSize : 20,
+		pageSize: req.pageSize ? req.pageSize : 20,
 		skip: 0,
-		addr: req.body.addr
+		addr: req.addr
 	}
 	let data = {
 		msg: '',
 		info: '',
 		total: ''
 	}
-	setData.skip = req.body.pageNum ? (Number(req.body.pageNum - 1) * Number(setData.pageSize)) : 0
+	setData.skip = req.pageNum ? (Number(req.pageNum - 1) * Number(setData.pageSize)) : 0
 	
 	let total = () => {		
 		Transaction.find({ $or: [{"to": setData.addr}, {"from": setData.addr}] }).countDocuments((err, result) => {
@@ -426,7 +400,7 @@ router.post('/accountTxn', (req, res) => {
 		})
 	}
 	let info = () => {			
-		Transaction.find({ $or: [{"to": setData.addr}, {"from": setData.addr}] }).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.body.pageSize)).exec((err,result) => {
+		Transaction.find({ $or: [{"to": setData.addr}, {"from": setData.addr}] }).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
 			if (!err) {
 				// total()
 				data.msg = 'Success'
@@ -435,10 +409,118 @@ router.post('/accountTxn', (req, res) => {
 				data.msg = 'Error'
 				data.info = ''
 			}
-			res.json(data)
+			socket.emit('accountTxn', data)
 		})
 	}
 	total()
-})
+}
 
-module.exports = router
+function accountDtil (socket, req) {
+	let setData = req && req.address ? req.address : ''
+	let data = {
+		msg: '',
+		fsnBalance: ''
+	}
+	console.log('accountDtil')
+	console.log(setData)
+	let total = () => {		
+		Transaction.find({ $or: [{"to": setData}, {"from": setData}] }).countDocuments((err, result) => {
+			if (!err) {
+				data.msg = 'Success'
+				data.txns = result
+				// console.log(result)
+			} else {
+				data.msg = 'Error'
+				data.fsnBalance = ''
+				data.txns = ''
+			}
+			socket.emit('accountDtil', data)
+		})
+	}
+	web3.eth.getBalance(setData, (err, result) => {
+		if (!err) {
+			data.msg = 'Success'
+			data.fsnBalance = result
+		} else {
+			data.msg = 'Error'
+			data.fsnBalance = ''
+		}
+		total()
+	})
+}
+
+
+function sendData (socket) {
+	let newBlocks = web3.eth.filter('latest')
+	socket.on('transaction', (req) => {
+		transaction(socket, req)
+	})
+	socket.on('transactionRefresh', (req) => {
+		transaction(socket, req, 'transactionRefresh')
+		newBlocks.watch(function (error,latestBlock) {
+			if (error) {
+				console.log(error)
+			} else {
+				transaction(socket, req, 'transactionRefresh')
+			}
+		})
+	})
+	socket.on('transferDtil', (req) => {
+		transferDtil(socket, req)
+	})
+	socket.on('transferPage', (req) => {
+		transferPage(socket, req)
+	})
+	socket.on('transferAvg', (req) => {
+		transferAvg(socket, req)
+	})
+	socket.on('blocks', (req) => {
+		console.log(req)
+		blocks(socket, req)
+	})
+	socket.on('blocksRefresh', (req) => {
+		console.log('blocksRefresh')
+		blocks(socket, req, 'blocksRefresh')
+		newBlocks.watch(function (error,latestBlock) {
+			if (error) {
+				console.log(error)
+			} else {
+				blocks(socket, req, 'blocksRefresh')
+			}
+		})
+	})
+	socket.on('pendingBlocks', (req) => {
+		pendingBlocks(socket, req)
+	})
+	socket.on('blockNum', (req) => {
+		blockNum(socket, req)
+	})
+	socket.on('blockAvg', (req) => {
+		blockAvg(socket, req)
+	})
+	socket.on('blockTime', (req) => {
+		blockTime(socket, req)
+	})
+	socket.on('topAccounts', (req) => {
+		topAccounts(socket, req)
+	})
+	socket.on('accountTxn', (req) => {
+		accountTxn(socket, req)
+	})
+	socket.on('accountDtil', (req) => {
+		accountDtil(socket, req)
+	})
+}
+
+// module.exports.transaction = transaction
+// module.exports.transferDtil = transferDtil
+// module.exports.transferPage = transferPage
+// module.exports.transferAvg = transferAvg
+// module.exports.blocks = blocks
+// module.exports.pendingBlocks = pendingBlocks
+// module.exports.blockNum = blockNum
+// module.exports.blockAvg = blockAvg
+// module.exports.blockTime = blockTime
+// module.exports.topAccounts = topAccounts
+// module.exports.accountTxn = accountTxn
+module.exports.sendData = sendData

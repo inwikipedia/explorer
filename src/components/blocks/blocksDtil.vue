@@ -68,17 +68,16 @@ export default {
 	mounted () {
 		this.blockNumber = this.$route.query.params
 		// this.getBlocksInfo()
+		
 	},
 	methods: {
 		getBlocksInfo (number) {
 			let _params = {
 				number: this.blockNumber
 			}
-// 			let Qs = require('qs')
-// 			this.$http.post(this.$$.serverUrl + '/data/blockNum', Qs.stringify(_params)).then((res) => {
-// 				
-// 			})
-			this.$$.ajax(this.$http, this.$$.serverUrl + '/data/blockNum', _params).then(res => {
+			// this.$$.ajax(this.$http, this.$$.serverUrl + '/data/blockNum', _params).then(res => {
+			socket.emit('blockNum', _params)
+			socket.on('blockNum', (res) => {
 				if (!res.info) {
 					// this.$message('Temporarily no data!')
 					this.$message({
@@ -107,16 +106,18 @@ export default {
 					{name: 'Uncles Reward:', value: res.info.uncles},
 					{name: 'Extra Data:', value: res.info.extraData},
 				]
+				
+				
+// 				this.$$.web3(this)
+// 				let getBlockData = this.web3.eth.getTransaction(res.info.hash)
+// 				console.log(getBlockData)
+// 				console.log(this.web3.currentProvider)
 			})
 		},
 		prevBtn () {
-// 			this.blockNumber--
-// 			console.log(this.blockNumber)
 			this.$router.push({path: '/blockIndex/blocksDtil', query: {params: --this.blockNumber}})
 		},
 		nextBtn () {
-// 			this.blockNumber++
-// 			console.log(this.blockNumber)
 			this.$router.push({path: '/blockIndex/blocksDtil', query: {params: ++this.blockNumber}})
 		}
 	},

@@ -75,7 +75,9 @@ export default {
 			}
 			this.nowDate = this.$$.timeToEN(_params.endTime, 'all')
 			this.beforeDate = this.$$.timeToEN(_params.startTime, 'all')
-			this.$$.ajax(this.$http, this.$$.serverUrl + '/chart/transfer', _params).then(res => {
+			// this.$$.ajax(this.$http, this.$$.serverUrl + '/chart/transfer', _params).then(res => {
+			socket.emit('transfer', _params)
+			socket.on('transfer', (res) => {
 				this.chartView(res.info)
 				this.highestBlock = res.info[res.info.length - 1].blockNumber
 				this.lowestBlock = res.info[0].blockNumber

@@ -35,17 +35,21 @@ import {
 	Option,
 	Tabs,
 	TabPane,
-	Dialog
+	Dialog,
+	Collapse,
+  CollapseItem
 } from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
 import App from './App'
 import router from './router'
 import store from './store/store'
-import '@/assets/css/css.css'
-import '@/assets/css/style.css'
 import axios from 'axios'
 import $$ from '@/assets/js/methods'
 // import VCharts from 'v-charts'
+
+import 'element-ui/lib/theme-chalk/index.css'
+import 'element-ui/lib/theme-chalk/display.css'
+import '@/assets/css/css.css'
+import '@/assets/css/style.css'
 
 import publicTable from '@/components/public/publicTable'
 import tableData from '@/components/public/tableData'
@@ -88,6 +92,8 @@ Vue.use(Option)
 Vue.use(Tabs)
 Vue.use(TabPane)
 Vue.use(Dialog)
+Vue.use(Collapse)
+Vue.use(CollapseItem)
 // Vue.use(Pagination)
 Vue.use('axios')
 Vue.config.productionTip = false

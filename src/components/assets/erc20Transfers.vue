@@ -89,7 +89,8 @@ export default {
 	name: '',
 	data () {
 		return {
-			dataUrl: this.$$.serverUrl + '/data/transaction',
+			// dataUrl: this.$$.serverUrl + '/data/transaction',
+			dataUrl: 'transaction',
 			blockData: [],
 			params: {
 				pageSize: 20,
