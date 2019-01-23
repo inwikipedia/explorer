@@ -54,7 +54,7 @@
 							th: 'To',
 							width: '4',
 							params: [{param: 'to'},{param: 'to', type: 1, start: 10, end: 8}],
-							html: '<div class=\'trans_style\'><p class=\'rowItem\'><span class=\'blue\' onclick=toUrl(\'/blockIndex/accountDtil\',\'{{param}}\')>{{param}}</span></p></div>'
+							html: '<div class=\'trans_style\'><p class=\'rowItem\'><span class=\'blue cursorP\' onclick=toUrl(\'/blockIndex/accountDtil\',\'{{param}}\')>{{param}}</span></p></div>'
 						}"
 					></table-data>
 					<table-data 

@@ -34,12 +34,21 @@
 						</div>
 					</el-col>
 					<el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-						<div class="accountHeader_item flex-sc" v-for="(item, index) in coinData" :key="item.index">
-							<p class="p p1 flex-sc"><img :src="item.icon" v-if="item.icon" width="16" height="16" style="margin-right: 5px;"><span v-html="item.name"></span></p>
-							<div class="icon" v-if="item.img" @click="codeViewBtn">
-								<img :src="item.img">
-							</div>
-							<p class="p p2" v-if="item.value" v-html="item.value"></p>
+						<div class="accountHeader_item flex-sc">
+							<p class="p p1 flex-sc"><img src="@etc/img/btc.svg" class="imgIcon"><span>BTC Balance:</span></p>
+							<p class="p p2" v-html="BTCbalance"></p>
+						</div>
+						<div class="accountHeader_item flex-sc">
+							<p class="p p1 flex-sc"><img src="@etc/img/eth.svg" class="imgIcon"><span>ETH Balance:</span></p>
+							<p class="p p2" v-html="ETHbalance"></p>
+						</div>
+						<div class="accountHeader_item flex-sc">
+							<p class="p p1 flex-sc"><img src="@etc/img/gusd.svg" class="imgIcon"><span>GUSD Balance:</span></p>
+							<p class="p p2" v-html="GUSDbalance"></p>
+						</div>
+						<div class="accountHeader_item flex-sc">
+							<p class="p p1 flex-sc"><img src="@etc/img/bnb.svg" class="imgIcon"><span>BNB Balance:</span></p>
+							<p class="p p2" v-html="BNBbalance"></p>
 						</div>
 					</el-col>
 				</el-row>
@@ -212,7 +221,12 @@ export default {
 				addr: this.$route.query.params
 			},
 			fsnBalance: 'FSN',
-			txnsNum: 'txns'
+			BTCbalance: '0 BTC',
+			ETHbalance: '0 ETH',
+			GUSDbalance: '0 GUSD',
+			BNBbalance: '0 BNB',
+			txnsNum: 'txns',
+			count: 0
 		}
 	},
 	mounted () {
@@ -229,11 +243,18 @@ export default {
 		let addressData = {
 			address: this.address
 		}
+		this.count = 0
 		socket.emit('accountDtil', addressData)
 		socket.on('accountDtil', (res) => {
+			this.count ++
+			if (this.count > 1) return
 			console.log(res)
-			this.fsnBalance = this.$$.thousandBit(res.fsnBalance, 'no') + ' FSN'
-			this.txnsNum =  this.$$.thousandBit(res.txns, 'no') + ' txns'
+			this.fsnBalance = this.$$.thousandBit(res.info.balance, 'no') + ' FSN'
+			this.txnsNum =  this.$$.thousandBit(res.info.TxCount, 'no') + ' txns'
+			this.BTCbalance = res.info.BTCbalance ? this.$$.thousandBit(res.info.BTCbalance, 'no') + ' BTC' : '0 BTC'
+			this.ETHbalance = res.info.ETHbalance ? this.$$.thousandBit(res.info.ETHbalance, 'no') + ' ETH' : '0 ETH'
+			this.GUSDbalance = res.info.GUSDbalance ? this.$$.thousandBit(res.info.GUSDbalance, 'no') + ' GUSD' : '0 GUSD'
+			this.BNBbalance = res.info.BNBbalance ? this.$$.thousandBit(res.info.BNBbalance, 'no') + ' BNB' : '0 BNB'
 		})
 	},
 	methods: {

@@ -3,6 +3,7 @@ let mongoose = require( 'mongoose' )
 let Block = mongoose.model( 'Block' )
 let Transaction = mongoose.model( 'Transaction' )
 let Account = mongoose.model( 'Account' )
+let TransactionChart = mongoose.model( 'TransactionChart' )
 let express = require('express')
 let router = express.Router()
 
@@ -12,11 +13,11 @@ function transfer(socket, req) {
 		msg: '',
 		info: ''
 	}
-	let setData = {
-		startTime: req.startTime ? req.startTime : (Date.parse(new Date()) / 1000 - (1 * 60 * 60 * 24 * 60)),
-		endTime: req.endTime ? req.endTime : (Date.parse(new Date()) / 1000),
-	}
-	Transaction.find({'timestamp': {'$gte': setData.startTime, '$lt': setData.endTime}}).lean(true).sort({"timestamp": 1}).exec((err, result) => {
+// 	let setData = {
+// 		startTime: req.startTime ? req.startTime : (Date.parse(new Date()) / 1000 - (1 * 60 * 60 * 24 * 60)),
+// 		endTime: req.endTime ? req.endTime : (Date.parse(new Date()) / 1000),
+// 	}
+	TransactionChart.find({}).lean(true).sort({"timestamp": 1}).exec((err, result) => {
 		if (!err) {
 			// total()
 			data.msg = 'Success'

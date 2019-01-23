@@ -5,6 +5,8 @@ This file will start syncing the blockchain from the node address you provide in
 Please read the README in the root directory that explains the parameters of this code
 */
 require( './db.js' );
+var addAccounts = require( './addAccountInfo.js' )
+var chartsInfo = require( './chartsInfo.js' )
 var etherUnits = require("./etherUnits.js");
 var BigNumber = require('bignumber.js');
 var _ = require('lodash');
@@ -29,32 +31,51 @@ var listenBlocks = function(config) {
     setTimeout(function() { listenBlocks(config); }, 10000);
     return;
   }
-    var newBlocks = web3.eth.filter("latest");
-    newBlocks.watch(function (error,latestBlock) {
-    if(error) {
-        console.log('Error: ' + error);
-    } else if (latestBlock == null) {
-        console.log('Warning: null block hash');
-    } else {
-      console.log('Found new block: ' + latestBlock);
-      if(web3.isConnected()) {
-        web3.eth.getBlock(latestBlock, true, function(error,blockData) {
-          if(error) {
-            console.log('Warning: error on getting block with hash/number: ' +   latestBlock + ': ' + error);
-          }else if(blockData == null) {
-            console.log('Warning: null block data received from the block with hash/number: ' + latestBlock);
-          }else{
-            writeBlockToDB(config, blockData, true);
-            writeTransactionsToDB(config, blockData, true);
-          }
-        });
-      }else{
-        console.log('Error: Web3 connection time out trying to get block ' + latestBlock + ' retrying connection now');
-        listenBlocks(config);
-      }
-    }
-  });
+	try{
+		var newBlocks = web3.eth.filter("latest");
+		newBlocks.watch(function (error,latestBlock) {
+			if(error) {
+					console.log('newBlocks Error: ' + error);
+					listenBlocks(config)
+					try{
+						newBlocks.stopWatching()
+					}catch(e){
+						//TODO handle the exception
+						console.log('newBlocks Error2: ')
+						console.log(e)
+					}
+					return
+			} else if (latestBlock == null) {
+					console.log('Warning: null block hash');
+			} else {
+				console.log('Found new block: ' + latestBlock);
+				if(web3.isConnected()) {
+					web3.eth.getBlock(latestBlock, true, function(error,blockData) {
+						if(error) {
+							console.log('Warning: error on getting block with hash/number: ' +   latestBlock + ': ' + error);
+						}else if(blockData == null) {
+							console.log('Warning: null block data received from the block with hash/number: ' + latestBlock);
+						}else{
+							writeBlockToDB(config, blockData, true);
+							writeTransactionsToDB(config, blockData, true);
+							
+						}
+					});
+				}else{
+					console.log('Error: Web3 connection time out trying to get block ' + latestBlock + ' retrying connection now');
+					listenBlocks(config);
+				}
+			}
+		});
+	} catch (e){
+		//TODO handle the exception
+		console.log("over time failed!")
+		console.log(e)
+		setTimeout(function() { listenBlocks(config); }, 10000)
+	}
 }
+
+
 /**
   If full sync is checked this function will start syncing the block chain from lastSynced param see README
 **/
@@ -484,3 +505,14 @@ if (config.syncAll === true){
   console.log('Starting Full Sync');
   syncChain(config);
 }
+
+var accountWatch = web3.eth.filter("latest");
+accountWatch.watch(function (error,latestBlock) {
+	if (error) {
+		console.log('accountWatch Error: ')
+		console.log(error)
+	} else {
+		addAccounts.addAccounts()
+		chartsInfo.findChartTime()
+	}
+})

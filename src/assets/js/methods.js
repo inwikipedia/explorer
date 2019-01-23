@@ -142,11 +142,11 @@ $$.thousandBit = (num, dec = 2) => {
         num = num.toLocaleString().replace(/(\d)(?=(\d{3})+\.)/g, '$1,').toLocaleString()
       } else {
         let numSplit = num.toString().split('.')
-//         console.log(numSplit[1].toString())
-//         console.log(numSplit[1].substr(0, 8))
         numSplit[1] = numSplit[1].length > 9 ? numSplit[1].substr(0, 8) : numSplit[1]
-        num = numSplit[0].toLocaleString().replace(/(\d)(?=(\d{3})+\.)/g, '$1,').toLocaleString()
-        num = num + '.' + numSplit[1]
+        num = Number(numSplit[0]).toFixed(1).replace(/(\d)(?=(\d{3})+\.)/g, '$1,').toLocaleString()
+				// console.log(num)
+        num = num.toString().split('.')[0] + '.' + numSplit[1]
+				// console.log($$.thousandBit(num, 'no'))
       }
     } else {
       num = num.toFixed(dec).replace(/(\d)(?=(\d{3})+\.)/g, '$1,').toLocaleString()

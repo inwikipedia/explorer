@@ -87,7 +87,8 @@ export default {
 				value: 2
 			}],
 			web3: '',
-			timestamp: 0
+			timestamp: 0,
+			count: 0
 		}
 	},
 	watch: {
@@ -114,8 +115,11 @@ export default {
 				hash: this.hash
 			}
 			// this.$$.ajax(this.$http, this.$$.serverUrl + '/data/transferDtil', _params).then(res => {
+			this.count = 0
 			socket.emit('transferDtil', _params)
 			socket.on('transferDtil', (res) => {
+				this.count ++
+				if (this.count > 1) return
 				console.log(res)
 				if (!res.info) {
 					this.$message({

@@ -143,6 +143,7 @@
 .accountHeader_item .p1{width:40%;}
 .accountHeader_item .p2{width:60%;}
 .accountHeader_item .icon{width: 16px;height: 16px;margin-left: 10px;}
+.accountHeader_item .imgIcon{width: 16px;height: 16px;margin-right: 5px;}
 .qrCode_box .el-dialog__title{font-size:12px;color:#666;}
 .accountInfo_tab{width: 100%;margin-top: 30px;}
 .accountInfo_tab .el-tabs__header{border: none!important;}

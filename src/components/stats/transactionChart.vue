@@ -69,19 +69,34 @@ export default {
 	},
 	methods: {
 		getData () {
-			let _params = {
-				startTime: Date.parse(new Date()) / 1000 - (1 * 60 * 60 * 24 * 60),
-				endTime: Date.parse(new Date()) / 1000
-			}
-			this.nowDate = this.$$.timeToEN(_params.endTime, 'all')
-			this.beforeDate = this.$$.timeToEN(_params.startTime, 'all')
+// 			let _params = {
+// 				startTime: Date.parse(new Date()) / 1000 - (1 * 60 * 60 * 24 * 60),
+// 				endTime: Date.parse(new Date()) / 1000
+// 			}
 			// this.$$.ajax(this.$http, this.$$.serverUrl + '/chart/transfer', _params).then(res => {
-			socket.emit('transfer', _params)
+			socket.emit('transfer')
 			socket.on('transfer', (res) => {
-				this.chartView(res.info)
-				this.highestBlock = res.info[res.info.length - 1].blockNumber
-				this.lowestBlock = res.info[0].blockNumber
-				console.log(res)
+				let data = res.info.sort((val1, val2) => {
+					if (val1.timestamp < val2.timestamp) {
+						return -1
+					} else {
+						return 1
+					}
+				})
+				this.chartView(data)
+				let tranData = res.info.sort((val1, val2) => {
+					if (val1.blockCount < val2.blockCount) {
+						return -1
+					} else {
+						return 1
+					}
+				})
+				// console.log(tranData)
+				this.nowDate = this.$$.timeToEN(tranData[tranData.length - 1].timestamp, 'all')
+				this.beforeDate = this.$$.timeToEN(tranData[0].timestamp, 'all')
+				this.highestBlock = tranData[tranData.length - 1].blockCount
+				this.lowestBlock = tranData[0].blockCount
+				// console.log(res)
 			})
 		},
 		downloadPic (command) {
@@ -118,16 +133,18 @@ export default {
 					borderWidth: 1,
 					formatter: (param) => {
 						// console.log(param)
-						param = param[0];
+						param = param[0]
+						param = data[param.dataIndex]
+						// console.log(param)
 						return [
-								this.$$.timeToEN(param.data['timestamp'], 'all') + '<hr size=1 style="margin: 3px 0">',
-								'Avg Difficulty： <span style="font-weight:bold">' + param.data['value'] + '</span><br/>',
-								'Est HashRate： <span style="font-weight:bold">' + param.data['hash'] + '</span><br/>',
-								'Avg Block Time： <span style="font-weight:bold">' + param.data['value'] + '</span><br/>',
-								'Avg Block Size： <span style="font-weight:bold">' + param.data['value'] + '</span><br/>',
-								'Total Block Count： <span style="font-weight:bold">' + param.data['blockNumber'] + '</span><br/>',
-								'Total Uncles Count： <span style="font-weight:bold">' + param.data['value'] + '</span><br/>',
-								'New Address Seen： <span style="font-weight:bold">' + param.data['from'] + '</span><br/>'
+								this.$$.timeToEN(param.timestamp, 'all') + '<br/>[Total Transactions: '+ param['txnCount'] +']<hr size=1 style="margin: 3px 0">',
+								'Avg Difficulty： <span style="font-weight:bold">' + param['difficultyAvg'] + '</span><br/>',
+								'Est HashRate： <span style="font-weight:bold">' + param['EstHashRate'] + '</span><br/>',
+								'Avg Block Time： <span style="font-weight:bold">' + param['blockTimeAvg'] + ' s</span><br/>',
+								'Avg Block Size： <span style="font-weight:bold">' + param['blockSizeAvg'] + '</span><br/>',
+								'Total Block Count： <span style="font-weight:bold">' + param['blockCount'] + '</span><br/>',
+								'Total Uncles Count： <span style="font-weight:bold">' + param['unclesCount'] + '</span><br/>',
+								'New Address Seen： <span style="font-weight:bold">' + param['addressCount'] + '</span><br/>'
 						].join('')
 					}
 				},
@@ -160,7 +177,7 @@ export default {
 					name: 'Vlaue',
 					type: 'line',
 					data: data.map((item) => {
-							return item
+							return item.txnCount
 					})
 				}]
 			}, true)

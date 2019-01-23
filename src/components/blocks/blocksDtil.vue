@@ -57,7 +57,9 @@ export default {
 	data () {
 		return {
 			blockNumber: 0,
-			blocksInfo: []
+			blocksInfo: [],
+			count: 0,
+			timestamp: 0
 		}
 	},
 	watch: {
@@ -76,8 +78,11 @@ export default {
 				number: this.blockNumber
 			}
 			// this.$$.ajax(this.$http, this.$$.serverUrl + '/data/blockNum', _params).then(res => {
+			this.count = 0
 			socket.emit('blockNum', _params)
 			socket.on('blockNum', (res) => {
+				this.count ++
+				if (this.count > 1) return
 				if (!res.info) {
 					// this.$message('Temporarily no data!')
 					this.$message({
@@ -88,24 +93,26 @@ export default {
 					this.blocksInfo = []
 					return
 				}
-				this.blocksInfo = [
-					{name: 'Height:', value: this.$$.thousandBit(res.info.number, 'no')},
-					{name: 'Timestamp:', value: this.$$.timesFun(res.info.timestamp)},
-					{name: 'Transactions:', value: res.info.transactionsRoot},
-					{name: 'Height:', value: this.$$.thousandBit(res.info.number, 'no')},
-					{name: 'Parent Hash:', value: '<span style="color:#1665d8">' + res.info.parentHash + '</span'},
-					{name: 'Sha3Uncles:', value: res.info.sha3Uncles},
-					{name: 'Mined By:', value: '<span style="color:#1665d8">' + res.info.miner + '</span'},
-					{name: 'Difficulty:', value: this.$$.thousandBit(res.info.difficulty, 'no')},
-					{name: 'Total Difficulty:', value: this.$$.thousandBit(res.info.totalDifficulty, 'no')},
-					{name: 'Size:', value: this.$$.thousandBit(res.info.size, 'no') + ' bytes'},
-					{name: 'Gas Used:', value: this.$$.thousandBit(res.info.gasUsed, 'no')},
-					{name: 'Gas Limit:', value: this.$$.thousandBit(res.info.gasLimit, 'no')},
-					{name: 'Nonce:', value: Number(res.info.nonce)},
-					{name: 'Block Reward:', value: res.info.number},
-					{name: 'Uncles Reward:', value: res.info.uncles},
-					{name: 'Extra Data:', value: res.info.extraData},
-				]
+				this.timestamp = res.info.timestamp
+				this.setDatd(res)
+// 				this.blocksInfo = [
+// 					{name: 'Height:', value: this.$$.thousandBit(res.info.number, 'no')},
+// 					{name: 'Timestamp:', value: this.$$.timesFun(res.info.timestamp)},
+// 					{name: 'Transactions:', value: res.info.transactionsRoot},
+// 					{name: 'Height:', value: this.$$.thousandBit(res.info.number, 'no')},
+// 					{name: 'Parent Hash:', value: '<span style="color:#1665d8">' + res.info.parentHash + '</span'},
+// 					{name: 'Sha3Uncles:', value: res.info.sha3Uncles},
+// 					{name: 'Mined By:', value: '<span style="color:#1665d8">' + res.info.miner + '</span'},
+// 					{name: 'Difficulty:', value: this.$$.thousandBit(res.info.difficulty, 'no')},
+// 					{name: 'Total Difficulty:', value: this.$$.thousandBit(res.info.totalDifficulty, 'no')},
+// 					{name: 'Size:', value: this.$$.thousandBit(res.info.size, 'no') + ' bytes'},
+// 					{name: 'Gas Used:', value: this.$$.thousandBit(res.info.gasUsed, 'no')},
+// 					{name: 'Gas Limit:', value: this.$$.thousandBit(res.info.gasLimit, 'no')},
+// 					{name: 'Nonce:', value: Number(res.info.nonce)},
+// 					{name: 'Block Reward:', value: res.info.number},
+// 					{name: 'Uncles Reward:', value: res.info.uncles},
+// 					{name: 'Extra Data:', value: res.info.extraData},
+// 				]
 				
 				
 // 				this.$$.web3(this)
@@ -119,7 +126,60 @@ export default {
 		},
 		nextBtn () {
 			this.$router.push({path: '/blockIndex/blocksDtil', query: {params: ++this.blockNumber}})
-		}
+		},
+		setDatd (res) {
+			this.blocksInfo = [
+				{name: 'Height:', value: this.$$.thousandBit(res.info.number, 'no')},
+				{name: 'Timestamp:', value: this.$$.timesFun(res.info.timestamp)},
+				{name: 'Transactions:', value: res.info.transactionsRoot},
+				{name: 'Height:', value: this.$$.thousandBit(res.info.number, 'no')},
+				{name: 'Parent Hash:', value: '<span style="color:#1665d8">' + res.info.parentHash + '</span'},
+				{name: 'Sha3Uncles:', value: res.info.sha3Uncles},
+				{name: 'Mined By:', value: '<span style="color:#1665d8">' + res.info.miner + '</span'},
+				{name: 'Difficulty:', value: this.$$.thousandBit(res.info.difficulty, 'no')},
+				{name: 'Total Difficulty:', value: this.$$.thousandBit(res.info.totalDifficulty, 'no')},
+				{name: 'Size:', value: this.$$.thousandBit(res.info.size, 'no') + ' bytes'},
+				{name: 'Gas Used:', value: this.$$.thousandBit(res.info.gasUsed, 'no')},
+				{name: 'Gas Limit:', value: this.$$.thousandBit(res.info.gasLimit, 'no')},
+				{name: 'Nonce:', value: Number(res.info.nonce)},
+				{name: 'Block Reward:', value: res.info.number},
+				{name: 'Uncles Reward:', value: res.info.uncles},
+				{name: 'Extra Data:', value: res.info.extraData},
+			]
+		},
+// 		prevBtn () {
+// 			let _params = {
+// 				timestamp: this.timestamp,
+// 				page: 'prev'
+// 			}
+// 			this.getPageUrl(_params)
+// 		},
+// 		nextBtn () {
+// 			let _params = {
+// 				timestamp: this.timestamp,
+// 				page: 'next'
+// 			}
+// 			this.getPageUrl(_params)
+// 		},
+// 		getPageUrl (_params) {
+// 			// this.$$.ajax(this.$http, this.$$.serverUrl + '/data/transferPage', _params).then(res => {
+// 			console.log(_params)
+// 			socket.emit('blockPage', _params)
+// 			socket.on('blockPage', (res) => {
+// 				console.log(res)
+// 				if (!res.info) {
+// 					this.$message({
+// 						message: 'Temporarily no data!',
+// 						type: 'warning'
+// 					})
+// 					this.blocksInfo = []
+// 					return
+// 				}
+// 				this.$router.push({path: '/blockIndex/blocksDtil', query: {params: res.info.number}}),
+// 				this.blockNumber = res.info.number
+// 				// this.setDatd(res)
+// 			})
+// 		}
 	},
 }
 </script>

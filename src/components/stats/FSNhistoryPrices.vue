@@ -21,9 +21,9 @@
 					</el-row>
 				</div>
 				<div class="chartTitle_title">
-					<h3 class="h3">FSN Transaction Chart</h3>
+					<!-- <h3 class="h3">FSN Transaction Chart</h3>
 					<h4 class="h4">Source: Etherscan.io</h4>
-					<h5 class="h5">Click and drag in the plot area to zoom in</h5>
+					<h5 class="h5">Click and drag in the plot area to zoom in</h5> -->
 					<div class="chartSet_box">
 						<el-dropdown trigger="click"  @command="downloadPic">
 							<span class="el-dropdown-link">
@@ -105,6 +105,18 @@ export default {
 			let myChart = this.chartPic = echarts.init(document.getElementById('transferChart'))
 			let option
 			myChart.setOption(option = {
+				title: {
+					text: 'FSN Transaction Chart',
+					subtext: 'Source: Etherscan.io\nClick and drag in the plot area to zoom in',
+					textStyle: {
+						height: '50',
+					},
+					x:'center',
+					y:'top',
+					textAlign: 'center',
+					// padding: [0, 0, 50, 0]
+					// itemGap: 30
+				},
 				color: ['#7cb5ec'],
 				tooltip: {
 					show: true,

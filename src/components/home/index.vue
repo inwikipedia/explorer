@@ -164,6 +164,7 @@
 
 </style>
 
+
 <script>
 // import publicTable from "@/components/public/table"
 import Qs from 'qs'
@@ -205,15 +206,16 @@ export default {
 	},
 	methods: {
 		getData () {
+			// this.$http.get('https://api.coinmarketcap.com/v1/ticker/fusion/').then(res => {
 			this.$http.get('https://api.coinmarketcap.com/v1/ticker/fusion/').then(res => {
-			// this.$http.get('https://api.coinmarketcap.com/v1/ticker/fusion/1547727261000/1547813661000/').then(res => {
-// 			this.$http.get('https://sandbox.coinmarketcap.com/currencies/listings/latest',
+			// this.$http.get('https://api.coinmarketcap.com/v2/listings/').then(res => {
+// 			this.$http.post('https://pro-api.coinmarketcap.com/currencies/fusion/',
 // 			{
 // 				headers: {
 // 					'X-CMC_PRO_API_KEY': 'b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c'
 // 				}
 // 			}
-// 			).then(res => {
+			// ).then(res => {
 				if (res.data.length > 0) {
 					this.dollerPrice = '$ ' + Number(res.data[0].price_usd).toFixed(2)
 					this.dollerPerent = res.data[0].percent_change_24h + '%'

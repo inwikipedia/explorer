@@ -13,9 +13,9 @@
 					:dataUrl="dataUrl"
 					:params="params"
 					:resData="''"
-					:className="'Transactions'"
+					:className="'topAccount'"
 					:title="{
-						txt: 'A total of > 1999999 Accounts found (104,168,707.061 Ether)',
+						txt: 'A total of > '+ params.balance +' Accounts found ({{param}} Ether)',
 						params: ['totalNum']
 					}"
 				>
@@ -30,14 +30,14 @@
 					<table-data :tableData="{
 						th: 'Address',
 						width: '10',
-						params: [{param: 'blockNumber'}, {param: 'blockNumber', type: 2}],
+						params: [{param: 'address'}, {param: 'address'}],
 						html: '<div class=\'trans_style\'><p class=\'rowItem\'><span class=\'blue cursorP\' onclick=toUrl(\'/blockIndex/accountDtil\',\'{{param}}\')>{{param}}</span></p></div>'
 					}"></table-data>
 					<table-data 
 						:tableData="{
 							th: 'Balance',
 							width: '4',
-							params: [{param: 'timestamp', type: 0}],
+							params: [{param: 'balance', type: 2}],
 							html: '<div class=\'trans_style\'><p class=\'rowItem\'>{{param}}</p></div>'
 						}"
 					></table-data>
@@ -53,8 +53,8 @@
 						:tableData="{
 							th: 'TxCount',
 							width: '4',
-							params: [{param: 'to', type: 1, start: 10, end: 8}],
-							html: '<div class=\'trans_style\'><p class=\'rowItem\'><span class=\'blue\'>{{param}}</span></p></div>'
+							params: [{param: 'TxCount', type: 2}],
+							html: '<div class=\'trans_style\'><p class=\'rowItem\'><span class=\'\'>{{param}}</span></p></div>'
 						}"
 					></table-data>
 				</public-table>
@@ -74,15 +74,22 @@ export default {
 	data () {
 		return {
 			// dataUrl: this.$$.serverUrl + '/data/topAccounts',
-			dataUrl: 'topAccounts',
+			// dataUrl: 'topAccounts',
+			dataUrl: 'getAccounts',
 			blockData: [],
 			params: {
 				pageSize: 20,
-				count: 0
+				count: 0,
+				balance: 500
 			}
 		}
 	},
 	mounted () {
+		let params = {}
+		socket.emit(this.dataUrl, params)
+		socket.on(this.dataUrl, (res) => {
+			
+		})
 	}
 }
 </script>

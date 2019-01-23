@@ -32,6 +32,24 @@ var Account = new Schema(
     "type": {type: Number, default: 0} // address: 0x0, contract: 0x1
 });
 
+var AccountInfo = new Schema(
+{
+    "address": {type: String, index: {unique: true}},
+    "balance": Number,
+    "BTCbalance": Number,
+    "ETHbalance": Number,
+    "BNBbalance": Number,
+    "MKRbalance": Number,
+    "GUSDbalance": Number,
+    "HTbalance": Number,
+    "BNTbalance": Number,
+    "blockNumber": Number,
+		"TxCount": Number,
+		"Percentage": String,
+		"timestamp": Number,
+    "type": {type: Number, default: 0} // address: 0x0, contract: 0x1
+});
+
 var Contract = new Schema(
 {
     "address": {type: String, index: {unique: true}},
@@ -61,6 +79,20 @@ var Transaction = new Schema(
     "input": String
 }, {collection: "Transaction"});
 
+var TransactionChart = new Schema(
+{
+    "timestamp": Number,
+    "difficultyAvg": Number,
+    "blockTimeAvg": Number,
+    "blockSizeAvg": Number,
+    "blockCount": Number,
+    "addressCount": Number,
+		"addressNum": Number,
+    "txnCount": Number,
+		"EstHashRate": String,
+		"unclesCount": Number
+});
+
 var BlockStat = new Schema(
 {
     "number": {type: Number, index: {unique: true}},
@@ -83,19 +115,30 @@ Transaction.index({to:1, blockNumber:-1});
 Account.index({balance:-1});
 Account.index({balance:-1, blockNumber:-1});
 Account.index({type:-1, balance:-1});
+// AccountInfo
+AccountInfo.index({balance:-1});
+AccountInfo.index({balance:-1, blockNumber:-1});
+AccountInfo.index({type:-1, balance:-1});
 Block.index({miner:1});
 Block.index({miner:1, blockNumber:-1});
+TransactionChart.index({timestamp:1});
+TransactionChart.index({timestamp:1, blockCount:-1});
+
 
 mongoose.model('BlockStat', BlockStat);
 mongoose.model('Block', Block);
 mongoose.model('Account', Account);
+mongoose.model('AccountInfo', AccountInfo);
 mongoose.model('Contract', Contract);
 mongoose.model('Transaction', Transaction);
+mongoose.model('TransactionChart', TransactionChart);
 module.exports.BlockStat = mongoose.model('BlockStat');
 module.exports.Block = mongoose.model('Block');
 module.exports.Contract = mongoose.model('Contract');
 module.exports.Transaction = mongoose.model('Transaction');
 module.exports.Account = mongoose.model('Account');
+module.exports.AccountInfo = mongoose.model('AccountInfo');
+module.exports.TransactionChart = mongoose.model('TransactionChart');
 
 mongoose.Promise = global.Promise;
 console.log("db.js")

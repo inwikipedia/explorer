@@ -78,10 +78,39 @@ export default {
 			// this.$$.ajax(this.$http, this.$$.serverUrl + '/chart/transfer', _params).then(res => {
 			socket.emit('transfer', _params)
 			socket.on('transfer', (res) => {
-				this.chartView(res.info)
-				this.highestBlock = res.info[res.info.length - 1].blockNumber
-				this.lowestBlock = res.info[0].blockNumber
-				console.log(res)
+				// console.log(res)
+				let data = res.info.sort((val1, val2) => {
+					if (val1.timestamp < val2.timestamp) {
+						return -1
+					} else {
+						return 1
+					}
+				})
+				let dataArr = []
+				for (let i = 0; i < data.length; i++) {
+					if (i > 1) {
+						if (data[i].addressNum === data[i - 1].addressNum) {
+							continue
+						} else {
+							dataArr.push(data[i])
+						}
+					} else {
+						dataArr.push(data[i])
+					}
+				}
+				this.chartView(dataArr)
+				let tranData = res.info.sort((val1, val2) => {
+					if (val1.blockCount < val2.blockCount) {
+						return -1
+					} else {
+						return 1
+					}
+				})
+				// console.log(tranData)
+				this.nowDate = this.$$.timeToEN(tranData[tranData.length - 1].timestamp, 'all')
+				this.beforeDate = this.$$.timeToEN(tranData[0].timestamp, 'all')
+				this.highestBlock = tranData[tranData.length - 1].blockCount
+				this.lowestBlock = tranData[0].blockCount
 			})
 		},
 		downloadPic (command) {
@@ -102,6 +131,20 @@ export default {
 			$a.click()
 		},
 		chartView (data) {
+// 			let dataArr = []
+// 			for (let i = 0; i < data.length; i++) {
+// 				if (i > 1) {
+// 					if (data[i].addressNum === data[i - 1].addressNum) {
+// 						continue
+// 					} else {
+// 						dataArr.push(data[i])
+// 					}
+// 				} else {
+// 					dataArr.push(data[i])
+// 				}
+// 			}
+// 			data = dataArr
+			// console.log(dataArr)
 			let myChart = this.chartPic = echarts.init(document.getElementById('transferChart'))
 			let option
 			myChart.setOption(option = {
@@ -118,16 +161,11 @@ export default {
 					borderWidth: 1,
 					formatter: (param) => {
 						// console.log(param)
-						param = param[0];
+						param = param[0]
+						param = data[param.dataIndex]
+						// console.log(param)
 						return [
-								this.$$.timeToEN(param.data['timestamp'], 'all') + '<hr size=1 style="margin: 3px 0">',
-								'Avg Difficulty： <span style="font-weight:bold">' + param.data['value'] + '</span><br/>',
-								'Est HashRate： <span style="font-weight:bold">' + param.data['hash'] + '</span><br/>',
-								'Avg Block Time： <span style="font-weight:bold">' + param.data['value'] + '</span><br/>',
-								'Avg Block Size： <span style="font-weight:bold">' + param.data['value'] + '</span><br/>',
-								'Total Block Count： <span style="font-weight:bold">' + param.data['blockNumber'] + '</span><br/>',
-								'Total Uncles Count： <span style="font-weight:bold">' + param.data['value'] + '</span><br/>',
-								'New Address Seen： <span style="font-weight:bold">' + param.data['from'] + '</span><br/>'
+								this.$$.timeToEN(param.timestamp, 'all') + '<br/>[Total Distinct Address: '+ param['txnCount'] +']'
 						].join('')
 					}
 				},
@@ -169,7 +207,7 @@ export default {
 						)
 					}},
 					data: data.map((item) => {
-							return item
+							return item.addressNum
 					})
 				}]
 			}, true)

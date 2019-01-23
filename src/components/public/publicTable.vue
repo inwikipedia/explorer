@@ -120,7 +120,8 @@ export default {
 			}],
 			selectValue: this.params && this.params.pageSize ? this.params.pageSize : 20,
 			titleTxt: '',
-			tableFlag: true
+			tableFlag: true,
+			count: 0
 		}
 	},
 	watch: {
@@ -144,16 +145,14 @@ export default {
 			}
 		},
 		selectValue (cur, old) {
-			let _params = {
-				pageNum: this.currPage,
-				pageSize: cur,
-				addr: this.params.addr ? this.params.addr : ''
-			}
+			let _params = this.params
+			_params.pageNum = this.currPage
+			_params.pageSize = this.selectValue
 			this.getData(_params)
 		}
 	},
 	mounted () {
-		this.addLoading()
+		// this.addLoading()
 		// console.log(this.params)
 		if (this.dataUrl) {
 			// console.log(1)
@@ -176,16 +175,21 @@ export default {
 					params: params
 				}
 			})
+// 			let routeUrl = this.$router.resolve({
+// 				path: url,
+// 				query: {
+// 					params: params
+// 				}
+// 			})
+// 			window.open(routeUrl.href, '_blank')
 		}
 	},
 	methods: {
 		getInitData () {
 			if (!this.params) return
-			let _params = {
-				pageNum: this.params.pageNum ? this.params.pageNum : 1,
-				pageSize: this.selectValue,
-				addr: this.params.addr ? this.params.addr : ''
-			}
+			let _params = this.params
+			_params.pageNum = this.currPage
+			_params.pageSize = this.selectValue
 			this.getData(_params)
 		},
 		prevBtn () {
@@ -193,11 +197,15 @@ export default {
 				return
 			}
 			this.currPage --
-			let _params = {
-				pageNum: this.currPage,
-				pageSize: this.selectValue,
-				addr: this.params.addr ? this.params.addr : ''
-			}
+// 			let _params = {
+// 				pageNum: this.currPage,
+// 				pageSize: this.selectValue,
+// 				addr: this.params.addr ? this.params.addr : '',
+// 				balance: this.params.balance ? this.params.balance : ''
+// 			}
+			let _params = this.params
+			_params.pageNum = this.currPage
+			_params.pageSize = this.selectValue
 			this.getData(_params)
 		},
 		nextBtn () {
@@ -205,22 +213,26 @@ export default {
 				return
 			}
 			this.currPage ++
-			let _params = {
-				pageNum: this.currPage,
-				pageSize: this.selectValue,
-				addr: this.params.addr ? this.params.addr : ''
-			}
+			let _params = this.params
+			_params.pageNum = this.currPage
+			_params.pageSize = this.selectValue
 			this.getData(_params)
 		},
 		getData (params) {
-			// this.addLoading()
+			this.addLoading()
 			this.tableData = []
 			this.tableHtml = ''
 			// this.titleTxt = ''
 			// console.log(this.titleTxt)
 			// this.$$.ajax(this.$http, this.dataUrl, params).then(res => {
+				// let count = 0
+			this.count = 0
 			socket.emit(this.dataUrl, params)
 			socket.on(this.dataUrl, (res) => {
+				this.count ++
+				// console.log(this.count)
+				if (this.count > 1) return
+				// console.log(this.count)
 				console.log(res)
 				let data
 				if (this.resData) {
@@ -232,10 +244,13 @@ export default {
 				let pageSizeNum = this.selectValue
 				this.totalNum = this.$$.thousandBit(pageTatal, 'no')
 				this.totalPage = Math.ceil(Number(pageTatal / pageSizeNum))
+				this.titleTxt = ''
 				if (this.title) {
+					// console.log(this.title)
 					let _html = this.title.txt.split('{{param}}')
-					this.titleTxt = ''
+					// console.log(_html)
 					for (let i = 0; i < _html.length; i++) {
+						// console.log(this.title.params[i])
 						if (i === (_html.length - 1)) {
 							this.titleTxt += _html[i]
 						} else {
@@ -256,6 +271,7 @@ export default {
 						// console.log(this.titleTxt)
 					}
 				}
+					// console.log(this.titleTxt)
 				if (this.currPage < this.totalPage) {
 					this.isNext = false
 				} else {
@@ -274,7 +290,7 @@ export default {
 				}
 				this.tableFlag = true
 				
-				this.titleTxt = ''
+				// this.titleTxt = ''
 				if (data.length > 0) {
 					this.tableData = data
 					this.tableHTML(this.tableData)
@@ -284,6 +300,7 @@ export default {
 			})
 		},
 		setInitData () {
+			this.addLoading()
 			this.tableData = this.initData
 			this.tableHTML(this.tableData)
 		},
@@ -300,6 +317,7 @@ export default {
 				_tbody += _tr
 			}
 			this.tableHtml = _tbody
+			// console.log(123)
 			this.removeLoading()
 		},
 		tdHTML (html, params, data, width, paramIndex) {
@@ -351,7 +369,7 @@ export default {
 				// console.log(Number(data[param.param2].c[0]))
 				this.$$.web3(this)
 				let _number = Number(data[param.param]) * Number(data[param.param2].c[0])
-				_number = this.web3.fromWei(_number, "ether")
+				_number = this.web3.fromWei(_number, 'ether')
 				callback = this.$$.thousandBit(_number, 'no')
 			}
 			return callback
@@ -366,6 +384,7 @@ export default {
 			})
 		},
 		removeLoading () {
+			// console.log(654)
 			this.loading.close()
 		}
 	},
