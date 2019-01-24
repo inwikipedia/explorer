@@ -95,30 +95,6 @@ export default {
 				}
 				this.timestamp = res.info.timestamp
 				this.setDatd(res)
-// 				this.blocksInfo = [
-// 					{name: 'Height:', value: this.$$.thousandBit(res.info.number, 'no')},
-// 					{name: 'Timestamp:', value: this.$$.timesFun(res.info.timestamp)},
-// 					{name: 'Transactions:', value: res.info.transactionsRoot},
-// 					{name: 'Height:', value: this.$$.thousandBit(res.info.number, 'no')},
-// 					{name: 'Parent Hash:', value: '<span style="color:#1665d8">' + res.info.parentHash + '</span'},
-// 					{name: 'Sha3Uncles:', value: res.info.sha3Uncles},
-// 					{name: 'Mined By:', value: '<span style="color:#1665d8">' + res.info.miner + '</span'},
-// 					{name: 'Difficulty:', value: this.$$.thousandBit(res.info.difficulty, 'no')},
-// 					{name: 'Total Difficulty:', value: this.$$.thousandBit(res.info.totalDifficulty, 'no')},
-// 					{name: 'Size:', value: this.$$.thousandBit(res.info.size, 'no') + ' bytes'},
-// 					{name: 'Gas Used:', value: this.$$.thousandBit(res.info.gasUsed, 'no')},
-// 					{name: 'Gas Limit:', value: this.$$.thousandBit(res.info.gasLimit, 'no')},
-// 					{name: 'Nonce:', value: Number(res.info.nonce)},
-// 					{name: 'Block Reward:', value: res.info.number},
-// 					{name: 'Uncles Reward:', value: res.info.uncles},
-// 					{name: 'Extra Data:', value: res.info.extraData},
-// 				]
-				
-				
-// 				this.$$.web3(this)
-// 				let getBlockData = this.web3.eth.getTransaction(res.info.hash)
-// 				console.log(getBlockData)
-// 				console.log(this.web3.currentProvider)
 			})
 		},
 		prevBtn () {

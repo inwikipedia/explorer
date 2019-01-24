@@ -36,7 +36,6 @@ var listenBlocks = function(config) {
 		newBlocks.watch(function (error,latestBlock) {
 			if(error) {
 					console.log('newBlocks Error: ' + error);
-					listenBlocks(config)
 					try{
 						newBlocks.stopWatching()
 					}catch(e){
@@ -44,6 +43,7 @@ var listenBlocks = function(config) {
 						console.log('newBlocks Error2: ')
 						console.log(e)
 					}
+					listenBlocks(config)
 					return
 			} else if (latestBlock == null) {
 					console.log('Warning: null block hash');
@@ -506,13 +506,15 @@ if (config.syncAll === true){
   syncChain(config);
 }
 
-var accountWatch = web3.eth.filter("latest");
-accountWatch.watch(function (error,latestBlock) {
-	if (error) {
-		console.log('accountWatch Error: ')
-		console.log(error)
-	} else {
-		addAccounts.addAccounts()
-		chartsInfo.findChartTime()
-	}
-})
+// var accountWatch = web3.eth.filter("latest");
+// accountWatch.watch(function (error,latestBlock) {
+// 	if (error) {
+// 		console.log('accountWatch Error: ')
+// 		console.log(error)
+// 	} else {
+setInterval(() => {
+	addAccounts.addAccounts()
+	chartsInfo.findChartTime()
+}, 30000)
+// 	}
+// })

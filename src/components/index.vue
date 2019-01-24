@@ -158,12 +158,21 @@ export default {
   },
 	methods: {
 		searchBtn () {
+			if (!this.searchVal) {
+				this.$message({
+					showClose: true,
+					message: 'Can\'t be empty!',
+					type: 'warning'
+				})
+				return
+			}
 			this.$router.push({
 				path: '/blockIndex/accountDtil',
 				query: {
 					params: this.searchVal
 				}
 			})
+			this.searchVal = ''
 		},
 // 		navVisible () {
 // 			this.navVisibleVal = false

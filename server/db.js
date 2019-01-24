@@ -47,6 +47,7 @@ var AccountInfo = new Schema(
 		"TxCount": Number,
 		"Percentage": String,
 		"timestamp": Number,
+		"updateTime": Number,
     "type": {type: Number, default: 0} // address: 0x0, contract: 0x1
 });
 

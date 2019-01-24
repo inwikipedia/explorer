@@ -132,9 +132,9 @@ export default {
 					borderColor: '#7cb5ec',
 					borderWidth: 1,
 					formatter: (param) => {
-						// console.log(param)
 						param = param[0]
-						param = data[param.dataIndex]
+						// console.log(param)
+						param = param.data.data
 						// console.log(param)
 						return [
 								this.$$.timeToEN(param.timestamp, 'all') + '<br/>[Total Transactions: '+ param['txnCount'] +']<hr size=1 style="margin: 3px 0">',
@@ -151,7 +151,12 @@ export default {
 				xAxis: {
 					data: data.map((item, index) => {
 						return this.$$.timeToEN(item.timestamp)
-					})
+					}),
+					min: 'dataMin',
+					minInterval: 1,
+					axisTick: {
+						alignWithLabel: true
+					}
 				},
 				yAxis: [
 					{
@@ -177,7 +182,10 @@ export default {
 					name: 'Vlaue',
 					type: 'line',
 					data: data.map((item) => {
-							return item.txnCount
+						return {
+							data: item,
+							value: item.txnCount
+						}
 					})
 				}]
 			}, true)

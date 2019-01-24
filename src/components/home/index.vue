@@ -202,6 +202,30 @@ export default {
 // 		socket.on('blockAvg', (data) => {
 // 			console.log(data)
 // 		})
+
+// 		const rp = require('request-promise');
+// 		const requestOptions = {
+// 			method: 'GET',
+// 			uri: 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest',
+// 			qs: {
+// 				start: 1,
+// 				limit: 5000,
+// 				convert: 'USD'
+// 			},
+// 			headers: {
+// 				'X-CMC_PRO_API_KEY': 'b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c'
+// 			},
+// 			json: true,
+// 			gzip: true
+// 		};
+// 
+// 		rp(requestOptions).then(response => {
+// 			console.log('API call response:', response);
+// 		}).catch((err) => {
+// 			console.log('API call error:', err.message);
+// 		});
+
+
 		this.getAvgChart()
 	},
 	methods: {
@@ -209,13 +233,13 @@ export default {
 			// this.$http.get('https://api.coinmarketcap.com/v1/ticker/fusion/').then(res => {
 			this.$http.get('https://api.coinmarketcap.com/v1/ticker/fusion/').then(res => {
 			// this.$http.get('https://api.coinmarketcap.com/v2/listings/').then(res => {
-// 			this.$http.post('https://pro-api.coinmarketcap.com/currencies/fusion/',
+// 			this.$http.get('https://pro-api.coinmarketcap.com/v1/cryptocurrency/info',
 // 			{
 // 				headers: {
-// 					'X-CMC_PRO_API_KEY': 'b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c'
+// 					'X-CMC_PRO_API_KEY': '6ef6f98b-48c0-44c7-8761-87a690712925'
 // 				}
 // 			}
-			// ).then(res => {
+// 			).then(res => {
 				if (res.data.length > 0) {
 					this.dollerPrice = '$ ' + Number(res.data[0].price_usd).toFixed(2)
 					this.dollerPerent = res.data[0].percent_change_24h + '%'

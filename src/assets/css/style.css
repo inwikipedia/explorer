@@ -27,7 +27,7 @@
 .headerNav_search .el-input{width:100%;height: 38px;border-left:none;}
 .headerNav_search .el-input-group__prepend{background: none;border-right:none;}
 .headerNav_search .el-input__inner{border-left: none;padding-left:0;transition: all .3s;}
-.headerNav_search .el-input.is-active .el-input__inner, .headerNav_search .el-input__inner:focus{width:300px;border:1px solid #dcdfe6;padding-left:10px;transition: all .3s;}
+.headerNav_search .el-input.is-active .el-input__inner, .headerNav_search .el-input__inner:focus{border:1px solid #dcdfe6;padding-left:10px;transition: all .3s;}
 .footerBottom_box{width:100%;height:80px!important;background: #333333;margin-top: 40px;}
 .footerBottom_container{height: 100%;}
 .footerBottom_container .logoB{height: 28px;}

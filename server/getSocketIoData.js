@@ -501,7 +501,7 @@ function accountDtil (socket, req) {
 	console.log('accountDtil')
 	console.log(setData)
 	let updateAccount = (TxCount) => {
-		AccountInfo.update({'address': setData}, {'TxCount': TxCount}).exec((err, result) => {
+		AccountInfo.update({'address': setData}, {'TxCount': TxCount}, {'updateTime': Date.parse(new Date()) / 1000}).exec((err, result) => {
 			if (err) {
 				console.log(err)
 			} else {
@@ -558,20 +558,22 @@ function accountDtil (socket, req) {
 
 
 function sendData (socket) {
-	let newBlocks = web3.eth.filter('latest')
+	// let newBlocks = web3.eth.filter('latest')
 	socket.on('transaction', (req) => {
 		console.log(req)
 		transaction(socket, req, 'transaction')
 	})
 	socket.on('transactionRefresh', (req) => {
 		transaction(socket, req, 'transactionRefresh')
-		newBlocks.watch(function (error,latestBlock) {
-			if (error) {
-				console.log(error)
-			} else {
-				transaction(socket, req, 'transactionRefresh')
-			}
-		})
+// 		newBlocks.watch(function (error,latestBlock) {
+// 			if (error) {
+// 				console.log(error)
+// 			} else {
+		setInterval(() => {
+			transaction(socket, req, 'transactionRefresh')
+		}, 3000)
+// 			}
+// 		})
 	})
 	socket.on('transferDtil', (req) => {
 		transferDtil(socket, req, 'transferDtil')
@@ -589,13 +591,16 @@ function sendData (socket) {
 	socket.on('blocksRefresh', (req) => {
 		console.log('blocksRefresh')
 		blocks(socket, req, 'blocksRefresh')
-		newBlocks.watch(function (error,latestBlock) {
-			if (error) {
-				console.log(error)
-			} else {
-				blocks(socket, req, 'blocksRefresh')
-			}
-		})
+		setInterval(() => {
+			blocks(socket, req, 'blocksRefresh')
+		}, 3000)
+// 		newBlocks.watch(function (error,latestBlock) {
+// 			if (error) {
+// 				console.log(error)
+// 			} else {
+// 				blocks(socket, req, 'blocksRefresh')
+// 			}
+// 		})
 	})
 	socket.on('pendingBlocks', (req) => {
 		pendingBlocks(socket, req, 'pendingBlocks')

@@ -131,20 +131,6 @@ export default {
 			$a.click()
 		},
 		chartView (data) {
-// 			let dataArr = []
-// 			for (let i = 0; i < data.length; i++) {
-// 				if (i > 1) {
-// 					if (data[i].addressNum === data[i - 1].addressNum) {
-// 						continue
-// 					} else {
-// 						dataArr.push(data[i])
-// 					}
-// 				} else {
-// 					dataArr.push(data[i])
-// 				}
-// 			}
-// 			data = dataArr
-			// console.log(dataArr)
 			let myChart = this.chartPic = echarts.init(document.getElementById('transferChart'))
 			let option
 			myChart.setOption(option = {
@@ -162,7 +148,7 @@ export default {
 					formatter: (param) => {
 						// console.log(param)
 						param = param[0]
-						param = data[param.dataIndex]
+						param = param.data.data
 						// console.log(param)
 						return [
 								this.$$.timeToEN(param.timestamp, 'all') + '<br/>[Total Distinct Address: '+ param['txnCount'] +']'
@@ -197,6 +183,8 @@ export default {
 				series: [{
 					name: 'Vlaue',
 					type: 'line',
+					smooth: true,
+					smoothMonotone: 'none',
 					areaStyle: {normal: {
 						color: new echarts.graphic.LinearGradient(
 							0, 0, 0, 1,
@@ -207,7 +195,10 @@ export default {
 						)
 					}},
 					data: data.map((item) => {
-							return item.addressNum
+							return {
+								data: item,
+								value: item.addressNum
+							}
 					})
 				}]
 			}, true)
