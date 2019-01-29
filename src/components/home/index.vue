@@ -308,6 +308,7 @@ export default {
 						this.transferPerent = 0
 					} else {
 						this.transferPerent = (Number(this.transferChart[4]) - Number(this.transferChart[3])) / Number(this.transferChart[3])
+						this.transferPerent = this.transferPerent.toFixed(2)
 					}
 					if (this.transferPerent >= 0) {
 						this.transferPerent = '<span style="color:red">+' + this.transferPerent + '%</span>'
