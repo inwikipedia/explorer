@@ -132,7 +132,8 @@ function addAccounts (socket, req, type) {
 			if (err) {
 				console.log(err)
 			} else {
-				console.log(result)
+// 				console.log('getFromAddr')
+// 				console.log(result)
 				if (result.length <= 0) {
 					return
 				}
@@ -151,13 +152,18 @@ function addAccounts (socket, req, type) {
 	}
 	let getAccountTime = () => {
 		console.log("account")
-		AccountInfo.find({}).lean(true).sort({"updateTime": -1}).limit(1).exec((err, result) => {
+		AccountInfo.find({}).lean(true).sort({"timestamp": -1}).limit(1).exec((err, result) => {
 			if (err) {
 				console.log(err)
 			} else {
 				if (result.length > 0) {
-					getFromAddr(result[0].updateTime)
+// 					console.log('getAccountTime1')
+// 					console.log(result)
+					getFromAddr(result[0].timestamp)
+					// getFromAddr(0)
 				} else {
+// 					console.log('getAccountTime2')
+// 					console.log(result)
 					getFromAddr()
 				}
 			}

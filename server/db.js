@@ -144,7 +144,7 @@ module.exports.TransactionChart = mongoose.model('TransactionChart');
 mongoose.Promise = global.Promise;
 console.log("db.js")
 console.log(process.env.MONGO_URI)
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/blockDB', {
+mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/blockDB2', {
   useNewUrlParser: true
 });
 //

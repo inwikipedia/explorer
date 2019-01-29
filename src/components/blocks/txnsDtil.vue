@@ -2,25 +2,25 @@
 	<div>
 		<div class="container">
 			<div class="flex-bc breadcrumb_box">
-				<h3 class="title">Transaction  {{hash}}</h3>
+				<h3 class="title">{{LANG.TRANSACTIONS}}  {{hash}}</h3>
 				<el-breadcrumb separator="/">
-					<el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
-					<el-breadcrumb-item :to="{ path: '/blockIndex/txns' }">Transactions</el-breadcrumb-item>
-					<el-breadcrumb-item>Tx Info</el-breadcrumb-item>
+					<el-breadcrumb-item :to="{ path: '/' }">{{LANG.HOME}}</el-breadcrumb-item>
+					<el-breadcrumb-item :to="{ path: '/blockIndex/txns' }">{{LANG.TRANSACTIONS}}</el-breadcrumb-item>
+					<el-breadcrumb-item>{{LANG.TX_INFO}}</el-breadcrumb-item>
 				</el-breadcrumb>
 			</div>
 			
 			<div class="blocksDtil_box">
 				<aside class="blocksDtil_top flex-bc">
 					<div class=" flex-sc">						
-						<h3 class="title">Transaction Information</h3>
+						<h3 class="title">{{LANG.TRANSACTION_INFORMATION}}</h3>
 						<ul class="flex-bc">
 							<li><i class="icon el-icon-arrow-left" @click="prevBtn"></i></li>
 							<li><i class="icon el-icon-arrow-right" @click="nextBtn"></i></li>
 						</ul>
 					</div>
 					<div class="transView_select">
-						<el-select v-model="selectValue" placeholder="Tools & Utilities">
+						<el-select v-model="selectValue" :placeholder="LANG.TOOLS_UTILITIES">
 							<el-option
 								v-for="item in selectOptions"
 								:key="item.value"
@@ -39,14 +39,14 @@
 					>
 						<el-table-column
 							prop="name"
-							label="TITLE"
+							:label="LANG.TITLE"
 						>
 						</el-table-column>
 						<el-table-column
 							align="left"
 						>
 							<template slot="header" slot-scope="scope">
-								DETAILS
+								{{LANG.DETAILS}}
 							</template>
 							<template slot-scope="scope">
 								<span v-html="scope.row.value"></span>
@@ -124,7 +124,7 @@ export default {
 				if (!res.info) {
 					this.$message({
 						showClose: true,
-						message: 'Temporarily no data!',
+						message: this.LANG.ERROR_TIP_0,
 						type: 'warning'
 					})
 					this.blocksInfo = []
@@ -153,20 +153,20 @@ export default {
 				// console.log(new BigNumber(res.info.gasPrice).toNumber())
 				let nowTime = Date.parse(new Date())
 				this.blocksInfo = [
-					{name: 'TxHash:', value: res.info.hash},
-					{name: 'TxReceipt Status:', value: res.info.hash ? '<span style="color:#3bad4b">Success</span>' : '<span style="color:#ff5959">Pending</span>'},
-					{name: 'Block Height:', value: this.$$.thousandBit(res.info.blockNumber, 'no')},
-					{name: 'Timestamp:', value: this.$$.timesFun(res.info.timestamp, nowTime)},
-					{name: 'From:', value: '<span style="color:#1665d8" onclick=toUrl("' + res.info.from + '") class="cursorP">' + res.info.from + '</span'},
-					{name: 'To:', value: '<span style="color:#1665d8" onclick=toUrl("' + res.info.from + '") class="cursorP">' + res.info.to + '</span'},
-					{name: 'Value:', value: this.$$.thousandBit(res.info.value, 'no')},
-					{name: 'Gas Limit:', value: this.$$.thousandBit(res.info.gasLimit, 'no')},
-					{name: 'Gas Used By Transaction:', value: res.info.gasUsed === 0 ? '100%' : (this.$$.thousandBit(Number(res.info.gas) / Number(res.info.gasUsed) * 100, 'no') + '%')},
-					{name: 'Gas Price:', value: this.$$.thousandBit(transGasPrice, 'no')},
-					{name: 'Actual Tx Cost/Fee:', value: this.$$.thousandBit(Number(res.info.gasLimit) * Number(transGasPrice), 'no')},
-					{name: 'Nonce & {Position}:', value: this.$$.thousandBit(res.info.nonce, 'no')},
-					{name: 'Input Data:', value: '<textarea class="textarea" disabled>' + res.info.input + '</textarea>'},
-					{name: 'Private Note: ', value: '&ltTo access the Private Note Feature, you must be Logged In&gt'}
+					{name: this.LANG.TXHASH + ':', value: res.info.hash},
+					{name: this.LANG.TXRECEIPT_STATUS + ':', value: res.info.hash ? '<span style="color:#3bad4b">Success</span>' : '<span style="color:#ff5959">Pending</span>'},
+					{name: this.LANG.BLOCK_TIME + ':', value: this.$$.thousandBit(res.info.blockNumber, 'no')},
+					{name: this.LANG.TIMESTAMP + ':', value: this.$$.timesFun(res.info.timestamp, nowTime)},
+					{name: this.LANG.FROM + ':', value: '<span style="color:#1665d8" onclick=toUrl("' + res.info.from + '") class="cursorP">' + res.info.from + '</span'},
+					{name: this.LANG.TO + ':', value: '<span style="color:#1665d8" onclick=toUrl("' + res.info.from + '") class="cursorP">' + res.info.to + '</span'},
+					{name: this.LANG.VALUE + ':', value: this.$$.thousandBit(res.info.value, 'no')},
+					{name: this.LANG.GAS_LIMIT + ':', value: this.$$.thousandBit(res.info.gasLimit, 'no')},
+					{name: this.LANG.GAS_USED_BY_TRANSACTION, value: res.info.gasUsed === 0 ? '100%' : (this.$$.thousandBit(Number(res.info.gas) / Number(res.info.gasUsed) * 100, 'no') + '%')},
+					{name: this.LANG.GAS_PRICE + ':', value: this.$$.thousandBit(transGasPrice, 'no')},
+					{name: this.LANG.ACTUAL_TX_COST + ':', value: this.$$.thousandBit(Number(res.info.gasLimit) * Number(transGasPrice), 'no')},
+					{name: this.LANG.NONCE_POSITION + ':', value: this.$$.thousandBit(res.info.nonce, 'no')},
+					{name: this.LANG.INPUT_DATA + ':', value: '<textarea class="textarea" disabled>' + res.info.input + '</textarea>'},
+					{name: this.LANG.PRIVATE_NOTE + ': ', value: '&ltTo access the Private Note Feature, you must be Logged In&gt'}
 				]
 				this.timestamp = res.info.timestamp
 			})
@@ -195,7 +195,7 @@ export default {
 			socket.on('transferPage', (res) => {
 				if (!res.info) {
 					this.$message({
-						message: 'Temporarily no data!',
+						message: this.LANG.ERROR_TIP_0,
 						type: 'warning'
 					})
 					this.blocksInfo = []

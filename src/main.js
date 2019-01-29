@@ -44,6 +44,7 @@ import router from './router'
 import store from './store/store'
 import axios from 'axios'
 import $$ from '@/assets/js/methods'
+import LANG from '@/assets/js/language'
 // import VCharts from 'v-charts'
 
 import 'element-ui/lib/theme-chalk/index.css'
@@ -112,7 +113,8 @@ Vue.prototype.$message = Message
 // import ECharts from 'vue-echarts/components/ECharts'
 // import 'echarts/lib/chart/line'
 // Vue.component('chart', ECharts)
-
+// console.log(lang)
+Vue.prototype.LANG = LANG
 Vue.prototype.$$ = $$
 Vue.prototype.$http = axios
 /* eslint-disable no-new */

@@ -411,7 +411,7 @@ function getAccounts (socket, req, type) {
 	let setData = {
 		pageSize: req.pageSize ? req.pageSize : 20,
 		skip: 0,
-		balance: req.balance ? req.balance : 20
+		balance: req.balance || req.balance === 0 ? req.balance : 20
 	}
 	let data = {
 		msg: '',
@@ -419,9 +419,10 @@ function getAccounts (socket, req, type) {
 		total: ''
 	}
 	setData.skip = req.pageNum ? (Number(req.pageNum - 1) * Number(setData.pageSize)) : 0
-	
+	console.log(setData)
 	let total = () => {		
-		AccountInfo.find({'balance': {'$gt': setData.balance}}).countDocuments((err, result) => {
+		AccountInfo.find({'balance': {'$gte': setData.balance}}).lean(true).sort({"balance": -1}).countDocuments((err, result) => {
+		// AccountInfo.find({}).lean(true).sort({"balance": -1}).countDocuments((err, result) => {
 			if (!err) {
 				data.msg = 'Success'
 				data.total = result
@@ -434,7 +435,8 @@ function getAccounts (socket, req, type) {
 		})
 	}
 	let info = () => {			
-		AccountInfo.find({'balance': {'$gt': setData.balance}}).lean(true).sort({"balance": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
+		AccountInfo.find({'balance': {'$gte': setData.balance}}).lean(true).sort({"balance": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
+		// AccountInfo.find({}).lean(true).sort({"balance": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
 			if (!err) {
 				// total()
 				data.msg = 'Success'
@@ -498,8 +500,8 @@ function accountDtil (socket, req) {
 		msg: '',
 		info: ''
 	}
-	console.log('accountDtil')
-	console.log(setData)
+// 	console.log('accountDtil')
+// 	console.log(setData)
 	let updateAccount = (TxCount) => {
 		AccountInfo.update({'address': setData}, {'TxCount': TxCount}, {'updateTime': Date.parse(new Date()) / 1000}).exec((err, result) => {
 			if (err) {

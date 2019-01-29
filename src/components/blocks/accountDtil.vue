@@ -3,11 +3,11 @@
 		<div class="container">
 			<input type="text" id="addressCopy" v-model="address" style="height: 0;opacity: 0;"/>
 			<div class="flex-bc breadcrumb_box">
-				<h3 class="title flex-sc">Address <span v-html="address" class="ml-15"></span><div class="iconCopy flex-c ml-10 cursorP" @click="copyAddress('addressCopy')"><img src="@etc/img/copy.svg"></div></h3>
+				<h3 class="title flex-sc">{{LANG.ADDRESS}} <span v-html="address" class="ml-15"></span><div class="iconCopy flex-c ml-10 cursorP" @click="copyAddress('addressCopy')"><img src="@etc/img/copy.svg"></div></h3>
 				<el-breadcrumb separator="/">
-					<el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
-					<el-breadcrumb-item :to="{ path: '/blockIndex/topAccounts' }">Accounts</el-breadcrumb-item>
-					<el-breadcrumb-item>Address</el-breadcrumb-item>
+					<el-breadcrumb-item :to="{ path: '/' }">{{LANG.HOME}}</el-breadcrumb-item>
+					<el-breadcrumb-item :to="{ path: '/blockIndex/topAccounts' }">{{LANG.ACCOUNT}}</el-breadcrumb-item>
+					<el-breadcrumb-item>{{LANG.ADDRESS}}</el-breadcrumb-item>
 				</el-breadcrumb>
 			</div>
 			
@@ -15,39 +15,39 @@
 				<el-row :gutter="20">
 					<el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
 						<div class="accountHeader_item flex-sc">
-							<p class="p p1 flex-sc"><span>Overview:</span></p>
+							<p class="p p1 flex-sc"><span>{{LANG.OVERVIEW}}:</span></p>
 							<div class="icon cursorP" @click="codeViewBtn">
 								<img src="@etc/img/QRcode.svg">
 							</div>
 						</div>
 						<div class="accountHeader_item flex-sc">
-							<p class="p p1 flex-sc"><span>Balance:</span></p>
+							<p class="p p1 flex-sc"><span>{{LANG.BALANCE}}:</span></p>
 							<p class="p p2" v-html="fsnBalance"></p>
 						</div>
 						<div class="accountHeader_item flex-sc">
-							<p class="p p1 flex-sc"><span>Ether Value:</span></p>
+							<p class="p p1 flex-sc"><span>{{LANG.ETHER_VALUE}}:</span></p>
 							<p class="p p2" v-html="0"></p>
 						</div>
 						<div class="accountHeader_item flex-sc">
-							<p class="p p1 flex-sc"><span>Transactions:</span></p>
+							<p class="p p1 flex-sc"><span>{{LANG.TRANSACTIONS}}:</span></p>
 							<p class="p p2" v-html="txnsNum"></p>
 						</div>
 					</el-col>
 					<el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
 						<div class="accountHeader_item flex-sc">
-							<p class="p p1 flex-sc"><img src="@etc/img/btc.svg" class="imgIcon"><span>BTC Balance:</span></p>
+							<p class="p p1 flex-sc"><img src="@etc/img/btc.svg" class="imgIcon"><span>BTC {{LANG.BALANCE}}:</span></p>
 							<p class="p p2" v-html="BTCbalance"></p>
 						</div>
 						<div class="accountHeader_item flex-sc">
-							<p class="p p1 flex-sc"><img src="@etc/img/eth.svg" class="imgIcon"><span>ETH Balance:</span></p>
+							<p class="p p1 flex-sc"><img src="@etc/img/eth.svg" class="imgIcon"><span>ETH {{LANG.BALANCE}}:</span></p>
 							<p class="p p2" v-html="ETHbalance"></p>
 						</div>
 						<div class="accountHeader_item flex-sc">
-							<p class="p p1 flex-sc"><img src="@etc/img/gusd.svg" class="imgIcon"><span>GUSD Balance:</span></p>
+							<p class="p p1 flex-sc"><img src="@etc/img/gusd.svg" class="imgIcon"><span>GUSD {{LANG.BALANCE}}:</span></p>
 							<p class="p p2" v-html="GUSDbalance"></p>
 						</div>
 						<div class="accountHeader_item flex-sc">
-							<p class="p p1 flex-sc"><img src="@etc/img/bnb.svg" class="imgIcon"><span>BNB Balance:</span></p>
+							<p class="p p1 flex-sc"><img src="@etc/img/bnb.svg" class="imgIcon"><span>BNB {{LANG.BALANCE}}:</span></p>
 							<p class="p p2" v-html="BNBbalance"></p>
 						</div>
 					</el-col>
@@ -57,7 +57,7 @@
 			<div class="accountInfo_tab">
 				<el-tabs @tab-click="handleClick" type="card">
 					<el-tab-pane>
-						<span slot="label" class="item"><button class="tab">Transactionss</button><p class="arrow el-icon-caret-bottom"></p></span>
+						<span slot="label" class="item"><button class="tab">{{LANG.TRANSACTIONS}}</button><p class="arrow el-icon-caret-bottom"></p></span>
 						<div class="bgbox">
 							<div class="topHeader_title">
 								<h3 class="title">Latest {{params.pageSize}} transactions from a total of {{txnsNum}} transactions </h3>
@@ -69,11 +69,11 @@
 											<p class="line"></p>
 										</span>
 										<el-dropdown-menu slot="dropdown">
-											<el-dropdown-item command="Completed">View Completed Txns</el-dropdown-item>
-											<el-dropdown-item command="Pending">View Pending Txns</el-dropdown-item>
-											<el-dropdown-item command="Failed">View Failed Txns</el-dropdown-item>
-											<el-dropdown-item command="Outgoing" divided>View Outgoing Txns</el-dropdown-item>
-											<el-dropdown-item command="Incomiing">View Incomiing Txns</el-dropdown-item>
+											<el-dropdown-item command="Completed">{{LANG.VIEW_COMPLETED_TXNS}}</el-dropdown-item>
+											<el-dropdown-item command="Pending">{{LANG.VIEW_PENDING_TXNS}}</el-dropdown-item>
+											<el-dropdown-item command="Failed">{{LANG.VIEW_FAILED_TXNS}}</el-dropdown-item>
+											<el-dropdown-item command="Outgoing" divided>{{LANG.VIEW_OUTGOING_TXNS}}</el-dropdown-item>
+											<el-dropdown-item command="Incomiing">{{LANG.VIEW_INCOMIING_TXNS}}</el-dropdown-item>
 										</el-dropdown-menu>
 									</el-dropdown>
 								</div>
@@ -83,7 +83,7 @@
 									:dataUrl="dataUrl"
 									:params="params"
 									:resData="''"
-									:className="'Transactions'"
+									:className="LANG.TRANSACTIONS"
 									:title="{
 										txt: '{{param}} Transactions found',
 										params: ['totalNum']
@@ -92,21 +92,21 @@
 								>
 									<table-data 
 										:tableData="{
-											th: 'TxHash',
+											th: LANG.TXHASH,
 											width: '4',
 											params: [{param: 'hash'}, {param: 'hash', type: 1, start: 10, end: 8}],
 											html: '<div class=\'trans_style\'><p class=\'rowItem cursorP\' onclick=toUrl(\'/blockIndex/txnsDtil\',\'{{param}}\')><span class=\'blue\'>{{param}}</span></p></div>'
 										}"
 									></table-data>
 									<table-data :tableData="{
-										th: 'Block',
+										th: LANG.BLOCK,
 										width: '3',
 										params: [{param: 'blockNumber', type: 2}],
 										html: '<span class=\'ellipsis\'>{{param}}</span>'
 									}"></table-data>
 									<table-data 
 										:tableData="{
-											th: 'Age',
+											th: LANG.AGE,
 											width: '3',
 											params: [{param: 'timestamp', type: 0}],
 											html: '<div class=\'trans_style\'><p class=\'rowItem\'>{{param}}</p></div>'
@@ -114,7 +114,7 @@
 									></table-data>
 									<table-data 
 										:tableData="{
-											th: 'From',
+											th: LANG.FROM,
 											width: '4',
 											params: [{param: 'from'}, {param: 'from', type: 1, start: 10, end: 8}],
 											html: '<div class=\'trans_style\'><p class=\'rowItem cursorP flex-bc\' onclick=toUrl2(\'/blockIndex/accountDtil\',\'{{param}}\')><span class=\'blue\'>{{param}}</span><i class=\'el-icon-caret-right\' style=\'color:#3bad4b;font-size:16px\'></i></p></div>'
@@ -122,7 +122,7 @@
 									></table-data>
 									<table-data 
 										:tableData="{
-											th: 'To',
+											th: LANG.TO,
 											width: '4',
 											params: [{param: 'to'},{param: 'to', type: 1, start: 10, end: 8}],
 											html: '<div class=\'trans_style\'><p class=\'rowItem cursorP\' onclick=toUrl2(\'/blockIndex/accountDtil\',\'{{param}}\')><span class=\'blue\'>{{param}}</span></p></div>'
@@ -130,7 +130,7 @@
 									></table-data>
 									<table-data 
 										:tableData="{
-											th: 'Value',
+											th: LANG.VALUE,
 											width: '3',
 											params: [{param: 'value', type: 2}],
 											html: '<div class=\'trans_style\'><p class=\'rowItem\'>{{param}}</p></div>'
@@ -138,7 +138,7 @@
 									></table-data>
 									<table-data 
 										:tableData="{
-											th: '[TxFee]',
+											th: LANG.TXFEE,
 											width: '3',
 											params: [{param: 'gas', param2: 'gasPrice', type: 3}],
 											html: '<div class=\'trans_style\'><p class=\'rowItem\'>{{param}}</p></div>'
@@ -149,13 +149,13 @@
 						</div>
 					</el-tab-pane>
 					<el-tab-pane>
-						<span slot="label" class="item"><button class="tab">Erc20 Token Txns</button><p class="arrow el-icon-caret-bottom"></p></span>
+						<span slot="label" class="item"><button class="tab">{{LANG.ERC20_TOKEN_TXNS}}</button><p class="arrow el-icon-caret-bottom"></p></span>
 					</el-tab-pane>
 					<el-tab-pane>
-						<span slot="label" class="item"><button class="tab">LILO</button><p class="arrow el-icon-caret-bottom"></p></span>
+						<span slot="label" class="item"><button class="tab">{{LANG.LILO}}</button><p class="arrow el-icon-caret-bottom"></p></span>
 					</el-tab-pane>
 					<el-tab-pane>
-						<span slot="label" class="item"><button class="tab">Token Balance</button><p class="arrow el-icon-caret-bottom"></p></span>
+						<span slot="label" class="item"><button class="tab">{{LANG.TOKEN_BALANCE}}</button><p class="arrow el-icon-caret-bottom"></p></span>
 					</el-tab-pane>
 				</el-tabs>
 			</div>
@@ -195,24 +195,6 @@ export default {
 			codeViewVisible: false,
 			// headerData: [],
 			// dataUrl: this.$$.serverUrl + '/data/accountTxn',
-			coinData: [{
-					name: 'BTC Balance:',
-					value: '1,201.1234567890 BTC',
-					icon: require('@etc/img/btc.svg')
-				}, {
-					name: 'ETH Balance:',
-					value: '1,201.1234567890 BTC',
-					icon: require('@etc/img/eth.svg')
-				}, {
-					name: 'GUSD Balance:',
-					value: '1,201.1234567890 BTC',
-					icon: require('@etc/img/gusd.svg')
-				}, {
-					name: 'BNB Balance:',
-					value: '1,201.1234567890 BTC',
-					icon: require('@etc/img/bnb.svg')
-				}
-			],
 			dataUrl: 'accountTxn',
 			blockData: [],
 			params: {
@@ -279,7 +261,7 @@ export default {
 			document.getElementById(id).select()
       document.execCommand("Copy")
 			this.$message({
-				message: 'Copy success!',
+				message: this.LANG.SUCCESS_TIP_0,
 				type: 'success'
 			})
 		},

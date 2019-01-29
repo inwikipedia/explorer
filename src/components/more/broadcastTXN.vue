@@ -2,27 +2,27 @@
 	<div>
 		<div class="container">
 			<div class="flex-bc breadcrumb_box">
-				<h3 class="title">Broadcast Raw Transaction</h3>
+				<h3 class="title">{{LANG.BROADCAST_RAW_TRANSACTION}}</h3>
 				<el-breadcrumb separator="/">
-					<el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
-					<el-breadcrumb-item>Broadcast Transaction</el-breadcrumb-item>
+					<el-breadcrumb-item :to="{ path: '/' }">{{LANG.HOME}}</el-breadcrumb-item>
+					<el-breadcrumb-item>{{LANG.BROAD_TRANSACTION}}</el-breadcrumb-item>
 				</el-breadcrumb>
 			</div>
 			
 			<div class="broadCast_box bgbox">
 				<aside class="broadCast_title">
-					<h3>This page allows you to paste a Signed Raw Transaction in hex format (i.e. characters 0-9, a-f) and broadcast it over the Ethereum network.</h3>
+					<h3>{{LANG.BROADCAST_TIP_0}}</h3>
 				</aside>
 				<div class="broadCast_cont">
-					<h3 class="title">Enter TX Hex</h3>
+					<h3 class="title">{{LANG.ENTER_TX_HEX}}</h3>
 					<el-input
 						type="textarea"
 						:autosize="{ minRows: 8, maxRows: 12}"
 						placeholder="0x"
 						v-model="serializedTx">
 					</el-input>
-					<p class="info">Tip: You can also broadcast programatically via our [eth_sendRawTransaction]. Accepts the paramater "hex" for prefilling the input box above (i.e Click here)</p>
-					<button class="btn-primary cursorP" @click="sendRawtransaction">Send Transaction</button>
+					<p class="info">{{LANG.BROADCAST_TIP_0}}</p>
+					<button class="btn-primary cursorP" @click="sendRawtransaction">{{LANG.SEND_TRANSACTION}}</button>
 				</div>
 			</div>
 			

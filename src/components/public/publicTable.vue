@@ -4,13 +4,13 @@
 		<div class="pageView_box pageView_top flex-bc" v-if="!isPageTop">
 			<h3 class="title" v-html="titleTxt"></h3>
 			<ul class="pageView_btn">
-				<li class="prev" @click="prevBtn" :class="isPrev ? 'active' : ''"><span>First</span></li>
+				<li class="prev" @click="prevBtn" :class="isPrev ? 'active' : ''"><span>{{LANG.FIRST}}</span></li>
 				<li class="now">
 					<i class="icon el-icon-arrow-left" @click="prevBtn" :class="isPrev ? 'active' : ''"></i>
 					<span class="curr">Page {{currPage}} of {{totalPage}}</span>
 					<i class="icon el-icon-arrow-right" @click="nextBtn" :class="isNext ? 'active' : ''"></i>
 				</li>
-				<li class="next" @click="nextBtn" :class="isNext ? 'active' : ''"><span>Next</span></li>
+				<li class="next" @click="nextBtn" :class="isNext ? 'active' : ''"><span>{{LANG.NEXT}}</span></li>
 			</ul>
 		</div>
 		<!-- <div class="pubTable_thead pubTable_theadAbso" v-if="!isThead">
@@ -31,7 +31,7 @@
 		</div>
 		<div class="pageView_box pageView_bottom flex-bc" v-if="!isPageBottom">
 			<div class="pageView_select flex-c">
-				Show
+				{{LANG.SHOW}}
 				<el-select v-model="selectValue" filterable placeholder="-- Please select --">
 					<el-option
 						v-for="item in selectPageSize"
@@ -40,16 +40,16 @@
 						:value="item.value">
 					</el-option>
 				</el-select>
-				Page
+				{{LANG.PAGE}}
 			</div>
 			<ul class="pageView_btn">
-				<li class="prev" @click="prevBtn" :class="isPrev ? 'active' : ''"><span>First</span></li>
+				<li class="prev" @click="prevBtn" :class="isPrev ? 'active' : ''"><span>{{LANG.FIRST}}</span></li>
 				<li class="now">
 					<i class="icon el-icon-arrow-left" @click="prevBtn" :class="isPrev ? 'active' : ''"></i>
 					<span class="curr">Page {{currPage}} of {{totalPage}}</span>
 					<i class="icon el-icon-arrow-right" @click="nextBtn" :class="isNext ? 'active' : ''"></i>
 				</li>
-				<li class="next" @click="nextBtn" :class="isNext ? 'active' : ''"><span>Next</span></li>
+				<li class="next" @click="nextBtn" :class="isNext ? 'active' : ''"><span>{{LANG.NEXT}}</span></li>
 			</ul>
 		</div>
 	</div>
@@ -194,6 +194,7 @@ export default {
 		},
 		prevBtn () {
 			if (this.currPage <= 1) {
+				// this.isPrev = true
 				return
 			}
 			this.currPage --
@@ -210,6 +211,7 @@ export default {
 		},
 		nextBtn () {
 			if (this.currPage >= this.totalPage) {
+				// this.isNext = true
 				return
 			}
 			this.currPage ++
@@ -277,11 +279,16 @@ export default {
 				} else {
 					this.isNext = true
 				}
+				if (this.currPage > 1) {
+					this.isPrev = false
+				} else {
+					this.isPrev = true
+				}
 				if (res.info.length <= 0) {
 					// console.log(res.info.length)
 					this.$message({
 						showClose: true,
-						message: 'Temporarily no data!',
+						message: this.LANG.ERROR_TIP_0,
 						type: 'warning'
 					})
 					this.removeLoading()

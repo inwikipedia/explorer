@@ -1,7 +1,11 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\server",
+    "\\src",
+    "\\src\\components",
+    "\\src\\components\\home"
   ],
-  "SelectedNode": "\\.postcssrc.js",
+  "SelectedNode": "\\src\\components\\home\\index.vue",
   "PreviewInSolutionExplorer": false
 }

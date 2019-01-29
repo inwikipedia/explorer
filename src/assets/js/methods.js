@@ -6,14 +6,16 @@ if (process.env.NODE_ENV === 'development') {
 } else {
 	$$.baseUrl = 'https://explorer.dcrm.network'
 }
-
+// $$.baseUrl = 'http://54.164.7.63:40445'
+// $$.baseUrl = 'http://54.169.254.177:40415'
 $$.serverUrl = 'http://localhost:8083'
 
 $$.timesFun = function (time, now) {
 	// let nowTime = Date.parse(now)
 	let nowTime = now ? now : Date.parse(new Date())
 	// console.log(nowTime)
-	time = isNaN(time) ? time : (time.length >= 10 ? time : (time * 1000))
+	time = time.toString().length > 10 ? time : (time * 1000)
+	// console.log(time)
 	let dataTime = 0, callback = 0
 	if (isNaN(time)) {
 		dataTime = Date.parse(time)
@@ -79,7 +81,8 @@ $$.timeDay = function (time, type) {
 $$.timeToEN = (time, type) => {
 	let weeks = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat ']
 	let mounth = ['Jan\'', 'Feb\'', 'Mar\'', 'Apr\'', 'May\'', 'Jun\'', 'Jul\'', 'Aug\'', 'Sept\'', 'Oct\'', 'Nov\'', 'Dec\'']
-	let date = new Date(time * 1000)
+	time = time.toString().length > 10 ? time : (time * 1000)
+	let date = new Date(time)
 	let Y = date.getFullYear()
 	let M = date.getMonth()
 	let D = date.getDate()

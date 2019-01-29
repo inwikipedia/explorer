@@ -2,10 +2,10 @@
 	<div>
 		<div class="container">
 			<div class="flex-bc breadcrumb_box">
-				<h3 class="title">Top Accounts By ETH Balance</h3>
+				<h3 class="title">{{LANG.TOP_ACCOUNTS_TITLE_0}}</h3>
 				<el-breadcrumb separator="/">
-					<el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
-					<el-breadcrumb-item>Accounts</el-breadcrumb-item>
+					<el-breadcrumb-item :to="{ path: '/' }">{{LANG.HOME}}</el-breadcrumb-item>
+					<el-breadcrumb-item>{{LANG.ACCOUNT}}</el-breadcrumb-item>
 				</el-breadcrumb>
 			</div>
 			<div style="height: 100%;">				
@@ -15,7 +15,7 @@
 					:resData="''"
 					:className="'topAccount'"
 					:title="{
-						txt: 'A total of > '+ params.balance +' Accounts found ({{param}} Ether)',
+						txt: LANG.TOP_ACCOUNTS_TITLE_1+ params.balance + LANG.TOP_ACCOUNTS_TITLE_2,
 						params: ['totalNum']
 					}"
 				>
@@ -80,7 +80,7 @@ export default {
 			params: {
 				pageSize: 20,
 				count: 0,
-				balance: 500
+				balance: 0
 			}
 		}
 	},

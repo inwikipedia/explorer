@@ -98,6 +98,7 @@ export default {
 						dataArr.push(data[i])
 					}
 				}
+				// console.log(dataArr)
 				this.chartView(dataArr)
 				let tranData = res.info.sort((val1, val2) => {
 					if (val1.blockCount < val2.blockCount) {
@@ -151,7 +152,7 @@ export default {
 						param = param.data.data
 						// console.log(param)
 						return [
-								this.$$.timeToEN(param.timestamp, 'all') + '<br/>[Total Distinct Address: '+ param['txnCount'] +']'
+								this.$$.timeToEN(param.timestamp, 'all') + '<br/>[Total Distinct Address: '+ param['addressNum'] +']'
 						].join('')
 					}
 				},

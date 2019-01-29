@@ -1,6 +1,6 @@
 {
-    "nodeAddr":     "54.169.254.177",
-    "gethPort":     40415,
+    "nodeAddr":     "54.164.7.63",
+    "gethPort":     40445,
     "startBlock":   0,
     "quiet":        true,
     "syncAll":      true,

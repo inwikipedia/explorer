@@ -35,24 +35,29 @@ function findChartTime () {
 			console.log(error)
 		} else {
 			if (result.length <= 0) {
-				findTransactionTime(0)
-			} else {
-// 				console.log('findChartTime')
+// 				console.log('findChartTime1')
 // 				console.log(result)
-				findTransactionTime(result[0].timestamp)
+				findTransactionTime(0, 1)
+			} else {
+// 				console.log('findChartTime2')
+// 				console.log(result)
+				findTransactionTime(result[0].timestamp, -1)
 			}
 		}
 	})
 }
 
-function findTransactionTime (time) {
-	Transaction.find({'timestamp': { '$gt': time} }).lean(true).sort({"timestamp": 1}).limit(1).exec((error, result) => {
+function findTransactionTime (time, order) {
+	Transaction.find({'timestamp': { '$gt': time} }).lean(true).sort({"timestamp": order}).limit(1).exec((error, result) => {
 		if (error) {
 			console.log('findTransactionTime')
 			console.log(error)
 		} else {
 			if (result.length > 0) {
-				findBlockTime(result[0].timestamp)
+// 				console.log('findTransactionTime1')
+// 				console.log(result)
+				setTimeInterval(result[0].timestamp)
+				// findBlockTime(result[0].timestamp)
 			} else {
 				console.log('no new data')
 			}
@@ -60,23 +65,25 @@ function findTransactionTime (time) {
 	})
 }
 
-function findBlockTime (time) {
-	Block.find({'timestamp': { '$gt': 0} }).lean(true).sort({"timestamp": 1}).limit(1).exec((error, result) => {
-		if (error) {
-			console.log('findBlockTime')
-			console.log(error)
-		} else {
-			let timestamp
-			if (time > result[0].timestamp) {
-				timestamp = result[0].timestamp
-			} else {
-				timestamp = time
-			}
-			setTimeInterval(timestamp)
-		}
-	})
-}
-
+// function findBlockTime (time) {
+// 	Block.find({'timestamp': { '$gt': 0} }).lean(true).sort({"timestamp": -1}).limit(1).exec((error, result) => {
+// 		if (error) {
+// 			console.log('findBlockTime')
+// 			console.log(error)
+// 		} else {
+// 			let timestamp
+// 			if (time > result[0].timestamp) {
+// 				console.log('findBlockTime1')
+// 				timestamp = result[0].timestamp
+// 			} else {
+// 				console.log('findBlockTime2')
+// 				timestamp = time
+// 			}
+// 			setTimeInterval(timestamp)
+// 		}
+// 	})
+// }
+// 
 function setTimeInterval (time) {
 	let nowTime = Date.parse(new Date())
 	time = time.toString().length > 10 ? time : time * 1000
@@ -87,7 +94,9 @@ function setTimeInterval (time) {
 		dateTime = dateTime.toString().length > 10 ? (dateTime / 1000) : dateTime,
 		getTransactionData(dateTime, getBeforeDate(timeInterval - i))
 	}
+	// console.log('dateArr')
 	console.log(dateArr)
+	
 }
 
 function getTransactionData(time, date) {
@@ -153,26 +162,60 @@ function getBlockData(time, txns) {
 function getAccountData (data) {
 	let endTime = data.timestamp + (60 * 60 * 24)
 	let intervalData = () => {
-		AccountInfo.find({'timestamp': { '$gt': data.timestamp, '$lt': endTime}}).countDocuments((error, result) => {
-			if (error) {
+		Transaction.find({'timestamp': { '$gt': data.timestamp, '$lt': endTime}}).distinct('from').exec((err, result) => {
+			if (err) {
 				console.log('getBlockData1')
-				console.log(error)
+				console.log(err)
 			} else {
-				data.addressCount = result
+				// data.addressCount = result
+				let addrData = []
+				for (let i = 0; i < result.length; i++) {
+					if (result[i] === null || result[i] === undefined) continue
+					if (addrData.indexOf(result[i]) === -1) {
+						addrData.push(result[i])
+					}
+				}
+				data.addressCount = addrData.length
 				insertCharts(data)
 			}
 		})
+// 		AccountInfo.find({'timestamp': { '$gt': data.timestamp, '$lt': endTime}}).countDocuments((error, result) => {
+// 			if (error) {
+// 				console.log('getBlockData1')
+// 				console.log(error)
+// 			} else {
+// 				data.addressCount = result
+// 				insertCharts(data)
+// 			}
+// 		})
 	}
 	let accountData = () => {
-		AccountInfo.find({'timestamp': {'$lt': endTime}}).countDocuments((error, result) => {
-			if (error) {
+		Transaction.find({'timestamp': {'$lt': endTime}}).distinct('from').exec((err, result) => {
+			if (err) {
 				console.log('getBlockData1')
-				console.log(error)
+				console.log(err)
 			} else {
-				data.addressNum = result
+				// data.addressNum = result
+				let addrData = []
+				for (let i = 0; i < result.length; i++) {
+					if (result[i] === null || result[i] === undefined) continue
+					if (addrData.indexOf(result[i]) === -1) {
+						addrData.push(result[i])
+					}
+				}
+				data.addressNum = addrData.length
 				intervalData()
 			}
 		})
+// 		AccountInfo.find({'timestamp': {'$lt': endTime}}).countDocuments((error, result) => {
+// 			if (error) {
+// 				console.log('getBlockData1')
+// 				console.log(error)
+// 			} else {
+// 				data.addressNum = result
+// 				intervalData()
+// 			}
+// 		})
 	}
 	accountData()
 }
