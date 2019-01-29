@@ -9,9 +9,9 @@ const bodyParser = require('body-parser')
 const httpsPort = 8081
 const httpPort = 8082
 
-const privateKey = fs.readFileSync('./server/keys/privkey.pem', 'utf-8')
-const cretificats = fs.readFileSync('./server/keys/cert.pem', 'utf-8')
-const credenticals = {key: privateKey, cert: cretificats}
+// const privateKey = fs.readFileSync('./server/keys/privkey.pem', 'utf-8')
+// const cretificats = fs.readFileSync('./server/keys/cert.pem', 'utf-8')
+// const credenticals = {key: privateKey, cert: cretificats}
 
 app.use(express.static(require('path').join(__dirname, 'public')))
 
@@ -33,8 +33,8 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true}))
 // app.use('/data', getData)
 // app.use('/chart', chartView)
 
-const httpsServer = https.createServer(credenticals, app)
-httpsServer.listen(httpsPort)
+// const httpsServer = https.createServer(credenticals, app)
+// httpsServer.listen(httpsPort)
 
 const httpServer = http.createServer(app).listen(httpPort)
 
