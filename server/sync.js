@@ -520,14 +520,20 @@ if (config.syncAll === true){
 //     chartsInfo = null
 //   }, 60000 * 5)
 // })()
-async function asyncMethod() {
-  setInterval(() => {
-    var addAccounts = require( './addAccountInfo.js' )
-    addAccounts.addAccounts()
-    addAccounts = null
-    // var chartsInfo = require( './chartsInfo.js' )
-    // chartsInfo.findChartTime()
-    // chartsInfo = null
-  }, 30000)
-}
-asyncMethod()
+let dayByDayCount = 0
+setInterval(() => {
+  let addAccounts = require( './addAccountInfo.js' )
+  addAccounts.addAccounts()
+  addAccounts = null
+  if (dayByDayCount === 0) {
+    dayByDayCount ++
+    var chartsInfo = require( './chartsInfo.js' )
+    chartsInfo.syncChart()
+    chartsInfo = null
+  }
+  // console.log("(new Date()).getHours()")
+  // console.log((new Date()).getHours())
+  if ((new Date()).getHours() === 0 || (new Date()).getHours() === 12) {
+    dayByDayCount = 0
+  }
+}, 1000 * 60)

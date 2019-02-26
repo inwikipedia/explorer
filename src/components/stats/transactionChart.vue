@@ -39,8 +39,9 @@
 						</el-dropdown>
 					</div>
 				</div>
-				
-				<div id="transferChart" style="height: 400px;"></div>
+				<div v-loading="loadingView">
+					<div id="transferChart" style="height: 400px;"></div>
+				</div>
 				<div class="downloadCsv">Download: <span class="blue">CSV Data</span> (Attribution Required)</div>
 			</div>
 		</div>
@@ -62,7 +63,8 @@ export default {
 			highestBlock: '',
 			lowestBlock: '',
 			chartPic: '',
-			count: 0
+			count: 0,
+			loadingView: true
 		}
 	},
 	mounted () {
@@ -70,16 +72,10 @@ export default {
 	},
 	methods: {
 		getData () {
-// 			let _params = {
-// 				startTime: Date.parse(new Date()) / 1000 - (1 * 60 * 60 * 24 * 60),
-// 				endTime: Date.parse(new Date()) / 1000
-// 			}
-			// this.$$.ajax(this.$http, this.$$.serverUrl + '/chart/transfer', _params).then(res => {
 			this.count = 0
 			socket.emit('transfer')
 			socket.on('transfer', (res) => {
 				this.count ++
-				
 				if (this.count > 1) return
 				let data = res.info.sort((val1, val2) => {
 					if (val1.timestamp < val2.timestamp) {
@@ -196,6 +192,7 @@ export default {
 					})
 				}]
 			}, true)
+			this.loadingView = false
 		}
 	}
 }

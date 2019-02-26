@@ -38,44 +38,19 @@ let syncChart = function () {
           callback(err)
         } else {
           if (res.length <= 0) {
-            // callback(null, {
-            //   timestamp: 0,
-            //   order: 1
-            // })
             callback(null, 0)
           } else {
-            // callback(null, {
-            //   timestamp: res[0].timestamp,
-            //   order: 1
-            // })
             callback(null, res[0].timestamp)
           }
         }
       })
     },
-    // (res, callback) => {
-    //   console.log(res)
-    //   return
-    //   Transaction.find({'timestamp': {'$gte': res.timestamp}}).lean(true).sort({'timestamp': 1}).limit(1).exec((err, resTime) => {
-    //     if (err) {
-    //       callback(err)
-    //     } else {
-    //       console.log("resTime")
-    //       console.log(resTime)
-    //       if (resTime.length > 0) {
-    //         callback(null, resTime[0].timestamp)
-    //       } else {
-    //         console.log('no new data')
-    //       }
-    //     }
-    //   })
-    // },
     (time, callback) => {
       let nowTime = Date.parse(new Date()) / 1000
       time = time.toString().length > 10 ? (time / 1000) : time
       let timeInterval = Math.floor((nowTime - time) / (60 * 60 * 24))
       let dateArr = []
-      for (let i = 0; i < timeInterval; i++) {
+      for (let i = 1; i < timeInterval; i++) {
         let beforeDays = timeInterval - i
         dateArr.push(getBeforeDate(beforeDays))
       }
@@ -102,7 +77,6 @@ function getTransactionData(results) {
           if (err) {
             callback(err)
           } else {
-            // getBlockData(time, result)
             callback(null, time, res)
           }
         })
@@ -122,7 +96,6 @@ function getTransactionData(results) {
           if (err) {
             callback(err)
           } else {
-            // console.log('getBlockData2')
             if (res.length > 0) {
               let startTimeRes = res[0].timestamp
               let endTimeRes = res[res.length - 1].timestamp
@@ -139,7 +112,6 @@ function getTransactionData(results) {
               dataObj.size = dataObj.blockCount === 0 ? 0 : dataObj.size / dataObj.blockCount
               dataObj.uncles = dataObj.blockCount === 0 ? 0 : dataObj.uncles / dataObj.blockCount
             }
-            // getAccountData(dataObj)
             callback(null, dataObj)
           }
         })
@@ -150,7 +122,6 @@ function getTransactionData(results) {
           if (err) {
             callback(err)
           } else {
-            // data.addressNum = result
             let addrData = []
             for (let i = 0; i < resForm.length; i++) {
               if (resForm[i] === null || resForm[i] === undefined) continue
@@ -160,7 +131,6 @@ function getTransactionData(results) {
             }
             res.addressNum = addrData.length
             callback(null, res)
-            // intervalData()
           }
         })
       },
@@ -170,7 +140,6 @@ function getTransactionData(results) {
           if (err) {
             callback(err)
           } else {
-            // data.addressCount = result
             let addrData = []
             for (let i = 0; i < resForm.length; i++) {
               if (resForm[i] === null || resForm[i] === undefined) continue
@@ -179,7 +148,6 @@ function getTransactionData(results) {
               }
             }
             res.addressCount = addrData.length
-            // insertCharts(res)
             callback(null, res)
           }
         })
