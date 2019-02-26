@@ -80,7 +80,7 @@ export default {
 			params: {
 				pageSize: 20,
 				count: 0,
-				balance: 500
+				balance: 0
 			}
 		}
 	},

@@ -8,6 +8,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 // $$.baseUrl = 'http://54.164.7.63:40445'
 // $$.baseUrl = 'http://54.169.254.177:40415'
+$$.baseUrl = window.location.protocol + '//api.dcrm.network'
 $$.serverUrl = 'http://localhost:8083'
 
 $$.timesFun = function (time, now) {

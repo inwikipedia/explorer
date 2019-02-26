@@ -1,20 +1,20 @@
-require( './db.js' )
-let mongoose = require( 'mongoose' )
-let Transaction = mongoose.model( 'Transaction' )
-let AccountInfo = mongoose.model( 'AccountInfo' )
-let TransactionChart = mongoose.model( 'TransactionChart' )
-let Block = mongoose.model( 'Block' )
+require('./db.js')
+let mongoose = require('mongoose')
+let Transaction = mongoose.model('Transaction')
+// let AccountInfo = mongoose.model('AccountInfo')
+let TransactionChart = mongoose.model('TransactionChart')
+let Block = mongoose.model('Block')
 
-function getBeforeDate(n) {
+function getBeforeDate (n) {
 	// let n = n
 	let s
 	let d = new Date()
 	let year = d.getFullYear()
 	let mon = d.getMonth() + 1
 	let day = d.getDate()
-	if(day <= n) {
-		if(mon > 1) {
-			mon = mon - 1;
+	if (day <= n) {
+		if (mon > 1) {
+			mon = mon - 1
 		} else {
 			year = year - 1
 			mon = 12
@@ -24,23 +24,19 @@ function getBeforeDate(n) {
 	year = d.getFullYear()
 	mon = d.getMonth() + 1
 	day = d.getDate()
-	s = year + "-" + (mon < 10 ? ('0' + mon) : mon) + "-" + (day < 10 ? ('0' + day) : day)
+	s = year + '-' + (mon < 10 ? ('0' + mon) : mon) + '-' + (day < 10 ? ('0' + day) : day)
 	return s
 }
 
 function findChartTime () {
-	TransactionChart.find({}).lean(true).sort({"timestamp": -1}).limit(1).exec((error, result) => {
+	TransactionChart.find({}).lean(true).sort({'timestamp': -1}).limit(1).exec((error, result) => {
 		if (error) {
 			console.log('findChartTime')
 			console.log(error)
 		} else {
 			if (result.length <= 0) {
-// 				console.log('findChartTime1')
-// 				console.log(result)
 				findTransactionTime(0, 1)
 			} else {
-// 				console.log('findChartTime2')
-// 				console.log(result)
 				findTransactionTime(result[0].timestamp, -1)
 			}
 		}
@@ -48,16 +44,13 @@ function findChartTime () {
 }
 
 function findTransactionTime (time, order) {
-	Transaction.find({'timestamp': { '$gt': time} }).lean(true).sort({"timestamp": order}).limit(1).exec((error, result) => {
+	Transaction.find({'timestamp': {'$gt': time}}).lean(true).sort({'timestamp': order}).limit(1).exec((error, result) => {
 		if (error) {
 			console.log('findTransactionTime')
 			console.log(error)
 		} else {
 			if (result.length > 0) {
-// 				console.log('findTransactionTime1')
-// 				console.log(result)
 				setTimeInterval(result[0].timestamp)
-				// findBlockTime(result[0].timestamp)
 			} else {
 				console.log('no new data')
 			}
@@ -65,25 +58,6 @@ function findTransactionTime (time, order) {
 	})
 }
 
-// function findBlockTime (time) {
-// 	Block.find({'timestamp': { '$gt': 0} }).lean(true).sort({"timestamp": -1}).limit(1).exec((error, result) => {
-// 		if (error) {
-// 			console.log('findBlockTime')
-// 			console.log(error)
-// 		} else {
-// 			let timestamp
-// 			if (time > result[0].timestamp) {
-// 				console.log('findBlockTime1')
-// 				timestamp = result[0].timestamp
-// 			} else {
-// 				console.log('findBlockTime2')
-// 				timestamp = time
-// 			}
-// 			setTimeInterval(timestamp)
-// 		}
-// 	})
-// }
-// 
 function setTimeInterval (time) {
 	let nowTime = Date.parse(new Date())
 	time = time.toString().length > 10 ? time : time * 1000
@@ -91,18 +65,16 @@ function setTimeInterval (time) {
 	let dateArr = []
 	for (let i = 0; i < timeInterval; i++) {
 		let dateTime = Date.parse(getBeforeDate(timeInterval - i))
-		dateTime = dateTime.toString().length > 10 ? (dateTime / 1000) : dateTime,
+		dateTime = dateTime.toString().length > 10 ? (dateTime / 1000) : dateTime
 		getTransactionData(dateTime, getBeforeDate(timeInterval - i))
 	}
-	// console.log('dateArr')
 	console.log(dateArr)
-	
 }
 
-function getTransactionData(time, date) {
+function getTransactionData (time, date) {
 	let endTime = time + (60 * 60 * 24)
 	let totalCount = () => {
-		Transaction.find({'timestamp': { '$gt': time, '$lte': endTime} }).countDocuments((error, result) => {
+		Transaction.find({'timestamp': {'$gt': time, '$lte': endTime}}).countDocuments((error, result) => {
 			if (error) {
 				console.log('getTransactionData5')
 				console.log(error)
@@ -114,7 +86,7 @@ function getTransactionData(time, date) {
 	totalCount()
 }
 
-function getBlockData(time, txns) {
+function getBlockData (time, txns) {
 	let endTime = time + (60 * 60 * 24)
 	let dataObj = {
 		timestamp: time,
@@ -124,10 +96,9 @@ function getBlockData(time, txns) {
 		blockTime: 0,
 		size: 0,
 		uncles: 0
-		
 	}
 	let intervalData = () => {
-		Block.find({'timestamp': { '$gt': time, '$lt': endTime}}).lean(true).sort({"timestamp": 1}).exec((error, result) => {
+		Block.find({'timestamp': {'$gt': time, '$lt': endTime}}).lean(true).sort({'timestamp': 1}).exec((error, result) => {
 			if (error) {
 				console.log('getBlockData1')
 				console.log(error)
@@ -139,7 +110,7 @@ function getBlockData(time, txns) {
 					dataObj.blockCount = result[result.length - 1].number - result[0].number
 					for (let i = 0; i < result.length; i++) {
 						result[i].difficulty = result[i].difficulty ? result[i].difficulty : 0
-						result[i].size = result[i].size ? result[i].size : 0,
+						result[i].size = result[i].size ? result[i].size : 0
 						dataObj.difficulty += Number(result[i].difficulty)
 						dataObj.size += Number(result[i].size)
 						dataObj.uncles += Number(result[i].uncles.length)
@@ -149,10 +120,7 @@ function getBlockData(time, txns) {
 					dataObj.size = dataObj.blockCount === 0 ? 0 : dataObj.size / dataObj.blockCount
 					dataObj.uncles = dataObj.blockCount === 0 ? 0 : dataObj.uncles / dataObj.blockCount
 				}
-				// console.log(dataObj)
 				getAccountData(dataObj)
-				// totalCount()
-				// startData()
 			}
 		})
 	}
@@ -162,7 +130,7 @@ function getBlockData(time, txns) {
 function getAccountData (data) {
 	let endTime = data.timestamp + (60 * 60 * 24)
 	let intervalData = () => {
-		Transaction.find({'timestamp': { '$gt': data.timestamp, '$lt': endTime}}).distinct('from').exec((err, result) => {
+		Transaction.find({'timestamp': {'$gt': data.timestamp, '$lt': endTime}}).distinct('from').exec((err, result) => {
 			if (err) {
 				console.log('getBlockData1')
 				console.log(err)
@@ -179,15 +147,6 @@ function getAccountData (data) {
 				insertCharts(data)
 			}
 		})
-// 		AccountInfo.find({'timestamp': { '$gt': data.timestamp, '$lt': endTime}}).countDocuments((error, result) => {
-// 			if (error) {
-// 				console.log('getBlockData1')
-// 				console.log(error)
-// 			} else {
-// 				data.addressCount = result
-// 				insertCharts(data)
-// 			}
-// 		})
 	}
 	let accountData = () => {
 		Transaction.find({'timestamp': {'$lt': endTime}}).distinct('from').exec((err, result) => {
@@ -207,31 +166,22 @@ function getAccountData (data) {
 				intervalData()
 			}
 		})
-// 		AccountInfo.find({'timestamp': {'$lt': endTime}}).countDocuments((error, result) => {
-// 			if (error) {
-// 				console.log('getBlockData1')
-// 				console.log(error)
-// 			} else {
-// 				data.addressNum = result
-// 				intervalData()
-// 			}
-// 		})
 	}
 	accountData()
 }
 
 function insertCharts (data) {
 	let transactionChart = new TransactionChart({
-	    "timestamp": data.timestamp,
-	    "difficultyAvg": data.difficulty,
-	    "blockTimeAvg": data.blockTime,
-	    "blockSizeAvg": data.size,
-	    "blockCount": data.blockCount,
-	    "addressCount": data.addressCount,
-	    "addressNum": data.addressNum,
-	    "txnCount": data.txnCount,
-			"EstHashRate": '',
-			"unclesCount": data.uncles
+		'timestamp': data.timestamp,
+		'difficultyAvg': data.difficulty,
+		'blockTimeAvg': data.blockTime,
+		'blockSizeAvg': data.size,
+		'blockCount': data.blockCount,
+		'addressCount': data.addressCount,
+		'addressNum': data.addressNum,
+		'txnCount': data.txnCount,
+		'EstHashRate': '',
+		'unclesCount': data.uncles
 	})
 	transactionChart.save((err, result) => {
 		if (err) {
@@ -242,5 +192,5 @@ function insertCharts (data) {
 	})
 }
 
-// findChartTime()
-module.exports.findChartTime = findChartTime
+findChartTime()
+// module.exports.findChartTime = findChartTime

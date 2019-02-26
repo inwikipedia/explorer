@@ -6,7 +6,8 @@ let Account = mongoose.model( 'Account' )
 let AccountInfo = mongoose.model( 'AccountInfo' )
 
 let Web3 = require('web3')
-let web3 = new Web3(new Web3.providers.HttpProvider('http://54.169.254.177:40415'))
+// let web3 = new Web3(new Web3.providers.HttpProvider('http://54.169.254.177:40415'))
+let web3 = new Web3(new Web3.providers.HttpProvider('https://api.nodes.run'))
 
 // router.post('/transaction', (req, res) => {
 function transaction(socket, req, type) {
@@ -60,17 +61,19 @@ function transferDtil(socket, req, type) {
 		msg: '',
 		info: ''
 	}
+	console.log(setData)
 	let info = () => {			
 		Transaction.find({'hash': setData.hash}).lean(true).exec((err,result) => {
 			if (!err) {
-				// total()
 				data.msg = 'Success'
-				data.info = result[0]
-				let blockData = web3.eth.getBlock(result[0].blockNumber)
-				data.info.gasLimit = blockData.gasLimit
-				data.info.gasUsed = blockData.gasUsed
-				// console.log(result[0])
-// 				console.log(result[0].gasPrice)
+				if (result.length <= 0) {
+					data.info = []
+				} else {
+					data.info = result[0]
+					let blockData = web3.eth.getBlock(result[0].blockNumber)
+					data.info.gasLimit = blockData.gasLimit
+					data.info.gasUsed = blockData.gasUsed
+				}
 			} else {
 				data.msg = 'Error'
 				data.info = ''
@@ -546,16 +549,6 @@ function accountDtil (socket, req) {
 			}
 		}
 	})
-// 	web3.eth.getBalance(setData, (err, result) => {
-// 		if (!err) {
-// 			data.msg = 'Success'
-// 			data.fsnBalance = result
-// 		} else {
-// 			data.msg = 'Error'
-// 			data.fsnBalance = ''
-// 		}
-// 		total()
-// 	})
 }
 
 
@@ -567,15 +560,9 @@ function sendData (socket) {
 	})
 	socket.on('transactionRefresh', (req) => {
 		transaction(socket, req, 'transactionRefresh')
-// 		newBlocks.watch(function (error,latestBlock) {
-// 			if (error) {
-// 				console.log(error)
-// 			} else {
 		setInterval(() => {
 			transaction(socket, req, 'transactionRefresh')
 		}, 3000)
-// 			}
-// 		})
 	})
 	socket.on('transferDtil', (req) => {
 		transferDtil(socket, req, 'transferDtil')

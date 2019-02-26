@@ -4,47 +4,45 @@ Version: .0.0.2
 This file will start syncing the blockchain from the node address you provide in the conf.json file.
 Please read the README in the root directory that explains the parameters of this code
 */
-require( './db.js' );
-var addAccounts = require( './addAccountInfo.js' )
-var chartsInfo = require( './chartsInfo.js' )
-var etherUnits = require("./etherUnits.js");
-var BigNumber = require('bignumber.js');
-var _ = require('lodash');
+require('./db.js')
 
-var async = require('async');
-var Web3 = require('web3');
+var etherUnits = require('./etherUnits.js')
+var BigNumber = require('bignumber.js')
+var _ = require('lodash')
 
-var mongoose        = require( 'mongoose' );
-var Block           = mongoose.model( 'Block' );
-var Transaction     = mongoose.model( 'Transaction' );
-var Account         = mongoose.model( 'Account' );
+var async = require('async')
+var Web3 = require('web3')
+
+var mongoose = require('mongoose')
+var Block = mongoose.model('Block')
+var Transaction = mongoose.model('Transaction')
+var Account = mongoose.model('Account')
 
 /**
   //Just listen for latest blocks and sync from the start of the app.
 **/
-var listenBlocks = function(config) {
-// 	console.log(123)
-// 	console.log(config)
-	// console.log(web3.currentProvider)
+var newBlocks
+var listenBlocks = function (config) {
+  newBlocks = null
   if (web3.eth.syncing) {
     console.log('Info: waiting until syncing finished... (currentBlock is #' + web3.eth.syncing.currentBlock + ')');
-    setTimeout(function() { listenBlocks(config); }, 10000);
-    return;
+    newBlocks = null
+    setTimeout(function () {
+      arguments.callee(config)
+    }, 10000)
+    return
   }
 	try{
-		var newBlocks = web3.eth.filter("latest");
-		newBlocks.watch(function (error,latestBlock) {
-			if(error) {
-					console.log('newBlocks Error: ' + error);
-					try{
-						newBlocks.stopWatching()
-					}catch(e){
-						//TODO handle the exception
-						console.log('newBlocks Error2: ')
-						console.log(e)
-					}
-					listenBlocks(config)
-					return
+		newBlocks = web3.eth.filter('latest')
+		newBlocks.watch(function (error, latestBlock) {
+			if (error) {
+					console.log('newBlocks Error: ')
+					console.log(error)
+          newBlocks = null
+          setTimeout(() => {
+            arguments.callee(config)
+          }, 3000)
+          return
 			} else if (latestBlock == null) {
 					console.log('Warning: null block hash');
 			} else {
@@ -63,15 +61,17 @@ var listenBlocks = function(config) {
 					});
 				}else{
 					console.log('Error: Web3 connection time out trying to get block ' + latestBlock + ' retrying connection now');
-					listenBlocks(config);
+          newBlocks = null
+          arguments.callee(config);
 				}
 			}
 		});
 	} catch (e){
 		//TODO handle the exception
-		console.log("over time failed!")
-		console.log(e)
-		setTimeout(function() { listenBlocks(config); }, 10000)
+		console.log('over time failed!')
+    console.log(e)
+    newBlocks = null
+		setTimeout(function() { arguments.callee(config); }, 10000)
 	}
 }
 
@@ -79,11 +79,11 @@ var listenBlocks = function(config) {
 /**
   If full sync is checked this function will start syncing the block chain from lastSynced param see README
 **/
-var syncChain = function(config, nextBlock){
-  if(web3.isConnected()) {
+var syncChain = function (config, nextBlock) {
+  if (web3.isConnected()) {
     if (web3.eth.syncing) {
       console.log('Info: waiting until syncing finished... (currentBlock is #' + web3.eth.syncing.currentBlock + ')');
-      setTimeout(function() { syncChain(config, nextBlock); }, 10000);
+      setTimeout(function() { arguments.callee(config, nextBlock); }, 10000);
       return;
     }
 
@@ -93,7 +93,7 @@ var syncChain = function(config, nextBlock){
           console.log('ERROR: error: ' + error);
           return;
         }
-        syncChain(config, startBlock);
+        arguments.callee(config, startBlock);
       });
       return;
     }
@@ -125,66 +125,65 @@ var syncChain = function(config, nextBlock){
       count--;
     }
 
-    setTimeout(function() { syncChain(config, nextBlock); }, 500);
+    setTimeout(function() { arguments.callee(config, nextBlock); }, 500);
   }else{
     console.log('Error: Web3 connection time out trying to get block ' + nextBlock + ' retrying connection now');
-    syncChain(config, nextBlock);
+    arguments.callee(config, nextBlock);
   }
 }
 /**
   Write the whole block object to DB
 **/
-var writeBlockToDB = function(config, blockData, flush) {
-  var self = writeBlockToDB;
+var writeBlockToDB = function (config, blockData, flush) {
+  var self = writeBlockToDB
   if (!self.bulkOps) {
-    self.bulkOps = [];
+    self.bulkOps = []
   }
   if (blockData && blockData.number >= 0) {
-    self.bulkOps.push(new Block(blockData));
-    console.log('\t- block #' + blockData.number.toString() + ' inserted.');
+    self.bulkOps.push(new Block(blockData))
+    console.log('\t- block #' + blockData.number.toString() + ' inserted.')
   }
 
   if(flush && self.bulkOps.length > 0 || self.bulkOps.length >= config.bulkSize) {
-    var bulk = self.bulkOps;
-    self.bulkOps = [];
-    if(bulk.length == 0) return;
+    var bulk = self.bulkOps
+    self.bulkOps = []
+    if(bulk.length == 0) return
 
-    Block.collection.insert(bulk, function( err, blocks ){
-      if ( typeof err !== 'undefined' && err ) {
-        if (err.code == 11000) {
-          if(!('quiet' in config && config.quiet === true)) {
-            console.log('Skip: Duplicate DB key : ' +err);
+    Block.collection.insert(bulk, function (err, blocks) {
+      if (typeof err !== 'undefined' && err) {
+        if (err.code === 11000) {
+          if (!('quiet' in config && config.quiet === true)) {
+            console.log('Skip: Duplicate DB key : ' + err)
           }
-        }else{
-          console.log('Error: Aborted due to error on DB: ' + err);
-          process.exit(9);
+        } else {
+          console.log('Error: Aborted due to error on DB: ' + err)
+          process.exit(9)
         }
-      }else{
-        console.log('* ' + blocks.insertedCount + ' blocks successfully written.');
+      } else {
+        console.log('* ' + blocks.insertedCount + ' blocks successfully written.')
       }
-    });
+    })
   }
 }
 /**
   Break transactions out of blocks and write to DB
 **/
-var writeTransactionsToDB = function(config, blockData, flush) {
-  var self = writeTransactionsToDB;
+var writeTransactionsToDB = function (config, blockData, flush) {
+  var self = writeTransactionsToDB
   if (!self.bulkOps) {
-    self.bulkOps = [];
-    self.blocks = 0;
+    self.bulkOps = []
+    self.blocks = 0
   }
   // save miner addresses
   if (!self.miners) {
-    self.miners = [];
+    self.miners = []
   }
   if (blockData) {
-// 		console.log('blockData:')
-// 		console.log(blockData)
     self.miners.push({ address: blockData.miner, blockNumber: blockData.number, type: 0 });
   }
-// 	console.log('blockData.transactions.length')
-// 	console.log(blockData)
+	// console.log('blockData.transactions.length')
+	// console.log(blockData)
+	// console.log(config)
 // 	console.log(blockData && blockData.transactions.length > 0)
 // 	if (blockData && blockData.hash) {
 // 		console.log('web3.eth.getTransaction: ')
@@ -192,83 +191,85 @@ var writeTransactionsToDB = function(config, blockData, flush) {
 // 	}
   if (blockData && blockData.transactions.length > 0) {
     for (d in blockData.transactions) {
-      var txData = blockData.transactions[d];
-      txData.timestamp = blockData.timestamp;
-      txData.value = etherUnits.toEther(new BigNumber(txData.value), 'wei');
-      self.bulkOps.push(txData);
+      var txData = blockData.transactions[d]
+      txData.timestamp = blockData.timestamp
+      txData.value = etherUnits.toEther(new BigNumber(txData.value), 'wei')
+      self.bulkOps.push(txData)
     }
     console.log('\t- block #' + blockData.number.toString() + ': ' + blockData.transactions.length.toString() + ' transactions recorded.');
   }
-  self.blocks++;
+  self.blocks++
 	// console.log('测试：' + 1)
   if (flush && self.blocks > 0 || self.blocks >= config.bulkSize) {
 		// console.log('测试：' + 2)
-    var bulk = self.bulkOps;
-    self.bulkOps = [];
-    self.blocks = 0;
-    var miners = self.miners;
-    self.miners = [];
+    var bulk = self.bulkOps
+    self.bulkOps = []
+    self.blocks = 0
+    var miners = self.miners
+    self.miners = []
 
     // setup accounts
-    var data = {};
+    var data = {}
 // 		console.log('input data:')
 // 		console.log(data)
-    bulk.forEach(function(tx) {
-      data[tx.from] = { address: tx.from, blockNumber: tx.blockNumber, type: 0 };
+    bulk.forEach(function (tx) {
+      data[tx.from] = { address: tx.from, blockNumber: tx.blockNumber, type: 0 }
       if (tx.to) {
-        data[tx.to] = { address: tx.to, blockNumber: tx.blockNumber, type: 0 };
+        data[tx.to] = { address: tx.to, blockNumber: tx.blockNumber, type: 0 }
       }
     });
 // 		console.log('ouput data:')
 // 		console.log(data)
     // setup miners
-    miners.forEach(function(miner) {
-      data[miner.address] = miner;
-    });
-// 		console.log('data[miner.address]:')
-// 		console.log(data)
-    var accounts = Object.keys(data);
-// 		console.log('accounts input:')
-// 		console.log(accounts)
-    if (bulk.length == 0 && accounts.length == 0) return;
-		// console.log('next accounts')
+    miners.forEach(function (miner) {
+      data[miner.address] = miner
+    })
+		// console.log('data[miner.address]:')
+		// console.log(data)
+    var accounts = Object.keys(data)
+		// console.log('accounts input:')
+		// console.log(accounts)
+    if (bulk.length === 0 && accounts.length === 0) return
+    // console.log('next accounts')
+    console.log('config.useRichList')
+    console.log(config.useRichList)
     // update balances
     if (config.useRichList && accounts.length > 0) {
-// 			console.log('config.useRichList:')
-// 			console.log(config.useRichList)
-      var n = 0;
-      var chunks = [];
+      var n = 0
+      var chunks = []
       while (accounts.length > 800) {
-        var chunk = accounts.splice(0, 500);
-        chunks.push(chunk);
+        var chunk = accounts.splice(0, 500)
+        chunks.push(chunk)
       }
       if (accounts.length > 0) {
-        chunks.push(accounts);
+        chunks.push(accounts)
       }
-      async.eachSeries(chunks, function(chunk, outerCallback) {
+      console.log('chunks243')
+      console.log(chunks)
+      async.eachSeries(chunks, function (chunk, outerCallback) {
         async.waterfall([
           // get contract account type
-          function(callback) {
-            var batch = web3.createBatch();
+          function (callback) {
+            var batch = web3.createBatch()
 
             for (var i = 0; i < chunk.length; i++) {
-              var account = chunk[i];
-              batch.add(web3.eth.getCode.request(account));
+              var account = chunk[i]
+              batch.add(web3.eth.getCode.request(account))
             }
 
-            batch.requestManager.sendBatch(batch.requests, function(err, results) {
+            batch.requestManager.sendBatch(batch.requests, function (err, results) {
               if (err) {
-                console.log("ERROR: fail to getCode batch job:", err);
-                callback(err);
-                return;
+                console.log('ERROR: fail to getCode batch job:', err)
+                callback(err)
+                return
               }
-              results = results || [];
+              results = results || []
               batch.requests.map(function (request, index) {
-                return results[index] || {};
+                return results[index] || {}
               }).forEach(function (result, i) {
-                var code = batch.requests[i].format ? batch.requests[i].format(result.result) : result.result;
+                var code = batch.requests[i].format ? batch.requests[i].format(result.result) : result.result
                 if (code.length > 2) {
-                  data[batch.requests[i].params[0]].type = 1; // contract type
+                  data[batch.requests[i].params[0]].type = 1 // contract type
                 }
 
               });
@@ -286,7 +287,7 @@ var writeTransactionsToDB = function(config, blockData, flush) {
 
             batch.requestManager.sendBatch(batch.requests, function(err, results) {
               if (err) {
-                console.log("ERROR: fail to getBalance batch job:", err);
+                console.log('ERROR: fail to getBalance batch job:', err);
                 callback(err);
                 return;
               }
@@ -312,6 +313,8 @@ var writeTransactionsToDB = function(config, blockData, flush) {
                 }
                 n++;
                 // upsert account
+                console.log('查看数据更新data')
+                console.log(data)
                 Account.collection.update({ address: account }, { $set: data[account] }, { upsert: true });
               });
             });
@@ -345,7 +348,7 @@ var writeTransactionsToDB = function(config, blockData, flush) {
 **/
 var prepareSync = function(config, callback) {
   var blockNumber = null;
-  var oldBlockFind = Block.find({}, "number").lean(true).sort('number').limit(1);
+  var oldBlockFind = Block.find({}, 'number').lean(true).sort('number').limit(1);
   oldBlockFind.exec(function (err, docs) {
     if(err || !docs || docs.length < 1) {
       // not found in db. sync from config.endBlock or 'latest'
@@ -392,7 +395,7 @@ var runPatcher = function(config, startBlock, endBlock) {
 
   if(typeof startBlock === 'undefined' || typeof endBlock === 'undefined') {
     // get the last saved block
-    var blockFind = Block.find({}, "number").lean(true).sort('-number').limit(1);
+    var blockFind = Block.find({}, 'number').lean(true).sort('-number').limit(1);
     blockFind.exec(function (err, docs) {
       if(err || !docs || docs.length < 1) {
         // no blocks found. terminate runPatcher()
@@ -484,6 +487,7 @@ console.log('Connecting ' + config.nodeAddr + ':' + config.gethPort + '...');
 
 // Sets address for RPC WEB3 to connect to, usually your node IP address defaults ot localhost
 var web3 = new Web3(new Web3.providers.HttpProvider('http://' + config.nodeAddr + ':' + config.gethPort.toString()));
+// var web3 = new Web3(new Web3.providers.HttpProvider('http://api.nodes.run'));
 
 // patch missing blocks
 if (config.patch === true){
@@ -506,15 +510,24 @@ if (config.syncAll === true){
   syncChain(config);
 }
 
-// var accountWatch = web3.eth.filter("latest");
-// accountWatch.watch(function (error,latestBlock) {
-// 	if (error) {
-// 		console.log('accountWatch Error: ')
-// 		console.log(error)
-// 	} else {
-setInterval(() => {
-	addAccounts.addAccounts()
-	chartsInfo.findChartTime()
-}, 30000)
-// 	}
-// })
+// (function(){
+//   setInterval(() => {
+//     var addAccounts = require( './addAccountInfo.js' )
+//     addAccounts.addAccounts()
+//     addAccounts = null
+//     var chartsInfo = require( './chartsInfo.js' )
+//     chartsInfo.findChartTime()
+//     chartsInfo = null
+//   }, 60000 * 5)
+// })()
+async function asyncMethod() {
+  setInterval(() => {
+    var addAccounts = require( './addAccountInfo.js' )
+    addAccounts.addAccounts()
+    addAccounts = null
+    // var chartsInfo = require( './chartsInfo.js' )
+    // chartsInfo.findChartTime()
+    // chartsInfo = null
+  }, 30000)
+}
+asyncMethod()

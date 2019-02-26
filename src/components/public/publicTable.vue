@@ -21,7 +21,7 @@
 				<table>
 					<thead v-if="!isThead">
 						<tr>
-							<th class="th" v-for="(item, index) in thead" :key="item.index">{{item.th}}</th>
+							<th class="th" v-for="(item, index) in thead" :key="index">{{item.th}}</th>
 						</tr>
 					</thead>
 					<tbody v-html="tableHtml" v-if="tableFlag"></tbody>
@@ -371,7 +371,12 @@ export default {
 				param.end = param.end ? param.end : param.start
 				callback = this.$$.cutStr(data[param.param], param.start, param.end)
 			} else if (Number(param.type) === 2) { //number
-				callback = this.$$.thousandBit(data[param.param], 'no')
+				// console.log(data[param.param])
+				if (data[param.param] && data[param.param].toString().indexOf('+') !== -1) {
+					callback = data[param.param]
+				} else {
+					callback = this.$$.thousandBit(data[param.param], 'no')
+				}
 			} else if (Number(param.type) === 3) { //multiplication
 				// console.log(Number(data[param.param2].c[0]))
 				this.$$.web3(this)

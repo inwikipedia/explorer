@@ -242,7 +242,7 @@ export default {
 // 			).then(res => {
 				if (res.data.length > 0) {
 					this.dollerPrice = '$ ' + Number(res.data[0].price_usd).toFixed(2)
-					this.dollerPerent = res.data[0].percent_change_24h + '%'
+					this.dollerPerent = res.data[0].percent_change_1h + '%'
 					if (this.dollerPerent.indexOf('-') === -1) {
 						this.dollerPerent = '<span style="color:red">' + this.dollerPerent + '</span>'
 					}
@@ -292,7 +292,7 @@ export default {
 // 			})
 			socket.emit('transferAvg', dataArr)
 			socket.on('transferAvg', (data) => {
-				// console.log(data)
+				console.log(data)
 				let resData = data
 				if (resData && resData.info) {
 					for (let i = resData.info.length - 1; i >= 0 ; i--) {
@@ -301,7 +301,7 @@ export default {
 						// blockDayTimeAvg = Number(blockDayTimeAvg / blockDayHeight).toFixed(2)
 						this.transferChart.push(transferNum)
 						
-						// console.log(this.$$.timeChange({date: res.info[i].timestamp * 1000, type: 'yyyy-mm-dd hh:mm:ss'}))
+						// console.log(this.$$.timeChange({date: resData.info[i].timestamp * 1000, type: 'yyyy-mm-dd hh:mm:ss'}))
 					}
 					// console.log(this.transferChart)
 					if (this.transferChart[3] === 0) {
@@ -415,6 +415,8 @@ export default {
 			this.$router.push(url)
 		},
 		barChart (id, data, title) {
+			// console.log(id)
+			// console.log(data)
 			let myChart = echarts.init(document.getElementById(id))
 			let option = {
 				color: ['#3bad4b'],

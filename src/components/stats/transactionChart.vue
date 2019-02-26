@@ -61,7 +61,8 @@ export default {
 			beforeDate: '',
 			highestBlock: '',
 			lowestBlock: '',
-			chartPic: ''
+			chartPic: '',
+			count: 0
 		}
 	},
 	mounted () {
@@ -74,8 +75,12 @@ export default {
 // 				endTime: Date.parse(new Date()) / 1000
 // 			}
 			// this.$$.ajax(this.$http, this.$$.serverUrl + '/chart/transfer', _params).then(res => {
+			this.count = 0
 			socket.emit('transfer')
 			socket.on('transfer', (res) => {
+				this.count ++
+				
+				if (this.count > 1) return
 				let data = res.info.sort((val1, val2) => {
 					if (val1.timestamp < val2.timestamp) {
 						return -1
@@ -83,7 +88,7 @@ export default {
 						return 1
 					}
 				})
-				// console.log(data)
+				console.log(data)
 				this.chartView(data)
 				let tranData = res.info.sort((val1, val2) => {
 					if (val1.blockCount < val2.blockCount) {
@@ -118,6 +123,7 @@ export default {
 			$a.click()
 		},
 		chartView (data) {
+			// console.log(data)
 			let myChart = this.chartPic = echarts.init(document.getElementById('transferChart'))
 			let option
 			myChart.setOption(option = {
