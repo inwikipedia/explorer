@@ -1,6 +1,26 @@
 <template>
 	<div>
 		<div class="container">
+			<div class="headerNav_searchBg">
+				<div class="headerNav_search headerNav_searchCont">
+						<div class="flex-bc headerNav_searchTitl">
+							<h3 class="h3">FUSION Blockchain Explorer</h3>
+							<ul class="flex-ec ul">
+								<li><p>Quick links:</p></li>
+								<li><router-link to="/assetsIndex/erc20Tokens">{{LANG.ERC20_TOKENS}}</router-link></li>
+								<li><router-link to="/assetsIndex/liloAssets">LILO Tokens</router-link></li>
+							</ul>
+						</div>
+						<el-input :placeholder="LANG.SEARCH_PLACEHOLDER" v-model="searchVal">
+							<template slot="suffix" class="flex-c">
+								<div class="icon" @click="searchBtn">
+									<!-- <img src="@/assets/img/search.svg" /> -->
+									<i class="el-input__icon el-icon-search"></i>
+								</div>
+							</template>
+						</el-input>
+					</div>
+			</div>
 			<el-row :gutter="20" class="echarView_box mt-15">
 				<el-col :xs="12" :sm="8" :md="6" :lg="6" :xl="6">
 					<div class="item">
@@ -79,6 +99,7 @@
 								:className="'Blocks'"
 								:isPageTop="true"
 								:isPageBottom="true"
+								:isLoading="true"
 							>
 								<table-data 
 									:tableData="{
@@ -122,6 +143,7 @@
 								:className="'Transactions'"
 								:isPageTop="true"
 								:isPageBottom="true"
+								:isLoading="true"
 							>
 								<table-data 
 									:tableData="{
@@ -186,49 +208,34 @@ export default {
 			transferChart: [],
 			transferPerent: 0,
 			web3: '',
-			refreshSetInterval: ''
+			refreshSetInterval: '',
+			searchVal: ''
 		}
 	},
 	mounted () {
 		this.getData()
 		this.setIintervalGetData()
-// 		this.refreshSetInterval = setInterval(() => {
-// 			this.setIintervalGetData()
-// 		}, 3000)
-// 		let dataArr = {
-// 			dataArr: [this.getBeforeDate(0), this.getBeforeDate(1), this.getBeforeDate(2), this.getBeforeDate(3), this.getBeforeDate(4), this.getBeforeDate(5)]
-// 		}
-// 		socket.emit('blockAvg', dataArr)
-// 		socket.on('blockAvg', (data) => {
-// 			console.log(data)
-// 		})
-
-// 		const rp = require('request-promise');
-// 		const requestOptions = {
-// 			method: 'GET',
-// 			uri: 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest',
-// 			qs: {
-// 				start: 1,
-// 				limit: 5000,
-// 				convert: 'USD'
-// 			},
-// 			headers: {
-// 				'X-CMC_PRO_API_KEY': 'b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c'
-// 			},
-// 			json: true,
-// 			gzip: true
-// 		};
-// 
-// 		rp(requestOptions).then(response => {
-// 			console.log('API call response:', response);
-// 		}).catch((err) => {
-// 			console.log('API call error:', err.message);
-// 		});
-
-
 		this.getAvgChart()
+			document.getElementById('publicSearchId').style.display = 'none'
 	},
 	methods: {
+		searchBtn () {
+			if (!this.searchVal) {
+				this.$message({
+					showClose: true,
+					message: 'Can\'t be empty!',
+					type: 'warning'
+				})
+				return
+			}
+			this.$router.push({
+				path: '/blockIndex/accountDtil',
+				query: {
+					params: this.searchVal
+				}
+			})
+			this.searchVal = ''
+		},
 		getData () {
 			// this.$http.get('https://api.coinmarketcap.com/v1/ticker/fusion/').then(res => {
 			this.$http.get('https://api.coinmarketcap.com/v1/ticker/fusion/').then(res => {
@@ -485,6 +492,7 @@ export default {
 	beforeDestroy() {
 		clearInterval(this.refreshSetInterval)
 		this.refreshSetInterval = null
+			document.getElementById('publicSearchId').style.display = 'block'
 	}
 }
 </script>

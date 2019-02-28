@@ -39,9 +39,14 @@
 								<el-menu-item index="5-2"><router-link class="itemNav" to="/moreIndex/verifyContracts">{{LANG.VERIFY_CONTRACTS}}</router-link></el-menu-item>
 							</el-submenu>
 						</el-menu>
-						<div class="headerNav_search">
+						<div class="headerNav_search" id="publicSearchId">
 							<el-input :placeholder="LANG.SEARCH_PLACEHOLDER" clearable v-model="searchVal">
-								<template slot="prepend" class="flex-c"><div class="icon" @click="searchBtn"><img src="@/assets/img/search.svg" /></div></template>
+								<template slot="prepend" class="flex-c">
+									<div class="icon" @click="searchBtn">
+										<!-- <img src="@/assets/img/search.svg" /> -->
+										<i class="el-input__icon el-icon-search"></i>
+									</div>
+								</template>
 							</el-input>
 						</div>
 						<div class="navSet_box hidden-md-and-up">
@@ -117,6 +122,25 @@
 				</div>
 			</el-header>
 			<el-main>
+				<!-- <div class="container headerNav_searchBg">
+					<div class="headerNav_search headerNav_searchCont">
+							<div class="flex-bc headerNav_searchTitl">
+								<h3 class="h3">FUSION Blockchain Explorer</h3>
+								<ul class="flex-ec ul">
+									<li><p>Quick links:</p></li>
+									<li><router-link to="/assetsIndex/erc20Tokens">{{LANG.ERC20_TOKENS}}</router-link></li>
+									<li><router-link to="/assetsIndex/liloAssets">LILO Tokens</router-link></li>
+								</ul>
+							</div>
+							<el-input :placeholder="LANG.SEARCH_PLACEHOLDER" clearable v-model="searchVal">
+								<template slot="suffix" class="flex-c">
+									<div class="icon" @click="searchBtn">
+										<i class="el-input__icon el-icon-search"></i>
+									</div>
+								</template>
+							</el-input>
+						</div>
+				</div> -->
 				<router-view></router-view>
 			</el-main>
 			<el-footer class="footerBottom_box">
@@ -135,6 +159,11 @@
 
 <style>
 .navSet_box{margin: 0 15px;padding-top: 4px;}
+.headerNav_searchTitl{color:#fff;font-size:12px;margin-bottom:5px;}
+.headerNav_searchTitl .h3{}
+.headerNav_searchTitl .ul li{margin-left:10px;}
+.headerNav_searchTitl .ul li a{color:#fff;}
+
 .navSet_box .el-dropdown-link{height:22px;cursor: pointer;}
 .navSet_box .line{width: 18px;height: 3px;background:#5c5c5c;margin:3px 0;border-radius: 2px;}
 .navSet_item .el-dropdown-menu__item{padding:0}
@@ -145,6 +174,20 @@
 .navSet_item .el-collapse-item__content{padding: 0;}
 .navSet_item .navSet_list{background: #F8F8F8;}
 .navSet_item .navSet_list li{padding: 0 30px;height: 40px;line-height: 40px;border-bottom: 1px solid #eee;}
+
+.headerNav_searchBg{margin-top: 15px;}
+.headerNav_search{position: relative;}
+.headerNav_searchCont{padding:10px 15px;background:linear-gradient(to bottom,#2677fe,#7e63ff);background:-webkit-linear-gradient(to bottom,#2677fe,#7e63ff);background:-o-linear-gradient(to bottom,#2677fe,#7e63ff);background:-moz-linear-gradient(to bottom,#2677fe,#7e63ff);border-radius: 5px;}
+.headerNav_search .icon{width:40px;height: 38px;position: absolute;top:0;right:0;padding:8px;cursor: pointer;}
+.headerNav_search .icon img{height: 100%;display: block;}
+.headerNav_search .icon .el-icon-search{line-height: 100%;font-size: 18px;}
+.headerNav_search .el-input{width:100%;height: 38px;border-left:none;}
+.headerNav_search .el-input-group__prepend{background: none;}
+.headerNav_searchCont .el-input-group__prepend{background: none;border: none}
+.headerNav_search .el-input__inner{border-left: none;padding-left: 0}
+.headerNav_searchCont .el-input__inner{height: 38px;border-left: none;}
+.headerNav_searchCont .el-input__inner{padding-left:15px;border-radius: 5px;}
+.headerNav_search .el-input.is-active .el-input__inner, .headerNav_search .el-input__inner:focus{border:1px solid #dcdfe6;padding-left:10px;}
 </style>
 
 <script>

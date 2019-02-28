@@ -85,6 +85,7 @@ export default {
 		'isSetTimeout', // is setTimeout
 		'isPageTop', // is page top
 		'isPageBottom', // is page bottom
+		'isLoading', // is loading
 		'dataUrl', // get data url
 		'initData', // init data and not need ajax
 		'params', // ajax param
@@ -105,19 +106,12 @@ export default {
 			currPage: 1,
 			isPrev: true,
 			isNext: true,
-			selectPageSize: [{
-				label: 10,
-				value: 10
-			}, {
-				label: 15,
-				value: 15
-			}, {
-				label: 20,
-				value: 20
-			}, {
-				label: 25,
-				value: 25
-			}],
+			selectPageSize: [
+				{label: 10, value: 10 },
+				{label: 15, value: 15 },
+				{label: 20, value: 20 },
+				{label: 25, value: 25 }
+			],
 			selectValue: this.params && this.params.pageSize ? this.params.pageSize : 20,
 			titleTxt: '',
 			tableFlag: true,
@@ -387,6 +381,7 @@ export default {
 			return callback
 		},
 		addLoading () {
+			if (this.isLoading) return
 			this.loading = this.$loading({
 				lock: true,
 				text: 'Loading',
@@ -397,6 +392,7 @@ export default {
 		},
 		removeLoading () {
 			// console.log(654)
+			if (this.isLoading) return
 			this.loading.close()
 		}
 	},

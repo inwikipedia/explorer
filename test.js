@@ -182,4 +182,12 @@ function getTransactionData(results) {
 
   })
 }
+
+function initMethod (){
+	if ((new Date()).getHours() === 0 || (new Date()).getHours() === 12) {
+		setTimeout(syncChart, 100)
+	}
+	setTimeout(initMethod, 1500)
+}
+initMethod()
 syncChart()

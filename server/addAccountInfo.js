@@ -24,12 +24,17 @@ try {
 let Web3 = require('web3')
 let web3 = new Web3(new Web3.providers.HttpProvider('http://' + config.nodeAddr + ':' + config.gethPort.toString()))
 
+var countAdd = 0
+var addrLen = 0
+var countAddOld = 0
+var addrLenOld = 0
+// var balanceArr = []
 function addAccounts (timestampInit) {
-	var countAdd = 0
+	// timestampInit = Date.parse(new Date()) / 1000
   let syncAccount = (results) => {
-    console.log("results")
-    console.log(results)
-    console.log(results.length)
+    // console.log("results")
+    // console.log(results)
+    // console.log(results.length)
     async.eachSeries(results, (result, cb) => {
       async.waterfall([
         (callback) => {
@@ -39,6 +44,8 @@ function addAccounts (timestampInit) {
             if (err) {
               callback(err)
             } else {
+							// console.log("addrdata")
+							// console.log(addrdata)
               callback(null, addrdata)
             }
           })
@@ -58,13 +65,17 @@ function addAccounts (timestampInit) {
         (res, callback) => {
           let balance = web3.eth.getBalance(result)
           balance = web3.fromWei(balance, 'ether')
-          res.balance = balance
+					res.balance = balance
+					// console.log("res.balance:")
+					// console.log(balanceArr[countAdd])
+					// console.log(balance)
+					// res.balance = balanceArr[countAdd]
           callback(null, res)
         },
         (res, callback) => {
-          countAdd ++
-          console.log("countAdd")
-          console.log(countAdd)
+          // countAdd ++
+          // console.log("countAdd")
+          // console.log(countAdd)
           if (res.resLen > 0) {
             AccountInfo.update({
               'address': result,
@@ -110,9 +121,19 @@ function addAccounts (timestampInit) {
           cb(null)
         }
       ], (err, res) => {
-          console.log("result")
-          console.log(err)
-          console.log(res)
+				if (timestampInit) {
+					// addrLenOld = arrPush.size
+					countAddOld ++
+          console.log("countAddOld")
+          console.log(countAddOld)
+				} else {
+					countAdd ++
+          console.log("countAdd")
+          console.log(countAdd)
+				}
+				console.log("result")
+				console.log(err)
+				console.log(res)
       })
     }, (err, res) => {
       console.log("map")
@@ -138,13 +159,13 @@ function addAccounts (timestampInit) {
 			console.log('旧')
 			let params = {
         'timestamp': {
-          '$gt': Date.parse(new Date()) / 1000 - 4000
+          '$gt': Date.parse(new Date()) / 1000 - 3
         }
       }
 			if (timestampInit) {
 				params = {
 					'timestamp': {
-						'$gt': data[0].timestamp,
+						'$gt': data[0].updateTime,
 						'$lte': timestampInit
 					}
 				}
@@ -160,18 +181,30 @@ function addAccounts (timestampInit) {
           }
 					// let arrPush = []
 					let arrPush = new Set()
+					// var batch = web3.createBatch()
+      		// batch.add(v_web3.eth.getTransactionCount.request(this.$store.state.addressInfo, "pending"))
           for (let i = 0; i < result.length; i++) {
 						if (result[i].from) {
 							arrPush.add(result[i].from.toLowerCase())
+							// batch.add(web3.eth.getBalance.request(result[i].from.toLowerCase()))
 						}
 					}
-          cb(null, arrPush)
+					if (timestampInit) {
+						addrLenOld = arrPush.size
+						console.log("Set old length:")
+						console.log(addrLenOld)
+					} else {
+						addrLen = arrPush.size
+						console.log("Set length:")
+						console.log(addrLen)
+					}
+					cb(null, arrPush)
         }
       })
     }
 	}
 	let getAccountTime = (cb) => {
-		AccountInfo.find({}).lean(true).sort({"timestamp": -1}).limit(1).exec((err, result) => {
+		AccountInfo.find({}).lean(true).sort({"updateTime": -1}).limit(1).exec((err, result) => {
 			if (err) {
 				console.log(err)
 			} else {
@@ -191,17 +224,25 @@ function addAccounts (timestampInit) {
     console.log(res)
   })
 }
-let stateCount = 0
+// let stateCount = 0
 function initMethod (){
-	stateCount ++ 
-	console.log('stateCount')
-	console.log(stateCount)
-	let nowTime = Date.parse(new Date()) / 1000
-	if (stateCount === 1) {
-		addAccounts(nowTime)
+	console.log("initMethod")
+	console.log(addrLen)
+	console.log(countAdd)
+	console.log("initMethodOld")
+	console.log(addrLenOld)
+	console.log(countAddOld)
+	if (addrLen === countAdd) {
+		countAdd = 0
+		addrLen = 0
+		setTimeout(addAccounts, 100)
 	}
-	addAccounts()
+	setTimeout(initMethod, 1500)
 }
-module.exports.addAccounts = initMethod
+initMethod()
+// setTimeout(initMethod, 100)
+let nowTime = Date.parse(new Date()) / 1000
+addAccounts(nowTime)
+// module.exports.addAccounts = initMethod
 
 

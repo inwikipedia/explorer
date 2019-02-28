@@ -40,7 +40,8 @@ var listenBlocks = function (config) {
 					console.log(error)
           newBlocks = null
           setTimeout(() => {
-            arguments.callee(config)
+            // arguments.callee(config)
+            listenBlocks(config)
           }, 3000)
           return
 			} else if (latestBlock == null) {
@@ -498,7 +499,8 @@ if (config.patch === true){
 // check NORICHLIST env
 // you can use it like as 'NORICHLIST=1 node tools/sync.js' to disable balance updater temporary.
 if (process.env.NORICHLIST) {
-  config.useRichList = false;
+  // config.useRichList = false;
+  config.useRichList = true;
 }
 
 // Start listening for latest blocks
@@ -509,31 +511,23 @@ if (config.syncAll === true){
   console.log('Starting Full Sync');
   syncChain(config);
 }
-
-// (function(){
-//   setInterval(() => {
-//     var addAccounts = require( './addAccountInfo.js' )
-//     addAccounts.addAccounts()
-//     addAccounts = null
+require( './addAccountInfo.js' )
+// let dayByDayCount = 0
+// setInterval(() => {
+//   let addAccounts = require( './addAccountInfo.js' )
+//   addAccounts.addAccounts()
+//   addAccounts = null
+//   if (dayByDayCount === 0) {
+//     dayByDayCount ++
 //     var chartsInfo = require( './chartsInfo.js' )
-//     chartsInfo.findChartTime()
+//     chartsInfo.syncChart()
 //     chartsInfo = null
-//   }, 60000 * 5)
-// })()
-let dayByDayCount = 0
-setInterval(() => {
-  let addAccounts = require( './addAccountInfo.js' )
-  addAccounts.addAccounts()
-  addAccounts = null
-  if (dayByDayCount === 0) {
-    dayByDayCount ++
-    var chartsInfo = require( './chartsInfo.js' )
-    chartsInfo.syncChart()
-    chartsInfo = null
-  }
-  // console.log("(new Date()).getHours()")
-  // console.log((new Date()).getHours())
-  if ((new Date()).getHours() === 0 || (new Date()).getHours() === 12) {
-    dayByDayCount = 0
-  }
-}, 1000 * 60)
+//   }
+//   // console.log("(new Date()).getHours()")
+//   // console.log((new Date()).getHours())
+//   if ((new Date()).getHours() === 0 || (new Date()).getHours() === 12) {
+//     dayByDayCount = 0
+//   }
+//   console.log("newBlocks")
+//   console.log(newBlocks)
+// }, 1000 * 60)

@@ -25,9 +25,7 @@ $$.timesFun = function (time, now) {
 	}
 	let timeDiffer = (nowTime - dataTime) / 1000
 	timeDiffer = timeDiffer > 0 ? timeDiffer : 1
-// 	console.log(nowTime)
-// 	console.log(dataTime)
-// 	console.log(timeDiffer)
+
 	if (timeDiffer < 60) { //seconds
 		// console.log(1)
 		callback = this.timeSec(timeDiffer)

@@ -6,7 +6,7 @@
 .logo{height: 28px;}
 .logo img{height: 100%;}
 .topHeader_set{font-size: 18px;font-weight: bold;color:#b1b3b7;cursor: pointer;}
-.headerNav_box{width:100%;padding:10px 0;}
+.headerNav_box{width:100%;padding-top:10px;padding-bottom:10px;}
 .headerNav_box .el-menu{border-bottom:none;}
 .headerNav_box .el-menu-item,.headerNav_box .el-submenu{height: 70px;line-height: 70px;font-size:14px;color:#6b6c6f;}
 .headerNav_box .is-active{border: none!important;}
@@ -21,13 +21,7 @@
 /* .headerNav_box .router-link-exact-active{color: #1665d8!important;} */
 .headerNav_box .item{display: block;}
 .itemNav{display: block;}
-.headerNav_search{position: relative;}
-.headerNav_search .icon{width:100%;height: 38px;position: absolute;top:0;left:0;padding:8px;cursor: pointer;}
-.headerNav_search .icon img{height: 100%;display: block;}
-.headerNav_search .el-input{width:100%;height: 38px;border-left:none;}
-.headerNav_search .el-input-group__prepend{background: none;border-right:none;}
-.headerNav_search .el-input__inner{border-left: none;padding-left:0;transition: all .3s;}
-.headerNav_search .el-input.is-active .el-input__inner, .headerNav_search .el-input__inner:focus{border:1px solid #dcdfe6;padding-left:10px;transition: all .3s;}
+
 .footerBottom_box{width:100%;height:80px!important;background: #333333;margin-top: 40px;}
 .footerBottom_container{height: 100%;}
 .footerBottom_container .logoB{height: 28px;}

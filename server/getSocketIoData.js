@@ -23,19 +23,7 @@ function transaction(socket, req, type) {
 	type = type ? type : 'transaction'
 	setData.skip = req.pageNum ? (Number(req.pageNum - 1) * Number(setData.pageSize)) : 0
 	// console.log('setData')
-	// console.log(setData)
-	let total = () => {		
-		Transaction.find({}).countDocuments((err, result) => {
-			if (!err) {
-				data.msg = 'Success'
-				data.total = result
-			} else {
-				data.msg = 'Error'
-				data.info = ''
-			}
-			info()
-		})
-	}
+	// console.log(setData)	
 	let info = () => {			
 		Transaction.find({}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err, result) => {
 			if (!err) {
@@ -49,7 +37,16 @@ function transaction(socket, req, type) {
 			socket.emit(type, data)
 		})
 	}
-	total()
+	Transaction.find({}).countDocuments((err, result) => {
+		if (!err) {
+			data.msg = 'Success'
+			data.total = result
+		} else {
+			data.msg = 'Error'
+			data.info = ''
+		}
+		info()
+	})
 }
 
 // router.post('/transferDtil', (req, res) => {
@@ -61,27 +58,24 @@ function transferDtil(socket, req, type) {
 		msg: '',
 		info: ''
 	}
-	console.log(setData)
-	let info = () => {			
-		Transaction.find({'hash': setData.hash}).lean(true).exec((err,result) => {
-			if (!err) {
-				data.msg = 'Success'
-				if (result.length <= 0) {
-					data.info = []
-				} else {
-					data.info = result[0]
-					let blockData = web3.eth.getBlock(result[0].blockNumber)
-					data.info.gasLimit = blockData.gasLimit
-					data.info.gasUsed = blockData.gasUsed
-				}
+	console.log(setData)		
+	Transaction.find({'hash': setData.hash}).lean(true).exec((err,result) => {
+		if (!err) {
+			data.msg = 'Success'
+			if (result.length <= 0) {
+				data.info = []
 			} else {
-				data.msg = 'Error'
-				data.info = ''
+				data.info = result[0]
+				let blockData = web3.eth.getBlock(result[0].blockNumber)
+				data.info.gasLimit = blockData.gasLimit
+				data.info.gasUsed = blockData.gasUsed
 			}
-			socket.emit(type, data)
-		})
-	}
-	info()
+		} else {
+			data.msg = 'Error'
+			data.info = ''
+		}
+		socket.emit(type, data)
+	})
 }
 
 // router.post('/transferPage', (req, res) => {
@@ -97,22 +91,19 @@ function transferPage(socket, req, type) {
 	let data = {
 		msg: '',
 		info: ''
-	}
-	let info = () => {			
-		Transaction.find({'timestamp': setData.page}).lean(true).limit(1).exec((err,result) => {
-			if (!err) {
-				// total()
-				data.msg = 'Success'
-				data.info = result[0]
-				
-			} else {
-				data.msg = 'Error'
-				data.info = ''
-			}
-			socket.emit(type, data)
-		})
-	}
-	info()
+	}			
+	Transaction.find({'timestamp': setData.page}).lean(true).limit(1).exec((err,result) => {
+		if (!err) {
+			// total()
+			data.msg = 'Success'
+			data.info = result[0]
+			
+		} else {
+			data.msg = 'Error'
+			data.info = ''
+		}
+		socket.emit(type, data)
+	})
 }
 
 // router.post('/transferAvg', (req, res) => {
@@ -174,18 +165,6 @@ function blocks(socket, req, type) {
 	}
 	setData.skip = req.pageNum ? (Number(req.pageNum - 1) * Number(setData.pageSize)) : 0
 	type = type ? type : 'blocks'
-	let total = () => {		
-		Block.find({}).countDocuments((err, result) => {
-			if (!err) {
-				data.msg = 'Success'
-				data.total = result
-			} else {
-				data.msg = 'Error'
-				data.info = ''
-			}
-			info()
-		})
-	}
 	let info = () => {			
 		Block.find({}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
 			if (!err) {
@@ -199,7 +178,17 @@ function blocks(socket, req, type) {
 			socket.emit(type, data)
 		})
 	}
-	total()
+		
+	Block.find({}).countDocuments((err, result) => {
+		if (!err) {
+			data.msg = 'Success'
+			data.total = result
+		} else {
+			data.msg = 'Error'
+			data.info = ''
+		}
+		info()
+	})
 }
 
 // router.post('/pendingBlocks', (req, res) => {
@@ -214,19 +203,6 @@ function pendingBlocks(socket, req, type) {
 		total: ''
 	}
 	setData.skip = req.pageNum ? (Number(req.pageNum - 1) * Number(setData.pageSize)) : 0
-	
-	let total = () => {		
-		Block.find({"hash": ""}).countDocuments((err, result) => {
-			if (!err) {
-				data.msg = 'Success'
-				data.total = result
-			} else {
-				data.msg = 'Error'
-				data.info = ''
-			}
-			info()
-		})
-	}
 	let info = () => {			
 		Block.find({"hash": ""}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
 			if (!err) {
@@ -240,7 +216,17 @@ function pendingBlocks(socket, req, type) {
 			socket.emit(type, data)
 		})
 	}
-	total()
+			
+	Block.find({"hash": ""}).countDocuments((err, result) => {
+		if (!err) {
+			data.msg = 'Success'
+			data.total = result
+		} else {
+			data.msg = 'Error'
+			data.info = ''
+		}
+		info()
+	})
 }
 
 // router.post('/blockNum', (req, res) => {
@@ -251,21 +237,18 @@ function blockNum(socket, req, type) {
 	let data = {
 		msg: '',
 		info: ''
-	}
-	let info = () => {			
-		Block.find({'number': Number(setData.number)}).lean(true).exec((err, result) => {
-			if (!err) {
-				// total()
-				data.msg = 'Success'
-				data.info = result[0]
-			} else {
-				data.msg = 'Error'
-				data.info = ''
-			}
-			socket.emit(type, data)
-		})
-	}
-	info()
+	}			
+	Block.find({'number': Number(setData.number)}).lean(true).exec((err, result) => {
+		if (!err) {
+			// total()
+			data.msg = 'Success'
+			data.info = result[0]
+		} else {
+			data.msg = 'Error'
+			data.info = ''
+		}
+		socket.emit(type, data)
+	})
 }
 
 // function blockPage(socket, req, type) {
@@ -350,21 +333,18 @@ function blockTime(socket, req, type) {
 	let data = {
 		msg: '',
 		info: ''
-	}
-	let info = () => {			
-		Block.find({'timestamp': {'$lte': nowTime}}).lean(true).sort({"timestamp": -1}).limit(2).exec((err, result) => {
-			if (!err) {
-				// total()
-				data.msg = 'Success'
-				data.info = result[0].timestamp - result[1].timestamp
-			} else {
-				data.msg = 'Error'
-				data.info = ''
-			}
-			socket.emit(type, data)
-		})
-	}
-	info()
+	}		
+	Block.find({'timestamp': {'$lte': nowTime}}).lean(true).sort({"timestamp": -1}).limit(2).exec((err, result) => {
+		if (!err) {
+			// total()
+			data.msg = 'Success'
+			data.info = result[0].timestamp - result[1].timestamp
+		} else {
+			data.msg = 'Error'
+			data.info = ''
+		}
+		socket.emit(type, data)
+	})
 }
 
 
@@ -380,19 +360,6 @@ function topAccounts(socket, req, type) {
 		total: ''
 	}
 	setData.skip = req.pageNum ? (Number(req.pageNum - 1) * Number(setData.pageSize)) : 0
-	
-	let total = () => {		
-		Account.find({}).countDocuments((err, result) => {
-			if (!err) {
-				data.msg = 'Success'
-				data.total = result
-			} else {
-				data.msg = 'Error'
-				data.info = ''
-			}
-			info()
-		})
-	}
 	let info = () => {			
 		Account.find({}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
 			if (!err) {
@@ -407,7 +374,17 @@ function topAccounts(socket, req, type) {
 			socket.emit(type, data) 
 		})
 	}
-	total()
+	
+	Account.find({}).countDocuments((err, result) => {
+		if (!err) {
+			data.msg = 'Success'
+			data.total = result
+		} else {
+			data.msg = 'Error'
+			data.info = ''
+		}
+		info()
+	})
 }
 
 function getAccounts (socket, req, type) {
@@ -422,21 +399,7 @@ function getAccounts (socket, req, type) {
 		total: ''
 	}
 	setData.skip = req.pageNum ? (Number(req.pageNum - 1) * Number(setData.pageSize)) : 0
-	console.log(setData)
-	let total = () => {		
-		AccountInfo.find({'balance': {'$gte': setData.balance}}).lean(true).sort({"balance": -1}).countDocuments((err, result) => {
-		// AccountInfo.find({}).lean(true).sort({"balance": -1}).countDocuments((err, result) => {
-			if (!err) {
-				data.msg = 'Success'
-				data.total = result
-				// console.log(result)
-			} else {
-				data.msg = 'Error'
-				data.info = ''
-			}
-			info()
-		})
-	}
+	console.log(setData)	
 	let info = () => {			
 		AccountInfo.find({'balance': {'$gte': setData.balance}}).lean(true).sort({"balance": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
 		// AccountInfo.find({}).lean(true).sort({"balance": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
@@ -451,7 +414,18 @@ function getAccounts (socket, req, type) {
 			socket.emit(type, data)
 		})
 	}
-	total()
+	AccountInfo.find({'balance': {'$gte': setData.balance}}).lean(true).sort({"balance": -1}).countDocuments((err, result) => {
+	// AccountInfo.find({}).lean(true).sort({"balance": -1}).countDocuments((err, result) => {
+		if (!err) {
+			data.msg = 'Success'
+			data.total = result
+			// console.log(result)
+		} else {
+			data.msg = 'Error'
+			data.info = ''
+		}
+		info()
+	})
 }
 
 // router.post('/accountTxn', (req, res) => {
@@ -467,20 +441,6 @@ function accountTxn(socket, req, type) {
 		total: ''
 	}
 	setData.skip = req.pageNum ? (Number(req.pageNum - 1) * Number(setData.pageSize)) : 0
-	
-	let total = () => {		
-		Transaction.find({ $or: [{"to": setData.addr}, {"from": setData.addr}] }).countDocuments((err, result) => {
-			if (!err) {
-				data.msg = 'Success'
-				data.total = result
-				// console.log(result)
-			} else {
-				data.msg = 'Error'
-				data.info = ''
-			}
-			info()
-		})
-	}
 	let info = () => {			
 		Transaction.find({ $or: [{"to": setData.addr}, {"from": setData.addr}] }).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
 			if (!err) {
@@ -494,7 +454,18 @@ function accountTxn(socket, req, type) {
 			socket.emit(type, data)
 		})
 	}
-	total()
+		
+	Transaction.find({ $or: [{"to": setData.addr}, {"from": setData.addr}] }).countDocuments((err, result) => {
+		if (!err) {
+			data.msg = 'Success'
+			data.total = result
+			// console.log(result)
+		} else {
+			data.msg = 'Error'
+			data.info = ''
+		}
+		info()
+	})
 }
 
 function accountDtil (socket, req) {
