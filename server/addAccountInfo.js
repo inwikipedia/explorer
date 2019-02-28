@@ -63,14 +63,15 @@ function addAccounts (timestampInit) {
           })
         },
         (res, callback) => {
-          let balance = web3.eth.getBalance(result)
-          balance = web3.fromWei(balance, 'ether')
-					res.balance = balance
-					// console.log("res.balance:")
-					// console.log(balanceArr[countAdd])
-					// console.log(balance)
-					// res.balance = balanceArr[countAdd]
-          callback(null, res)
+					let balance
+					try {
+						balance = web3.eth.getBalance(result)
+						balance = web3.fromWei(balance, 'ether')
+						res.balance = balance
+						callback(null, res)
+					} catch (error) {
+						callback(error)
+					}
         },
         (res, callback) => {
           // countAdd ++
@@ -118,7 +119,6 @@ function addAccounts (timestampInit) {
               }
             })
           }
-          cb(null)
         }
       ], (err, res) => {
 				if (timestampInit) {
@@ -134,11 +134,17 @@ function addAccounts (timestampInit) {
 				console.log("result")
 				console.log(err)
 				console.log(res)
+				cb(null)
+				
       })
     }, (err, res) => {
-      console.log("map")
+      console.log("----------------Update End---------------------")
       console.log(err)
-      console.log(res)
+			console.log(res)
+			countAdd = 0
+			addrLen = 0
+			countAddOld = 0
+			addrLenOld = 0
     })
   }
 	let getFromAddr = (data, cb) => {
@@ -181,12 +187,9 @@ function addAccounts (timestampInit) {
           }
 					// let arrPush = []
 					let arrPush = new Set()
-					// var batch = web3.createBatch()
-      		// batch.add(v_web3.eth.getTransactionCount.request(this.$store.state.addressInfo, "pending"))
           for (let i = 0; i < result.length; i++) {
 						if (result[i].from) {
 							arrPush.add(result[i].from.toLowerCase())
-							// batch.add(web3.eth.getBalance.request(result[i].from.toLowerCase()))
 						}
 					}
 					if (timestampInit) {
@@ -208,7 +211,6 @@ function addAccounts (timestampInit) {
 			if (err) {
 				console.log(err)
 			} else {
-        // getFromAddr()
         cb(null, result)
 			}
     })
@@ -233,8 +235,6 @@ function initMethod (){
 	console.log(addrLenOld)
 	console.log(countAddOld)
 	if (addrLen === countAdd) {
-		countAdd = 0
-		addrLen = 0
 		setTimeout(addAccounts, 100)
 	}
 	setTimeout(initMethod, 1500)

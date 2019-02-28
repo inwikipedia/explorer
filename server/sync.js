@@ -232,8 +232,8 @@ var writeTransactionsToDB = function (config, blockData, flush) {
 		// console.log(accounts)
     if (bulk.length === 0 && accounts.length === 0) return
     // console.log('next accounts')
-    console.log('config.useRichList')
-    console.log(config.useRichList)
+    // console.log('config.useRichList')
+    // console.log(config.useRichList)
     // update balances
     if (config.useRichList && accounts.length > 0) {
       var n = 0
@@ -245,8 +245,8 @@ var writeTransactionsToDB = function (config, blockData, flush) {
       if (accounts.length > 0) {
         chunks.push(accounts)
       }
-      console.log('chunks243')
-      console.log(chunks)
+      // console.log('chunks243')
+      // console.log(chunks)
       async.eachSeries(chunks, function (chunk, outerCallback) {
         async.waterfall([
           // get contract account type
@@ -314,8 +314,8 @@ var writeTransactionsToDB = function (config, blockData, flush) {
                 }
                 n++;
                 // upsert account
-                console.log('查看数据更新data')
-                console.log(data)
+                // console.log('查看数据更新data')
+                // console.log(data)
                 Account.collection.update({ address: account }, { $set: data[account] }, { upsert: true });
               });
             });
@@ -512,6 +512,7 @@ if (config.syncAll === true){
   syncChain(config);
 }
 require( './addAccountInfo.js' )
+require( './chartsInfo.js' )
 // let dayByDayCount = 0
 // setInterval(() => {
 //   let addAccounts = require( './addAccountInfo.js' )
