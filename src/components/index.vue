@@ -6,48 +6,33 @@
 					<div class="logo"><router-link to="/"><img src="@/assets/img/logo.svg"></router-link></div>
 					<div class="flex-bc">
 						<el-menu class="el-menu-demo hidden-sm-and-down" mode="horizontal">
-							<el-menu-item index="1"><router-link to="/" class="itemNav" exact>{{LANG.HOME}}</router-link></el-menu-item>
-							<!-- <el-submenu index="1">
-								<template slot="title"><router-link class="itemNav" to="/">Home</router-link></template>
-							</el-submenu> -->
-							<el-submenu index="2">
-								<template slot="title">{{LANG.BLOCKS}}<div class="icon"><img src="@/assets/img/updown.svg"></div></template>
-								<el-menu-item index="2-1"><router-link class="itemNav" to="/blockIndex/txns">{{LANG.TXNS}}</router-link></el-menu-item>
-								<el-menu-item index="2-2"><router-link class="itemNav" to="/blockIndex/pendingTxns">{{LANG.PENDING_TXNS}}</router-link></el-menu-item>
-								<el-menu-item index="2-3"><router-link class="itemNav" to="/blockIndex/blocks">{{LANG.BLOCKS}}</router-link></el-menu-item>
-								<el-menu-item index="2-4"><router-link class="itemNav" to="/blockIndex/topAccounts">{{LANG.TOP_ACCOUNTS}}</router-link></el-menu-item>
-							</el-submenu>
-							<el-submenu index="3">
-								<template slot="title">{{LANG.ASSETS}}<div class="icon"><img src="@/assets/img/updown.svg"></div></template>
-								<el-menu-item index="3-1"><router-link class="itemNav" to="/assetsIndex/erc20Tokens">{{LANG.ERC20_TOKENS}}</router-link></el-menu-item>
-								<el-menu-item index="3-2"><router-link class="itemNav" to="/assetsIndex/erc20Transfers">{{LANG.ERC20_TRANSFERS}}</router-link></el-menu-item>
-								<el-menu-item index="3-3"><router-link class="itemNav" to="/assetsIndex/liloAssets">{{LANG.LILO_ASSETS}}</router-link></el-menu-item>
-								<el-menu-item index="3-4"><router-link class="itemNav" to="/assetsIndex/liloTransfers">{{LANG.LILO_TRANSFERS}}</router-link></el-menu-item>
-							</el-submenu>
-							<el-submenu index="4">
-								<template slot="title">{{LANG.STATS}}<div class="icon"><img src="@/assets/img/updown.svg"></div></template>
-								<el-menu-item index="4-1"><router-link class="itemNav" to="/statsIndex/transactionChart">{{LANG.TRANSACTION_HISTORY_CHART}}</router-link></el-menu-item>
-								<el-menu-item index="4-2"><router-link class="itemNav" to="/statsIndex/addressChart">{{LANG.ADDRESS_GROWTH_CHART}}</router-link></el-menu-item>
-								<el-menu-item index="4-3"><router-link class="itemNav" to="/statsIndex/totalFSNSupply">{{LANG.TOTAL_FSN_SUPPLY}}</router-link></el-menu-item>
-								<el-menu-item index="4-4"><router-link class="itemNav" to="/statsIndex/FSNhistoryPrices">{{LANG.FSN_HISTORICAL_PRICES}}</router-link></el-menu-item>
-								<el-menu-item index="4-5"><router-link class="itemNav" to="/statsIndex/FSNmarketChart">{{LANG.FSN_MARKET_CAPITALIZATION_CHART}}</router-link></el-menu-item>
-								<el-menu-item index="4-6"><router-link class="itemNav" to="/statsIndex/nodesTracker">{{LANG.NODES_TRACKER}}</router-link></el-menu-item>
-							</el-submenu>
-							<el-submenu index="5">
-								<template slot="title">{{LANG.MORE}}<div class="icon"><img src="@/assets/img/updown.svg"></div></template>
-								<el-menu-item index="5-1"><router-link class="itemNav" to="/moreIndex/broadcastTXN">{{LANG.BROADCAST_TXN}}</router-link></el-menu-item>
-								<el-menu-item index="5-2"><router-link class="itemNav" to="/moreIndex/verifyContracts">{{LANG.VERIFY_CONTRACTS}}</router-link></el-menu-item>
+							<el-menu-item index="1"><router-link to="/" class="itemNav" exact>{{LANG.NAV.HOME}}</router-link></el-menu-item>
+							<el-submenu :index="'' + (indexs + 2)" v-for="(items, indexs) in navArr" :key="indexs">
+								<template slot="title">{{items.name}}<div class="icon"><img src="@/assets/img/updown.svg"></div></template>
+								<el-menu-item :index="(indexs + 2) + '-' + index" v-for="(item, index) in items.subNav" :key="index">
+									<router-link class="itemNav" :to="item.url" v-html="item.name"></router-link>
+								</el-menu-item>
 							</el-submenu>
 						</el-menu>
 						<div class="headerNav_search" id="publicSearchId">
-							<el-input :placeholder="LANG.SEARCH_PLACEHOLDER" clearable v-model="searchVal">
+							<el-input :placeholder="LANG.PH.SEARCH_PLACEHOLDER" clearable v-model="searchVal">
 								<template slot="prepend" class="flex-c">
 									<div class="icon" @click="searchBtn">
-										<!-- <img src="@/assets/img/search.svg" /> -->
 										<i class="el-input__icon el-icon-search"></i>
 									</div>
 								</template>
 							</el-input>
+						</div>
+						<div class="headerTop_langBox">
+							<el-select v-model="language" size="mini" @change="changLanguage">
+								<el-option
+									v-for="item in languageOption"
+									:key="item.value"
+									:label="item.label"
+									:value="item.value"
+								>
+								</el-option>
+							</el-select>
 						</div>
 						<div class="navSet_box hidden-md-and-up">
 							<el-dropdown trigger="click" :hide-on-click="navVisibleVal">
@@ -57,64 +42,18 @@
 									<p class="line"></p>
 								</span>
 								<el-dropdown-menu slot="dropdown" class="navSet_item">
-									<el-dropdown-item><router-link to="/" class="itemNav homeNav" exact>{{LANG.HOME}}</router-link></el-dropdown-item>
+									<el-dropdown-item><router-link to="/" class="itemNav homeNav" exact>{{LANG.NAV.HOME}}</router-link></el-dropdown-item>
 									<el-dropdown-item>
 										<el-collapse accordion>
-											<el-collapse-item :title="LANG.BLOCKS" name="1">
+											<el-collapse-item :title="items.name" :name="indexs + 1" v-for="(items, indexs) in navArr" :key="indexs">
 												<ul class="navSet_list">
-													<li><router-link class="itemNav" to="/blockIndex/txns">{{LANG.TXNS}}</router-link></li>
-													<li><router-link class="itemNav" to="/blockIndex/pendingTxns">{{LANG.PENDING_TXNS}}</router-link></li>
-													<li><router-link class="itemNav" to="/blockIndex/blocks">{{LANG.BLOCKS}}</router-link></li>
-													<li><router-link class="itemNav" to="/blockIndex/topAccounts">{{LANG.TOP_ACCOUNTS}}</router-link></li>
-												</ul>
-											</el-collapse-item>
-											<el-collapse-item :title="LANG.ASSETS" name="2">
-												<ul class="navSet_list">
-													<li><router-link class="itemNav" to="/assetsIndex/erc20Tokens">{{LANG.ERC20_TOKENS}}</router-link></li>
-													<li><router-link class="itemNav" to="/assetsIndex/erc20Transfers">{{LANG.ERC20_TRANSFERS}}</router-link></li>
-													<li><router-link class="itemNav" to="/assetsIndex/liloAssets">{{LANG.LILO_ASSETS}}</router-link></li>
-													<li><router-link class="itemNav" to="/assetsIndex/liloTransfers">{{LANG.LILO_TRANSFERS}}</router-link></li>
-												</ul>
-											</el-collapse-item>
-											<el-collapse-item :title="LANG.STATS" name="3">
-												<ul class="navSet_list">
-													<li><router-link class="itemNav" to="/statsIndex/transactionChart">{{LANG.TRANSACTION_HISTORY_CHART}}</router-link></li>
-													<li><router-link class="itemNav" to="/statsIndex/addressChart">{{LANG.ADDRESS_GROWTH_CHART}}</router-link></li>
-													<li><router-link class="itemNav" to="/statsIndex/totalFSNSupply">{{LANG.TOTAL_FSN_SUPPLY}}</router-link></li>
-													<li><router-link class="itemNav" to="/statsIndex/FSNhistoryPrices">{{LANG.FSN_HISTORICAL_PRICES}}</router-link></li>
-													<li><router-link class="itemNav" to="/statsIndex/FSNmarketChart">{{LANG.FSN_MARKET_CAPITALIZATION_CHART}}</router-link></li>
-													<li><router-link class="itemNav" to="/statsIndex/nodesTracker">{{LANG.NODES_TRACKER}}</router-link></li>
-												</ul>
-											</el-collapse-item>
-											<el-collapse-item :title="LANG.MORE" name="4">
-												<ul class="navSet_list">
-													<li><router-link class="itemNav" to="/moreIndex/broadcastTXN">{{LANG.BROADCAST_TXN}}</router-link></li>
-													<li><router-link class="itemNav" to="/moreIndex/verifyContracts">{{LANG.VERIFY_CONTRACTS}}</router-link></li>
+													<li v-for="(item, index) in items.subNav" :key="index">
+														<router-link class="itemNav" :to="item.url" v-html="item.name"></router-link>
+													</li>
 												</ul>
 											</el-collapse-item>
 										</el-collapse>
 									</el-dropdown-item>
-									<!-- <el-dropdown-item><router-link to="/" class="itemNav" exact>Home</router-link></el-dropdown-item>
-									<hr />
-									<el-dropdown-item><router-link class="itemNav" to="/blockIndex/txns">Txns</router-link></el-dropdown-item>
-									<el-dropdown-item><router-link class="itemNav" to="/blockIndex/pendingTxns">Pending Txns</router-link></el-dropdown-item>
-									<el-dropdown-item><router-link class="itemNav" to="/blockIndex/blocks">Blocks</router-link></el-dropdown-item>
-									<el-dropdown-item><router-link class="itemNav" to="/blockIndex/topAccounts">Top Accounts</router-link></el-dropdown-item>
-									<hr />
-									<el-dropdown-item><router-link class="itemNav" to="/assetsIndex/erc20Tokens">ERC-20 Tokens</router-link></el-dropdown-item>
-									<el-dropdown-item><router-link class="itemNav" to="/assetsIndex/erc20Transfers">ERC-20 Transfers</router-link></el-dropdown-item>
-									<el-dropdown-item><router-link class="itemNav" to="/assetsIndex/liloAssets">LILO Assets</router-link></el-dropdown-item>
-									<el-dropdown-item><router-link class="itemNav" to="/assetsIndex/liloTransfers">LILO Transfers</router-link></el-dropdown-item>
-									<hr />
-									<el-dropdown-item><router-link class="itemNav" to="/statsIndex/transactionChart">Transaction History Chart</router-link></el-dropdown-item>
-									<el-dropdown-item><router-link class="itemNav" to="/statsIndex/addressChart">Address Growth Chart</router-link></el-dropdown-item>
-									<el-dropdown-item><router-link class="itemNav" to="/statsIndex/totalFSNSupply">Total FSN Supply</router-link></el-dropdown-item>
-									<el-dropdown-item><router-link class="itemNav" to="/statsIndex/FSNhistoryPrices">FSN Historical Prices</router-link></el-dropdown-item>
-									<el-dropdown-item><router-link class="itemNav" to="/statsIndex/FSNmarketChart">FSN Market Capitalization Chart</router-link></el-dropdown-item>
-									<el-dropdown-item><router-link class="itemNav" to="/statsIndex/nodesTracker">Nodes Tracker</router-link></el-dropdown-item>
-									<hr />
-									<el-dropdown-item><router-link class="itemNav" to="/moreIndex/broadcastTXN">Broadcast TXN</router-link></el-dropdown-item>
-									<el-dropdown-item><router-link class="itemNav" to="/moreIndex/verifyContracts">Verify Contracts</router-link></el-dropdown-item> -->
 								</el-dropdown-menu>
 							</el-dropdown>
 						</div>
@@ -164,6 +103,9 @@
 .headerNav_searchTitl .ul li{margin-left:10px;}
 .headerNav_searchTitl .ul li a{color:#fff;}
 
+.headerTop_langBox{width: 100px;}
+.headerTop_langBox .el-input__inner{border:none;}
+
 .navSet_box .el-dropdown-link{height:22px;cursor: pointer;}
 .navSet_box .line{width: 18px;height: 3px;background:#5c5c5c;margin:3px 0;border-radius: 2px;}
 .navSet_item .el-dropdown-menu__item{padding:0}
@@ -192,13 +134,60 @@
 
 <script>
 export default {
-  name: 'public',
+	name: 'public',
+	inject: ['reload'],
   data () {
     return {
       searchVal: '',
-			navVisibleVal: false
+			navVisibleVal: false,
+      languageOption: [
+        {value: 'en', label: 'English'},
+        {value: 'zh', label: '中文简体'}
+			],
+			language: '',
+			navArr: [
+				{
+					name: this.LANG.NAV.BLOCKS,
+					subNav: [
+						{name: this.LANG.NAV.TXNS, url: '/blockIndex/txns'},
+						{name: this.LANG.NAV.PENDING_TXNS, url: '/blockIndex/pendingTxns'},
+						{name: this.LANG.NAV.BLOCKS, url: '/blockIndex/blocks'},
+						{name: this.LANG.NAV.TOP_ACCOUNTS, url: '/blockIndex/topAccounts'}
+					]
+				},
+				{
+					name: this.LANG.NAV.ASSETS,
+					subNav: [
+						{name: this.LANG.NAV.ERC20_TOKENS, url: '/assetsIndex/erc20Tokens'},
+						{name: this.LANG.NAV.ERC20_TRANSFERS, url: '/assetsIndex/erc20Transfers'},
+						{name: this.LANG.NAV.LILO_ASSETS, url: '/assetsIndex/liloAssets'},
+						{name: this.LANG.NAV.LILO_TRANSFERS, url: '/assetsIndex/liloTransfers'}
+					]
+				},
+				{
+					name: this.LANG.NAV.STATS,
+					subNav: [
+						{name: this.LANG.NAV.TRANSACTION_HISTORY_CHART, url: '/statsIndex/transactionChart'},
+						{name: this.LANG.NAV.ADDRESS_GROWTH_CHART, url: '/statsIndex/addressChart'},
+						{name: this.LANG.NAV.TOTAL_FSN_SUPPLY, url: '/statsIndex/totalFSNSupply'},
+						{name: this.LANG.NAV.FSN_HISTORICAL_PRICES, url: '/statsIndex/FSNhistoryPrices'},
+						{name: this.LANG.NAV.FSN_MARKET_CAPITALIZATION_CHART, url: '/statsIndex/FSNmarketChart'},
+						{name: this.LANG.NAV.NODES_TRACKER, url: '/statsIndex/nodesTracker'}
+					]
+				},
+				{
+					name: this.LANG.NAV.MORE,
+					subNav: [
+						{name: this.LANG.NAV.BROADCAST_TXN, url: '/moreIndex/broadcastTXN'},
+						{name: this.LANG.NAV.VERIFY_CONTRACTS, url: '/moreIndex/verifyContracts'}
+					]
+				}
+			]
     }
-  },
+	},
+	mounted () {
+		this.language = localStorage.getItem('EXPLORER_LANGUAGE_TYPE') ? localStorage.getItem('EXPLORER_LANGUAGE_TYPE') : 'en'
+	},
 	methods: {
 		searchBtn () {
 			if (!this.searchVal) {
@@ -217,10 +206,11 @@ export default {
 			})
 			this.searchVal = ''
 		},
-// 		navVisible () {
-// 			this.navVisibleVal = false
-// 			
-// 		}
+    changLanguage () {
+      localStorage.setItem('EXPLORER_LANGUAGE_TYPE', this.language)
+      this.changeLang(this.language)
+      this.reload()
+    }
 	},
 }
 </script>

@@ -7,11 +7,11 @@
 							<h3 class="h3">FUSION Blockchain Explorer</h3>
 							<ul class="flex-ec ul">
 								<li><p>Quick links:</p></li>
-								<li><router-link to="/assetsIndex/erc20Tokens">{{LANG.ERC20_TOKENS}}</router-link></li>
-								<li><router-link to="/assetsIndex/liloAssets">LILO Tokens</router-link></li>
+								<li><router-link to="/assetsIndex/erc20Tokens">{{LANG.NAV.ERC20_TOKENS}}</router-link></li>
+								<li><router-link to="/assetsIndex/liloAssets">{{LANG.NAV.LILO_TOKENS}}</router-link></li>
 							</ul>
 						</div>
-						<el-input :placeholder="LANG.SEARCH_PLACEHOLDER" v-model="searchVal">
+						<el-input :placeholder="LANG.PH.SEARCH_PLACEHOLDER" v-model="searchVal">
 							<template slot="suffix" class="flex-c">
 								<div class="icon" @click="searchBtn">
 									<!-- <img src="@/assets/img/search.svg" /> -->
@@ -24,7 +24,7 @@
 			<el-row :gutter="20" class="echarView_box mt-15">
 				<el-col :xs="12" :sm="8" :md="6" :lg="6" :xl="6">
 					<div class="item">
-						<h3 class="title">{{LANG.BLOCK_HEIGHT}}</h3>
+						<h3 class="title">{{LANG.TITLE.BLOCK_HEIGHT}}</h3>
 						<div class="echarData flex-jc-sb">
 							<h4 class="big" v-html="blockHeight"></h4>
 							<!-- <p class="small">+6.9%</p> -->
@@ -39,7 +39,7 @@
 				</el-col>
 				<el-col :xs="12" :sm="8" :md="6" :lg="6" :xl="6">
 					<div class="item">
-						<h3 class="title">{{LANG.BLOCK_TIME}}</h3>
+						<h3 class="title">{{LANG.TITLE.BLOCK_TIME}}</h3>
 						<div class="echarData flex-jc-sb">
 							<h4 class="big">{{blockTime}} <small style="font-size: 14px;">s</small></h4>
 							<!-- <p class="small">+6.9%</p> -->
@@ -54,7 +54,7 @@
 				</el-col>
 				<el-col :xs="12" :sm="8" :md="6" :lg="6" :xl="6">
 					<div class="item">
-						<h3 class="title">{{LANG.PRICE}}</h3>
+						<h3 class="title">{{LANG.TITLE.PRICE}}</h3>
 						<div class="echarData flex-jc-sb">
 							<h4 class="big">{{dollerPrice}}</h4>
 							<p class="small" v-html="dollerPerent"></p>
@@ -69,7 +69,7 @@
 				</el-col>
 				<el-col :xs="12" :sm="8" :md="6" :lg="6" :xl="6">
 					<div class="item">
-						<h3 class="title">{{LANG.TRANSACTIONS}}</h3>
+						<h3 class="title">{{LANG.TITLE.TRANSACTIONS}}</h3>
 						<div class="echarData flex-jc-sb">
 							<h4 class="big">{{txnsData}}</h4>
 							<p class="small" v-html="transferPerent"></p>
@@ -89,7 +89,7 @@
 				<el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="newBlock_list">
 					<el-card class="box-card">
 						<div slot="header" class="clearfix">
-							<span class="title">{{LANG.BLOCKS}}</span>
+							<span class="title">{{LANG.NAV.BLOCKS}}</span>
 							<el-button style="float: right; padding: 3px 0;color:#3e3f42" type="text" @click="toUrl('/blocks')">View All</el-button>
 						</div>
 						<div class="newBlock_table">
@@ -133,7 +133,7 @@
 				<el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="newBlock_list">
 					<el-card class="box-card">
 						<div slot="header" class="clearfix">
-							<span class="title">{{LANG.TRANSACTIONS}}</span>
+							<span class="title">{{LANG.TITLE.TRANSACTIONS}}</span>
 							<el-button style="float: right; padding: 3px 0;color:#3e3f42" type="text" @click="toUrl('/blockIndex/txns')">View All</el-button>
 						</div>
 						<div class="newBlock_table">
@@ -278,8 +278,8 @@ export default {
 						this.blockHeightChart.push(blockDayHeight)
 						this.blockTimeChart.push(blockDayTimeAvg)
 					}
-					this.barChart('blockHeight', this.blockHeightChart, this.LANG.AVG_BLOCK_HEIGHT)
-					this.barChart('blockTime', this.blockTimeChart, this.LANG.AVG_BLOCK_TIME)
+					this.barChart('blockHeight', this.blockHeightChart, this.LANG.TITLE.AVG_BLOCK_HEIGHT)
+					this.barChart('blockTime', this.blockTimeChart, this.LANG.TITLE.AVG_BLOCK_TIME)
 				} 
 			})
 // 			this.$$.ajax(this.$http, this.$$.serverUrl + '/data/blockAvg', dataArr).then(res => {
@@ -322,7 +322,7 @@ export default {
 					} else {
 						this.transferPerent = '<span>' + this.transferPerent + '%</span>'
 					}
-					this.barChart('transactionsChart', this.transferChart, this.LANG.TRANSACTIONS)
+					this.barChart('transactionsChart', this.transferChart, this.LANG.TITLE.TRANSACTIONS)
 				}  
 			})
 // 			this.$$.ajax(this.$http, this.$$.serverUrl + '/data/transferAvg', dataArr).then(res => {

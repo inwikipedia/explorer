@@ -2,17 +2,17 @@
 	<div>
 		<div class="container">
 			<div class="flex-bc breadcrumb_box">
-				<h3 class="title">{{LANG.BLOCKS}}  #{{blockNumber}}</h3>
+				<h3 class="title">{{LANG.NAV.BLOCKS}}  #{{blockNumber}}</h3>
 				<el-breadcrumb separator="/">
-					<el-breadcrumb-item :to="{ path: '/' }">{{LANG.HOME}}</el-breadcrumb-item>
-					<el-breadcrumb-item :to="{ path: '/blocks' }">{{LANG.BLOCKS}}</el-breadcrumb-item>
-					<el-breadcrumb-item>{{LANG.BLOCK_INFORMATION}}</el-breadcrumb-item>
+					<el-breadcrumb-item :to="{ path: '/' }">{{LANG.NAV.HOME}}</el-breadcrumb-item>
+					<el-breadcrumb-item :to="{ path: '/blocks' }">{{LANG.NAV.BLOCKS}}</el-breadcrumb-item>
+					<el-breadcrumb-item>{{LANG.CRUMBS.BLOCK_INFORMATION}}</el-breadcrumb-item>
 				</el-breadcrumb>
 			</div>
 			
 			<div class="blocksDtil_box">
 				<aside class="blocksDtil_top flex-sc">
-					<h3 class="title">{{LANG.BLOCK_INFORMATION}}</h3>
+					<h3 class="title">{{LANG.CRUMBS.BLOCK_INFORMATION}}</h3>
 					<ul class="flex-bc">
 						<li><i class="icon el-icon-arrow-left" @click="prevBtn"></i></li>
 						<li><i class="icon el-icon-arrow-right" @click="nextBtn"></i></li>
@@ -27,14 +27,14 @@
 					>
 						<el-table-column
 							prop="name"
-							:label="LANG.TITLE"
+							:label="LANG.TABLE.TITLE"
 						>
 						</el-table-column>
 						<el-table-column
 							align="left"
 						>
-							<template slot="header" slot-scope="scope">
-								{{LANG.DETAILS}}
+							<template slot="header">
+								{{LANG.TABLE.DETAILS}}
 							</template>
 							<template slot-scope="scope">
 								<span v-html="scope.row.value"></span>
@@ -69,8 +69,6 @@ export default {
 	},
 	mounted () {
 		this.blockNumber = this.$route.query.params
-		// this.getBlocksInfo()
-		
 	},
 	methods: {
 		getBlocksInfo (number) {
@@ -87,7 +85,7 @@ export default {
 					// this.$message('Temporarily no data!')
 					this.$message({
 						showClose: true,
-						message: this.LANG.ERROR_TIP_0,
+						message: this.LANG.ERROR.TIP_0,
 						type: 'warning'
 					})
 					this.blocksInfo = []
@@ -105,57 +103,24 @@ export default {
 		},
 		setDatd (res) {
 			this.blocksInfo = [
-				{name: this.LANG.HEIGHT + ':', value: this.$$.thousandBit(res.info.number, 'no')},
-				{name: this.LANG.TIMESTAMP + ':', value: this.$$.timesFun(res.info.timestamp)},
-				{name: this.LANG.TRANSACTIONS + ':', value: res.info.transactionsRoot},
-				{name: this.LANG.HEIGHT + ':', value: this.$$.thousandBit(res.info.number, 'no')},
-				{name: this.LANG.PARENT_HASH + ':', value: '<span style="color:#1665d8">' + res.info.parentHash + '</span'},
-				{name: this.LANG.SHA3UNCLES + ':', value: res.info.sha3Uncles},
-				{name: this.LANG.MINED_BY + ':', value: '<span style="color:#1665d8">' + res.info.miner + '</span'},
-				{name: this.LANG.DIFFICULTY + ':', value: this.$$.thousandBit(res.info.difficulty, 'no')},
-				{name: this.LANG.TOTAL_DIFFICULTY + ':', value: this.$$.thousandBit(res.info.totalDifficulty, 'no')},
-				{name: this.LANG.SIZE + ':', value: this.$$.thousandBit(res.info.size, 'no') + ' bytes'},
-				{name: this.LANG.GAS_USED + ':', value: this.$$.thousandBit(res.info.gasUsed, 'no')},
-				{name: this.LANG.GAS_LIMIT + ':', value: this.$$.thousandBit(res.info.gasLimit, 'no')},
-				{name: this.LANG.NONCE + ':', value: Number(res.info.nonce)},
-				{name: this.LANG.BLOCK_REWARD + ':', value: res.info.number},
-				{name: this.LANG.UNCLES_REWARD + ':', value: res.info.uncles},
-				{name: this.LANG.EXTRA_DATA + ':', value: res.info.extraData},
+				{name: this.LANG.TABLE.HEIGHT + ':', value: this.$$.thousandBit(res.info.number, 'no')},
+				{name: this.LANG.TABLE.TIMESTAMP + ':', value: this.$$.timesFun(res.info.timestamp)},
+				{name: this.LANG.TITLE.TRANSACTIONS + ':', value: res.info.transactionsRoot},
+				{name: this.LANG.TABLE.HEIGHT + ':', value: this.$$.thousandBit(res.info.number, 'no')},
+				{name: this.LANG.TABLE.PARENT_HASH + ':', value: '<span style="color:#1665d8">' + res.info.parentHash + '</span'},
+				{name: this.LANG.TABLE.SHA3UNCLES + ':', value: res.info.sha3Uncles},
+				{name: this.LANG.TABLE.MINED_BY + ':', value: '<span style="color:#1665d8">' + res.info.miner + '</span'},
+				{name: this.LANG.TABLE.DIFFICULTY + ':', value: this.$$.thousandBit(res.info.difficulty, 'no')},
+				{name: this.LANG.TABLE.TOTAL_DIFFICULTY + ':', value: this.$$.thousandBit(res.info.totalDifficulty, 'no')},
+				{name: this.LANG.TABLE.SIZE + ':', value: this.$$.thousandBit(res.info.size, 'no') + ' bytes'},
+				{name: this.LANG.TABLE.GAS_USED + ':', value: this.$$.thousandBit(res.info.gasUsed, 'no')},
+				{name: this.LANG.TABLE.GAS_LIMIT + ':', value: this.$$.thousandBit(res.info.gasLimit, 'no')},
+				{name: this.LANG.TABLE.NONCE + ':', value: Number(res.info.nonce)},
+				{name: this.LANG.TABLE.BLOCK_REWARD + ':', value: res.info.number},
+				{name: this.LANG.TABLE.UNCLES_REWARD + ':', value: res.info.uncles},
+				{name: this.LANG.TABLE.EXTRA_DATA + ':', value: res.info.extraData},
 			]
-		},
-// 		prevBtn () {
-// 			let _params = {
-// 				timestamp: this.timestamp,
-// 				page: 'prev'
-// 			}
-// 			this.getPageUrl(_params)
-// 		},
-// 		nextBtn () {
-// 			let _params = {
-// 				timestamp: this.timestamp,
-// 				page: 'next'
-// 			}
-// 			this.getPageUrl(_params)
-// 		},
-// 		getPageUrl (_params) {
-// 			// this.$$.ajax(this.$http, this.$$.serverUrl + '/data/transferPage', _params).then(res => {
-// 			console.log(_params)
-// 			socket.emit('blockPage', _params)
-// 			socket.on('blockPage', (res) => {
-// 				console.log(res)
-// 				if (!res.info) {
-// 					this.$message({
-// 						message: 'Temporarily no data!',
-// 						type: 'warning'
-// 					})
-// 					this.blocksInfo = []
-// 					return
-// 				}
-// 				this.$router.push({path: '/blockIndex/blocksDtil', query: {params: res.info.number}}),
-// 				this.blockNumber = res.info.number
-// 				// this.setDatd(res)
-// 			})
-// 		}
+		}
 	},
 }
 </script>

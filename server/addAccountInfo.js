@@ -26,15 +26,9 @@ let web3 = new Web3(new Web3.providers.HttpProvider('http://' + config.nodeAddr 
 
 var countAdd = 0
 var addrLen = 0
-var countAddOld = 0
-var addrLenOld = 0
 // var balanceArr = []
 function addAccounts (timestampInit) {
-	// timestampInit = Date.parse(new Date()) / 1000
   let syncAccount = (results) => {
-    // console.log("results")
-    // console.log(results)
-    // console.log(results.length)
     async.eachSeries(results, (result, cb) => {
       async.waterfall([
         (callback) => {
@@ -74,9 +68,6 @@ function addAccounts (timestampInit) {
 					}
         },
         (res, callback) => {
-          // countAdd ++
-          // console.log("countAdd")
-          // console.log(countAdd)
           if (res.resLen > 0) {
             AccountInfo.update({
               'address': result,
@@ -121,16 +112,9 @@ function addAccounts (timestampInit) {
           }
         }
       ], (err, res) => {
-				if (timestampInit) {
-					// addrLenOld = arrPush.size
-					countAddOld ++
-          console.log("countAddOld")
-          console.log(countAddOld)
-				} else {
-					countAdd ++
-          console.log("countAdd")
-          console.log(countAdd)
-				}
+				countAdd ++
+				console.log("countAdd")
+				console.log(countAdd)
 				console.log("result")
 				console.log(err)
 				console.log(res)
@@ -143,8 +127,6 @@ function addAccounts (timestampInit) {
 			console.log(res)
 			countAdd = 0
 			addrLen = 0
-			countAddOld = 0
-			addrLenOld = 0
     })
   }
 	let getFromAddr = (data, cb) => {
@@ -158,16 +140,16 @@ function addAccounts (timestampInit) {
             return
           }
           cb(result)
-          // syncAccount(result)
         }
       })
     } else {
 			console.log('旧')
 			let params = {
         'timestamp': {
-          '$gt': Date.parse(new Date()) / 1000 - 3
+          '$gt': (Date.parse(new Date()) / 1000) - 15
         }
-      }
+			}
+			timestampInit = Date.parse(new Date()) / 1000
 			if (timestampInit) {
 				params = {
 					'timestamp': {
@@ -192,15 +174,9 @@ function addAccounts (timestampInit) {
 							arrPush.add(result[i].from.toLowerCase())
 						}
 					}
-					if (timestampInit) {
-						addrLenOld = arrPush.size
-						console.log("Set old length:")
-						console.log(addrLenOld)
-					} else {
-						addrLen = arrPush.size
-						console.log("Set length:")
-						console.log(addrLen)
-					}
+					addrLen = arrPush.size
+					console.log("Set length:")
+					console.log(addrLen)
 					cb(null, arrPush)
         }
       })
@@ -231,18 +207,11 @@ function initMethod (){
 	console.log("initMethod")
 	console.log(addrLen)
 	console.log(countAdd)
-	console.log("initMethodOld")
-	console.log(addrLenOld)
-	console.log(countAddOld)
 	if (addrLen === countAdd) {
 		setTimeout(addAccounts, 100)
 	}
-	setTimeout(initMethod, 1500)
+	setTimeout(initMethod, 10000)
 }
 initMethod()
-// setTimeout(initMethod, 100)
-let nowTime = Date.parse(new Date()) / 1000
-addAccounts(nowTime)
-// module.exports.addAccounts = initMethod
 
 

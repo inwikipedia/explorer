@@ -242,8 +242,8 @@ export default {
 				this.totalPage = Math.ceil(Number(pageTatal / pageSizeNum))
 				this.titleTxt = ''
 				if (this.title) {
-					// console.log(this.title)
-					let _html = this.title.txt.split('{{param}}')
+					console.log(this.title)
+					let _html = this.title.txt ? this.title.txt.split('{{param}}') : ''
 					// console.log(_html)
 					for (let i = 0; i < _html.length; i++) {
 						// console.log(this.title.params[i])
@@ -373,9 +373,9 @@ export default {
 				}
 			} else if (Number(param.type) === 3) { //multiplication
 				// console.log(Number(data[param.param2].c[0]))
-				this.$$.web3(this)
+				// this.$$.web3(this)
 				let _number = Number(data[param.param]) * Number(data[param.param2].c[0])
-				_number = this.web3.fromWei(_number, 'ether')
+				_number = web3.fromWei(_number, 'ether')
 				callback = this.$$.thousandBit(_number, 'no')
 			}
 			return callback

@@ -1,6 +1,5 @@
 let $$ = {}
 
-
 if (process.env.NODE_ENV === 'development') {
 	$$.baseUrl = '/api'
 } else {
@@ -17,7 +16,8 @@ $$.timesFun = function (time, now) {
 	// console.log(nowTime)
 	time = time.toString().length > 10 ? time : (time * 1000)
 	// console.log(time)
-	let dataTime = 0, callback = 0
+	let dataTime = 0
+	let callback = 0
 	if (isNaN(time)) {
 		dataTime = Date.parse(time)
 	} else {
@@ -26,16 +26,16 @@ $$.timesFun = function (time, now) {
 	let timeDiffer = (nowTime - dataTime) / 1000
 	timeDiffer = timeDiffer > 0 ? timeDiffer : 1
 
-	if (timeDiffer < 60) { //seconds
+	if (timeDiffer < 60) { // seconds
 		// console.log(1)
 		callback = this.timeSec(timeDiffer)
-	} else if (timeDiffer < (60 * 60)) { //minute
+	} else if (timeDiffer < (60 * 60)) { // minute
 		// console.log(2)
 		callback = this.timeMin(timeDiffer)
-	} else if (timeDiffer < (60 * 60 * 24)) { //hours
+	} else if (timeDiffer < (60 * 60 * 24)) { // hours
 		// console.log(3)
 		callback = this.timeHour(timeDiffer, 'min')
-	} else { //day
+	} else { // day
 		// console.log(4)
 		callback = this.timeDay(timeDiffer, 'hour')
 	}
@@ -157,7 +157,7 @@ $$.thousandBit = (num, dec = 2) => {
   return num
 }
 
-$$.web3 = function (that) {
+$$.web3 = function () {
   let Web3 = require('web3')
   let web3
 	// let url = this.baseUrl
@@ -169,8 +169,9 @@ $$.web3 = function (that) {
     web3 = new Web3()
     console.log(error)
   }
-  that.web3 = web3
+  window.web3 = web3
 }
+$$.web3()
 
 $$.ajax = function ($http, url, param) {
 	let Qs = require('qs')

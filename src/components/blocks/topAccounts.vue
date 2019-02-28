@@ -2,10 +2,10 @@
 	<div>
 		<div class="container">
 			<div class="flex-bc breadcrumb_box">
-				<h3 class="title">{{LANG.TOP_ACCOUNTS_TITLE_0}}</h3>
+				<h3 class="title">{{LANG.TOP_ACCOUNTS.TITLE_0}}</h3>
 				<el-breadcrumb separator="/">
-					<el-breadcrumb-item :to="{ path: '/' }">{{LANG.HOME}}</el-breadcrumb-item>
-					<el-breadcrumb-item>{{LANG.ACCOUNT}}</el-breadcrumb-item>
+					<el-breadcrumb-item :to="{ path: '/' }">{{LANG.NAV.HOME}}</el-breadcrumb-item>
+					<el-breadcrumb-item>{{LANG.CRUMBS.ACCOUNT}}</el-breadcrumb-item>
 				</el-breadcrumb>
 			</div>
 			<div style="height: 100%;">				
@@ -15,7 +15,7 @@
 					:resData="''"
 					:className="'topAccount'"
 					:title="{
-						txt: LANG.TOP_ACCOUNTS_TITLE_1+ params.balance + LANG.TOP_ACCOUNTS_TITLE_2,
+						txt: LANG.TOP_ACCOUNTS.TITLE_1 + params.balance + LANG.TOP_ACCOUNTS.TITLE_2,
 						params: ['totalNum']
 					}"
 				>

@@ -4,7 +4,7 @@
 			<div class="flex-bc breadcrumb_box">
 				<h3 class="title">{{LANG.VERIFY_CONTRACT_CODE}}</h3>
 				<el-breadcrumb separator="/">
-					<el-breadcrumb-item :to="{ path: '/' }">{{LANG.HOME}}</el-breadcrumb-item>
+					<el-breadcrumb-item :to="{ path: '/' }">{{LANG.NAV.HOME}}</el-breadcrumb-item>
 					<el-breadcrumb-item>{{LANG.VERIFY_CONTRACTS}}</el-breadcrumb-item>
 				</el-breadcrumb>
 			</div>

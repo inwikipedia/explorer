@@ -2,10 +2,10 @@
 	<div>
 		<div class="container">
 			<div class="flex-bc breadcrumb_box">
-				<h3 class="title">{{LANG.BLOCKS}}</h3>
+				<h3 class="title">{{LANG.NAV.BLOCKS}}</h3>
 				<el-breadcrumb separator="/">
-					<el-breadcrumb-item :to="{ path: '/' }">{{LANG.HOME}}</el-breadcrumb-item>
-					<el-breadcrumb-item>{{LANG.BLOCKS}}</el-breadcrumb-item>
+					<el-breadcrumb-item :to="{ path: '/' }">{{LANG.NAV.HOME}}</el-breadcrumb-item>
+					<el-breadcrumb-item>{{LANG.NAV.BLOCKS}}</el-breadcrumb-item>
 				</el-breadcrumb>
 			</div>
 			<div style="height: 100%;">				
@@ -13,15 +13,15 @@
 					:dataUrl="dataUrl"
 					:params="params"
 					:resData="''"
-					:className="LANG.BLOCKS"
+					:className="LANG.NAV.BLOCKS"
 					:title="{
-						txt: LANG.BLOCKS_TITLE,
+						txt: LANG.SUBTITLE.BLOCKS_TITLE,
 						params: ['strat#number','end#number','totalNum']
 					}"
 				>
 					<table-data 
 						:tableData="{
-							th: LANG.HEIGHT,
+							th: LANG.TABLE.HEIGHT,
 							width: '2',
 							params: [{param: 'number'}, {param: 'number', type: 2}],
 							html: '<div class=\'trans_style\'><p class=\'rowItem\'><a onclick=toUrl(\'/blockIndex/blocksDtil\',\'{{param}}\') class=\'cursorP\'><span class=\'blue\'>{{param}}</span></a></p></div>'
@@ -29,21 +29,21 @@
 					></table-data>
 					<table-data 
 						:tableData="{
-							th: LANG.AGE,
+							th: LANG.TABLE.AGE,
 							width: '4',
 							params: [{param: 'timestamp', type: 0}],
 							html: '<div class=\'trans_style\'><p class=\'rowItem\'>{{param}}</p></div>'
 						}"
 					></table-data>
 					<table-data :tableData="{
-						th: LANG.TXNS,
+						th: LANG.NAV.TXNS,
 						width: '2',
 						params: [{param: 'blockNumber', type: 2}],
 						html: '<span class=\'ellipsis\'>{{param}}</span>'
 					}"></table-data>
 					<table-data 
 						:tableData="{
-							th: LANG.UNCLES,
+							th: LANG.TABLE.UNCLES,
 							width: '2',
 							params: [{param: 'uncles'}],
 							html: '<div class=\'trans_style\'><p class=\'rowItem\'><a onclick=toUrl(\'/blocks?id=\') class=\'cursorP\'><span class=\'blue\'>{{param}}</span></a></p></div>'
@@ -51,7 +51,7 @@
 					></table-data>
 					<table-data 
 						:tableData="{
-							th: LANG.UNCLES,
+							th: LANG.TABLE.MINER,
 							width: '4',
 							params: [{param: 'miner', type: 1, start: 10, end: 8}],
 							html: '<div class=\'trans_style\'><p class=\'rowItem\'><span class=\'blue\'>{{param}}</span></p></div>'
@@ -59,7 +59,7 @@
 					></table-data>
 					<table-data 
 						:tableData="{
-							th: LANG.GAS_USED,
+							th: LANG.TABLE.GAS_USED,
 							width: '4',
 							params: [{param: 'gasUsed', type: 2}],
 							html: '<div class=\'trans_style\'><p class=\'rowItem\'>{{param}}</p></div>'
@@ -67,7 +67,7 @@
 					></table-data>
 					<table-data 
 						:tableData="{
-							th: LANG.GAS_LIMIT,
+							th: LANG.TABLE.GAS_LIMIT,
 							width: '2',
 							params: [{param: 'gasLimit', type: 2}],
 							html: '<div class=\'trans_style\'><p class=\'rowItem\'>{{param}}</p></div>'
@@ -75,7 +75,7 @@
 					></table-data>
 					<table-data 
 						:tableData="{
-							th: LANG.GAS_PRICE,
+							th: LANG.TABLE.GAS_PRICE,
 							width: '2',
 							params: [{param: 'gas', type: 2}],
 							html: '<div class=\'trans_style\'><p class=\'rowItem\'>{{param}}</p></div>'
@@ -83,7 +83,7 @@
 					></table-data>
 					<table-data 
 						:tableData="{
-							th: LANG.REWARD,
+							th: LANG.TABLE.REWARD,
 							width: '2',
 							params: [{param: 'miner', type: 2}],
 							html: '<div class=\'trans_style\'><p class=\'rowItem\'>{{param}}</p></div>'

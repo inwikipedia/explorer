@@ -4,7 +4,7 @@
 			<div class="flex-bc breadcrumb_box">
 				<h3 class="title">{{LANG.BROADCAST_RAW_TRANSACTION}}</h3>
 				<el-breadcrumb separator="/">
-					<el-breadcrumb-item :to="{ path: '/' }">{{LANG.HOME}}</el-breadcrumb-item>
+					<el-breadcrumb-item :to="{ path: '/' }">{{LANG.NAV.HOME}}</el-breadcrumb-item>
 					<el-breadcrumb-item>{{LANG.BROAD_TRANSACTION}}</el-breadcrumb-item>
 				</el-breadcrumb>
 			</div>
