@@ -23,7 +23,7 @@
 			</div>
 			<el-row :gutter="20" class="echarView_box mt-15">
 				<el-col :xs="12" :sm="8" :md="6" :lg="6" :xl="6">
-					<div class="item">
+					<div class="item pubBg_white">
 						<h3 class="title">{{LANG.TITLE.BLOCK_HEIGHT}}</h3>
 						<div class="echarData flex-jc-sb">
 							<h4 class="big" v-html="blockHeight"></h4>
@@ -38,7 +38,7 @@
 					</div>
 				</el-col>
 				<el-col :xs="12" :sm="8" :md="6" :lg="6" :xl="6">
-					<div class="item">
+					<div class="item pubBg_white">
 						<h3 class="title">{{LANG.TITLE.BLOCK_TIME}}</h3>
 						<div class="echarData flex-jc-sb">
 							<h4 class="big">{{blockTime}} <small style="font-size: 14px;">s</small></h4>
@@ -53,7 +53,7 @@
 					</div>
 				</el-col>
 				<el-col :xs="12" :sm="8" :md="6" :lg="6" :xl="6">
-					<div class="item">
+					<div class="item pubBg_white">
 						<h3 class="title">{{LANG.TITLE.PRICE}}</h3>
 						<div class="echarData flex-jc-sb">
 							<h4 class="big">{{dollerPrice}}</h4>
@@ -68,7 +68,7 @@
 					</div>
 				</el-col>
 				<el-col :xs="12" :sm="8" :md="6" :lg="6" :xl="6">
-					<div class="item">
+					<div class="item pubBg_white">
 						<h3 class="title">{{LANG.TITLE.TRANSACTIONS}}</h3>
 						<div class="echarData flex-jc-sb">
 							<h4 class="big">{{txnsData}}</h4>
@@ -87,7 +87,7 @@
 			<!-- <el-row class="newBlock_box" :gutter="20"> -->
 			<el-row class="newBlock_box">
 				<el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="newBlock_list">
-					<el-card class="box-card">
+					<el-card class="box-card pubBg_white">
 						<div slot="header" class="clearfix">
 							<span class="title">{{LANG.NAV.BLOCKS}}</span>
 							<el-button style="float: right; padding: 3px 0;color:#3e3f42" type="text" @click="toUrl('/blocks')">View All</el-button>
@@ -131,7 +131,7 @@
 				</el-col>
 				
 				<el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="newBlock_list">
-					<el-card class="box-card">
+					<el-card class="box-card pubBg_white">
 						<div slot="header" class="clearfix">
 							<span class="title">{{LANG.TITLE.TRANSACTIONS}}</span>
 							<el-button style="float: right; padding: 3px 0;color:#3e3f42" type="text" @click="toUrl('/blockIndex/txns')">View All</el-button>

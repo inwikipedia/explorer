@@ -82,8 +82,6 @@ Vue.use(Aside)
 Vue.use(Main)
 Vue.use(Footer)
 Vue.use(Loading)
-// Vue.use(MessageBox)
-// Vue.use(Message)
 Vue.component(Message.name, Message)
 Vue.use(Scrollbar)
 Vue.use(Button)
@@ -95,25 +93,14 @@ Vue.use(TabPane)
 Vue.use(Dialog)
 Vue.use(Collapse)
 Vue.use(CollapseItem)
-// Vue.use(Pagination)
 Vue.use('axios')
 Vue.config.productionTip = false
 
 Vue.component('publicTable', publicTable)
 Vue.component('tableData', tableData)
 
-// Vue.prototype.$loading = Loading.service
-// Vue.prototype.$msgbox = MessageBox
-// Vue.prototype.$alert = MessageBox.alert
-// Vue.prototype.$confirm = MessageBox.confirm
-// Vue.prototype.$prompt = MessageBox.prompt
-// Vue.prototype.$notify = Notification;
 Vue.prototype.$message = Message
 
-// import ECharts from 'vue-echarts/components/ECharts'
-// import 'echarts/lib/chart/line'
-// Vue.component('chart', ECharts)
-// console.log(lang)
 let langZh = require('@/assets/js/language/zh')
 let langEn = require('@/assets/js/language/en')
 let setLanguage = (lang) => {
@@ -127,12 +114,12 @@ let setLanguage = (lang) => {
   }
   Vue.prototype.LANG = langData
 }
-let languageType = localStorage.getItem('EXPLORER_LANGUAGE_TYPE')
+let languageType = localStorage.getItem('FUSION_EXPLORER_LANGUAGE_TYPE')
 setLanguage(languageType)
 Vue.prototype.changeLang = (lang) => {
   setLanguage(lang)
 }
-// Vue.prototype.LANG = LANG
+
 Vue.prototype.$$ = $$
 Vue.prototype.$http = axios
 /* eslint-disable no-new */

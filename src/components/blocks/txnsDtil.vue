@@ -63,7 +63,7 @@
 .transView_select .el-select{width:122px;margin: 0 5px;}
 .transView_select .el-input{font-size:12px;}
 .transView_select .el-select .el-input__suffix{right:0;padding:0 3px;border-left:1px solid #c0c4cc;}
-.transView_select .el-select .el-input__inner{height: 18px;padding-right: 17px;padding-left: 8px;}
+.transView_select .el-select .el-input__inner{height: 18px;padding-right: 17px;padding-left: 8px;background:none;}
 .transView_select .el-select .el-input__icon{line-height: 18px;width: 12px;font-size:12px;}
 </style>
 

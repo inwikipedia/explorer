@@ -59,8 +59,8 @@
 .pageView_box{width:100%;padding:20px 15px;}
 .pageView_box .title{font-size:14px;color: #3e3f42;font-weight: bold;}
 .pageView_top{position: absolute;top:0px;left:0;border-bottom: 1px solid #eaedf3;}
-.pageView_bottom{}
-.pageView_btn{}
+/* .pageView_bottom{}
+.pageView_btn{} */
 .pageView_btn li{display: inline-block;font-size: 12px;line-height: 16px;color:#333;border:1px solid #cccccc;color:#3e3f42;}
 .pageView_btn .prev, .pageView_btn .next{padding:0px 15px;cursor: pointer;}
 .pageView_btn .active{background: #ebebff;}
