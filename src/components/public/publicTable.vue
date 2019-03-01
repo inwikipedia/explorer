@@ -4,13 +4,13 @@
 		<div class="pageView_box pageView_top flex-bc" v-if="!isPageTop">
 			<h3 class="title" v-html="titleTxt"></h3>
 			<ul class="pageView_btn">
-				<li class="prev" @click="prevBtn" :class="isPrev ? 'active' : ''"><span>{{LANG.FIRST}}</span></li>
+				<li class="prev" @click="prevBtn" :class="isPrev ? 'active' : ''"><span>{{LANG.BTN.FIRST}}</span></li>
 				<li class="now">
 					<i class="icon el-icon-arrow-left" @click="prevBtn" :class="isPrev ? 'active' : ''"></i>
 					<span class="curr">Page {{currPage}} of {{totalPage}}</span>
 					<i class="icon el-icon-arrow-right" @click="nextBtn" :class="isNext ? 'active' : ''"></i>
 				</li>
-				<li class="next" @click="nextBtn" :class="isNext ? 'active' : ''"><span>{{LANG.NEXT}}</span></li>
+				<li class="next" @click="nextBtn" :class="isNext ? 'active' : ''"><span>{{LANG.BTN.NEXT}}</span></li>
 			</ul>
 		</div>
 		<!-- <div class="pubTable_thead pubTable_theadAbso" v-if="!isThead">
@@ -31,7 +31,7 @@
 		</div>
 		<div class="pageView_box pageView_bottom flex-bc" v-if="!isPageBottom">
 			<div class="pageView_select flex-c">
-				{{LANG.SHOW}}
+				{{LANG.OTHER.SHOW}}
 				<el-select v-model="selectValue" filterable placeholder="-- Please select --">
 					<el-option
 						v-for="item in selectPageSize"
@@ -40,16 +40,16 @@
 						:value="item.value">
 					</el-option>
 				</el-select>
-				{{LANG.PAGE}}
+				{{LANG.OTHER.PAGE}}
 			</div>
 			<ul class="pageView_btn">
-				<li class="prev" @click="prevBtn" :class="isPrev ? 'active' : ''"><span>{{LANG.FIRST}}</span></li>
+				<li class="prev" @click="prevBtn" :class="isPrev ? 'active' : ''"><span>{{LANG.BTN.FIRST}}</span></li>
 				<li class="now">
 					<i class="icon el-icon-arrow-left" @click="prevBtn" :class="isPrev ? 'active' : ''"></i>
 					<span class="curr">Page {{currPage}} of {{totalPage}}</span>
 					<i class="icon el-icon-arrow-right" @click="nextBtn" :class="isNext ? 'active' : ''"></i>
 				</li>
-				<li class="next" @click="nextBtn" :class="isNext ? 'active' : ''"><span>{{LANG.NEXT}}</span></li>
+				<li class="next" @click="nextBtn" :class="isNext ? 'active' : ''"><span>{{LANG.BTN.NEXT}}</span></li>
 			</ul>
 		</div>
 	</div>

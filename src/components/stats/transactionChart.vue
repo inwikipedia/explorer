@@ -4,9 +4,9 @@
 			<div class="flex-bc breadcrumb_box">
 				<h3 class="title">Charts   Ethereum Transaction History</h3>
 				<el-breadcrumb separator="/">
-					<el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
-					<el-breadcrumb-item :to="{ path: '' }">List of Charts</el-breadcrumb-item>
-					<el-breadcrumb-item>Chart & Stats</el-breadcrumb-item>
+					<el-breadcrumb-item :to="{ path: '/' }">{{LANG.NAV.HOME}}</el-breadcrumb-item>
+					<el-breadcrumb-item :to="{ path: '' }">{{LANG.CRUMBS.LIST_OF_CHARTS}}</el-breadcrumb-item>
+					<el-breadcrumb-item>{{LANG.CRUMBS.CHARTS_STATS}}</el-breadcrumb-item>
 				</el-breadcrumb>
 			</div>
 			<div class="bgbox chartTitle_box">
@@ -32,9 +32,9 @@
 								<p class="line"></p>
 							</span>
 							<el-dropdown-menu slot="dropdown">
-								<el-dropdown-item command="PNG">Download PNG image</el-dropdown-item>
-								<el-dropdown-item command="JPG">Download JPG image</el-dropdown-item>
-								<el-dropdown-item command="PDF">Download PDF document</el-dropdown-item>
+								<el-dropdown-item command="PNG">{{LANG.BTN.DOWNLOAD_PNG_IMAGE}}</el-dropdown-item>
+								<el-dropdown-item command="JPG">{{LANG.BTN.DOWNLOAD_JPG_IMAGE}}</el-dropdown-item>
+								<el-dropdown-item command="PDF">{{LANG.BTN.DOWNLOAD_PDF_DOCUMENT}}</el-dropdown-item>
 							</el-dropdown-menu>
 						</el-dropdown>
 					</div>
@@ -42,7 +42,7 @@
 				<div v-loading="loadingView">
 					<div id="transferChart" style="height: 400px;"></div>
 				</div>
-				<div class="downloadCsv">Download: <span class="blue">CSV Data</span> (Attribution Required)</div>
+				<div class="downloadCsv">{{LANG.OTHER.DOWNLOAD}}: <span class="blue">{{LANG.OTHER.DW.CSV_0}}</span> {{LANG.OTHER.DW.CSV_1}}</div>
 			</div>
 		</div>
 	</div>

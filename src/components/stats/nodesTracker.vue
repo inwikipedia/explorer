@@ -4,7 +4,7 @@
 			<div class="flex-bc breadcrumb_box">
 				<h3 class="title">Ethereum Node Tracker</h3>
 				<el-breadcrumb separator="/">
-					<el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
+					<el-breadcrumb-item :to="{ path: '/' }">{{LANG.NAV.HOME}}</el-breadcrumb-item>
 					<el-breadcrumb-item>Node Tracker</el-breadcrumb-item>
 				</el-breadcrumb>
 			</div>

@@ -2,27 +2,27 @@
 	<div>
 		<div class="container">
 			<div class="flex-bc breadcrumb_box">
-				<h3 class="title">{{LANG.BROADCAST_RAW_TRANSACTION}}</h3>
+				<h3 class="title">{{LANG.MORE.BROADCAST_RAW_TRANSACTION}}</h3>
 				<el-breadcrumb separator="/">
 					<el-breadcrumb-item :to="{ path: '/' }">{{LANG.NAV.HOME}}</el-breadcrumb-item>
-					<el-breadcrumb-item>{{LANG.BROAD_TRANSACTION}}</el-breadcrumb-item>
+					<el-breadcrumb-item>{{LANG.MORE.BROAD_TRANSACTION}}</el-breadcrumb-item>
 				</el-breadcrumb>
 			</div>
 			
 			<div class="broadCast_box bgbox">
 				<aside class="broadCast_title">
-					<h3>{{LANG.BROADCAST_TIP_0}}</h3>
+					<h3>{{LANG.MORE.BROADCAST_TIP_0}}</h3>
 				</aside>
 				<div class="broadCast_cont">
-					<h3 class="title">{{LANG.ENTER_TX_HEX}}</h3>
+					<h3 class="title">{{LANG.MORE.ENTER_TX_HEX}}</h3>
 					<el-input
 						type="textarea"
 						:autosize="{ minRows: 8, maxRows: 12}"
 						placeholder="0x"
 						v-model="serializedTx">
 					</el-input>
-					<p class="info">{{LANG.BROADCAST_TIP_0}}</p>
-					<button class="btn-primary cursorP" @click="sendRawtransaction">{{LANG.SEND_TRANSACTION}}</button>
+					<p class="info">{{LANG.MORE.BROADCAST_TIP_0}}</p>
+					<button class="btn-primary cursorP" @click="sendRawtransaction">{{LANG.BTN.SEND_TRANSACTION}}</button>
 				</div>
 			</div>
 			

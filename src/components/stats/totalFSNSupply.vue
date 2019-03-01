@@ -4,9 +4,9 @@
 			<div class="flex-bc breadcrumb_box">
 				<h3 class="title">Total Ether Supply and Market Capitalization</h3>
 				<el-breadcrumb separator="/">
-					<el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
-					<el-breadcrumb-item :to="{ path: '' }">List of Charts</el-breadcrumb-item>
-					<el-breadcrumb-item>Ether Supply</el-breadcrumb-item>
+					<el-breadcrumb-item :to="{ path: '/' }">{{LANG.NAV.HOME}}</el-breadcrumb-item>
+					<el-breadcrumb-item :to="{ path: '' }">{{LANG.CRUMBS.LIST_OF_CHARTS}}</el-breadcrumb-item>
+					<el-breadcrumb-item>{{LANG.CRUMBS.CHARTS_STATS}}</el-breadcrumb-item>
 				</el-breadcrumb>
 			</div>
 			<div class="bgbox chartView_box">
