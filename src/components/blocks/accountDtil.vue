@@ -29,7 +29,7 @@
 							<p class="p p2" v-html="0"></p>
 						</div>
 						<div class="accountHeader_item flex-sc">
-							<p class="p p1 flex-sc"><span>{{LANG.SUBTITLE.TRANSACTIONS}}:</span></p>
+							<p class="p p1 flex-sc"><span>{{LANG.TITLE.TRANSACTIONS}}:</span></p>
 							<p class="p p2" v-html="txnsNum"></p>
 						</div>
 					</el-col>

@@ -267,6 +267,7 @@ export default {
 			this.transferChart = []
 			socket.emit('blockAvg', dataArr)
 			socket.on('blockAvg', (data) => {
+				console.log('blockAvg')
 				console.log(data)
 				let resData = data
 				if (resData && resData.info) {
@@ -299,6 +300,7 @@ export default {
 // 			})
 			socket.emit('transferAvg', dataArr)
 			socket.on('transferAvg', (data) => {
+				console.log('transferAvg')
 				console.log(data)
 				let resData = data
 				if (resData && resData.info) {
@@ -492,7 +494,11 @@ export default {
 	beforeDestroy() {
 		clearInterval(this.refreshSetInterval)
 		this.refreshSetInterval = null
-			document.getElementById('publicSearchId').style.display = 'block'
+		document.getElementById('publicSearchId').style.display = 'block'
+		// socket.close()
+		// console.log(socket)
+		// socket.connect()
+		// console.log(socket)
 	}
 }
 </script>

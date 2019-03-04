@@ -76,7 +76,12 @@ export default {
 			socket.emit('transfer')
 			socket.on('transfer', (res) => {
 				this.count ++
-				if (this.count > 1) return
+				console.log(this.count)
+				if (this.count > 1) {
+					// this.count = 0
+					return
+				}
+				console.log(this.count)
 				let data = res.info.sort((val1, val2) => {
 					if (val1.timestamp < val2.timestamp) {
 						return -1

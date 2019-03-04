@@ -2,7 +2,7 @@
 .container{width:100%;max-width:1230px;margin: auto;padding: 0 15px;}
 .bgbox{background: #fff;border:1px solid #eee;}
 .el-main{padding:0;}
-.headerTop_box{width:100%;background:#fff;padding:0;border-bottom: 1px solid #eaedf3;}
+.headerTop_box{width:100%;background:none;padding:0;border-bottom: none;}
 .headerTop_top{width:100%;padding:20px 30px;border-bottom: 1px solid #eaedf3;}
 .logo{height: 21px;}
 .logo img{height: 100%;}
@@ -199,7 +199,17 @@
 .WHITE .pubFont_gray{background: #999999}
 .WHITE .pubFont_green{background: #3bad4b} */
 
-.DARK{background:#01263f}
+.DARK
+  ,.DARK .broadCast_cont .el-textarea__inner
+  ,.DARK .broadCast_form .el-input__inner
+  ,.DARK .broadCast_input .el-input__inner
+  ,.DARK .broadCast_ul .el-input .el-input__inner
+  ,.DARK .headerNav_search .el-input__inner
+  ,.DARK .pageView_select .el-select .el-input__inner
+  ,.DARK .el-dropdown-menu
+  ,.DARK .navSet_item .el-collapse-item
+  ,.DARK .navSet_item .el-collapse-item__header
+{background:#01263f}
 
 .DARK .pubBg_white
   ,.DARK .bgbox
@@ -207,6 +217,11 @@
   ,.DARK .el-table
   ,.DARK .el-table th
   ,.DARK .el-table tr
+  ,.DARK .pageView_btn .active
+  ,.DARK .el-collapse-item__wrap
+  ,.DARK .navSet_item .navSet_list
+  ,.DARK .el-dropdown-menu__item:focus
+  ,.DARK .el-dropdown-menu__item:not(.is-disabled):hover
 {background: #012137}
 
 .DARK .el-menu--horizontal .el-menu .el-menu-item{background: #012137!important}
@@ -217,6 +232,16 @@
   ,.DARK .pubTable_tbody td
   ,.DARK .bgbox
   ,.DARK .blocksDtil_box
+  ,.DARK .broadCast_cont .el-textarea__inner
+  ,.DARK .broadCast_form .el-input__inner
+  ,.DARK .broadCast_input .el-input__inner
+  ,.DARK .broadCast_ul .el-input .el-input__inner
+  ,.DARK .headerNav_search .el-input__inner
+  ,.DARK .headerNav_search .el-input-group__prepend
+  ,.DARK .pageView_select .el-select .el-input__inner
+  ,.DARK .pageView_btn li
+  ,.DARK .accountHeader_item
+  ,.DARK .el-dropdown-menu
 {border:1px solid #013558}
 
 .DARK .broadCast_title
@@ -227,11 +252,39 @@
   ,.DARK .el-table td
   ,.DARK .el-table th.is-leaf
   ,.DARK .blocksDtil_top
+  ,.DARK .pubTable_tbody .th
+  ,.DARK .pageView_top
+  ,.DARK .topHeader_title
+  ,.DARK .navSet_item .navSet_list li
+  ,.DARK .el-collapse
+  ,.DARK .el-collapse-item__header
+  ,.DARK .el-collapse-item__wrap
 {border-bottom:1px solid #013558}
 
-.DARK .itemNav{color:#617782;}
+.DARK .el-collapse
+{border-top:1px solid #013558}
+
+
+.DARK .itemNav
+  ,.DARK .pageView_box .title
+  ,.DARK .breadcrumb_box .title
+  ,.DARK .el-breadcrumb__inner a
+  ,.DARK .el-breadcrumb__inner.is-link
+  ,.DARK .accountHeader_item .p
+  ,.DARK .topHeader_title .title
+  ,.DARK .pageView_select
+  ,.DARK .blocksDtil_top .title
+  ,.DARK .navSet_item .el-collapse-item__header
+{color:#617782;}
+
+.DARK .pageView_btn li {color:#9ea0a5}
+/* .DARK .pageView_btn .active {} */
+
 .DARK .headerNav_box{border-bottom:none;}
-.DARK .headerNav_searchCont{background:#2472a6;}
+
+.DARK .headerNav_searchCont
+{background:#2472a6;}
+
 .DARK .headerNav_searchCont .el-input__inner{background:#01263f;border:none;}
 
 .DARK .echarView_box .item .title
@@ -247,4 +300,20 @@
 .DARK .block_style .rowItem
   ,.DARK .trans_style .greenBg
 {background:none;border:1px solid #3498db;color:#3498db;}
+
 .DARK .newBlock_box .el-button{color:#617782;border:1px solid #013558;}
+
+.DARK .broadCast_textarea .gray
+  ,.DARK .accountInfo_tab .el-tabs__item .tab
+{background:#01263f}
+.DARK .accountInfo_tab .el-tabs__item .tab{border:1px solid #2472a6!important;color:#999}
+
+.DARK .broadCast_cont .btn-primary
+  ,.DARK .accountInfo_tab .is-active .tab
+{background:#2472a6;}
+
+
+@media (max-width: 992px) {
+  .newBlock_box .newBlock_list:first-child{padding-right: 0}
+  .newBlock_box .newBlock_list:last-child{padding-left: 0;margin-top: 20px;}
+}

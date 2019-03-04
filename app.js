@@ -62,37 +62,4 @@ io.on('connection', function (socket) {
   console.log('a user')
 	getSocketIoData.sendData(socket)
 	getSocketIoChart.sendData(socket)
-// 	socket.on('transaction', (req) => {
-// 		getSocketIoData.transaction(socket, req)
-// 	})
-// 	socket.on('transferDtil', (req) => {
-// 		getSocketIoData.transferDtil(socket, req)
-// 	})
-// 	socket.on('transferPage', (req) => {
-// 		getSocketIoData.transferPage(socket, req)
-// 	})
-// 	socket.on('transferAvg', (req) => {
-// 		getSocketIoData.transferAvg(socket, req)
-// 	})
-// 	socket.on('blocks', (req) => {
-// 		getSocketIoData.blocks(socket, req)
-// 	})
-// 	socket.on('pendingBlocks', (req) => {
-// 		getSocketIoData.pendingBlocks(socket, req)
-// 	})
-// 	socket.on('blockNum', (req) => {
-// 		getSocketIoData.blockNum(socket, req)
-// 	})
-// 	socket.on('blockAvg', (req) => {
-// 		getSocketIoData.blockAvg(socket, req)
-// 	})
-// 	socket.on('blockTime', (req) => {
-// 		getSocketIoData.blockTime(socket, req)
-// 	})
-// 	socket.on('topAccounts', (req) => {
-// 		getSocketIoData.topAccounts(socket, req)
-// 	})
-// 	socket.on('accountTxn', (req) => {
-// 		getSocketIoData.accountTxn(socket, req)
-// 	})
 })

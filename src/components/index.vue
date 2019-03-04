@@ -3,7 +3,7 @@
 		<el-container>
 			<el-header class="headerTop_box" height="70px">
 				<div class="headerNav_box pubBg_white">
-					<div class="flex-bc container">
+					<div class="flex-bc container" style="height:70px;">
 						<div class="logo">
 							<router-link to="/"><img src="@/assets/img/logo.svg"></router-link>
 						</div>
@@ -41,33 +41,35 @@
 							</div>
 
 							<div class="dayAndNight_box cursorP" @click="dayAndNight">
-
+								<img :src="dayAndNightIimg">
 							</div>
+							
+							<div class="navSet_box hidden-md-and-up">
+								<el-dropdown trigger="click" :hide-on-click="navVisibleVal">
+									<span class="el-dropdown-link">
+										<p class="line"></p>
+										<p class="line"></p>
+										<p class="line"></p>
+									</span>
+									<el-dropdown-menu slot="dropdown" class="navSet_item">
+										<el-dropdown-item><router-link to="/" class="itemNav homeNav" exact>{{LANG.NAV.HOME}}</router-link></el-dropdown-item>
+										<el-dropdown-item>
+											<el-collapse accordion>
+												<el-collapse-item :title="items.name" :name="indexs + 1" v-for="(items, indexs) in navArr" :key="indexs">
+													<ul class="navSet_list">
+														<li v-for="(item, index) in items.subNav" :key="index">
+															<router-link class="itemNav" :to="item.url" v-html="item.name"></router-link>
+														</li>
+													</ul>
+												</el-collapse-item>
+											</el-collapse>
+										</el-dropdown-item>
+									</el-dropdown-menu>
+								</el-dropdown>
+							</div>
+
 						</div>
 
-						<div class="navSet_box hidden-md-and-up">
-							<el-dropdown trigger="click" :hide-on-click="navVisibleVal">
-								<span class="el-dropdown-link">
-									<p class="line"></p>
-									<p class="line"></p>
-									<p class="line"></p>
-								</span>
-								<el-dropdown-menu slot="dropdown" class="navSet_item">
-									<el-dropdown-item><router-link to="/" class="itemNav homeNav" exact>{{LANG.NAV.HOME}}</router-link></el-dropdown-item>
-									<el-dropdown-item>
-										<el-collapse accordion>
-											<el-collapse-item :title="items.name" :name="indexs + 1" v-for="(items, indexs) in navArr" :key="indexs">
-												<ul class="navSet_list">
-													<li v-for="(item, index) in items.subNav" :key="index">
-														<router-link class="itemNav" :to="item.url" v-html="item.name"></router-link>
-													</li>
-												</ul>
-											</el-collapse-item>
-										</el-collapse>
-									</el-dropdown-item>
-								</el-dropdown-menu>
-							</el-dropdown>
-						</div>
 					</div>
 				</div>
 			</el-header>
@@ -108,7 +110,7 @@
 </template>
 
 <style>
-.dayAndNight_box{width:25px;height: 25px;background:#999;}
+.dayAndNight_box{width:25px;height: 25px;}
 </style>
 
 <script>
@@ -162,7 +164,8 @@ export default {
 						{name: this.LANG.NAV.VERIFY_CONTRACTS, url: '/moreIndex/verifyContracts'}
 					]
 				}
-			]
+			],
+			dayAndNightIimg: ''
     }
 	},
 	mounted () {
@@ -197,9 +200,11 @@ export default {
 			if (this.dayAndNightData === 'DARK') {
 				document.body.classList.add('DARK')
 				document.body.classList.remove('WHITE')
+				this.dayAndNightIimg = require('@/assets/img/night.svg')
 			} else {
 				document.body.classList.add('WHITE')
 				document.body.classList.remove('DARK')
+				this.dayAndNightIimg = require('@/assets/img/day.svg')
 			}
 		},
 		dayAndNight () {
@@ -207,10 +212,12 @@ export default {
 				this.dayAndNightData = 'WHITE'
 				document.body.classList.add('WHITE')
 				document.body.classList.remove('DARK')
+				this.dayAndNightIimg = require('@/assets/img/day.svg')
 			} else {
 				this.dayAndNightData = 'DARK'
 				document.body.classList.add('DARK')
 				document.body.classList.remove('WHITE')
+				this.dayAndNightIimg = require('@/assets/img/night.svg')
 			}
 			localStorage.setItem('FUSION_EXPLORER_DAY_AND_NIGHT_TYPE', this.dayAndNightData)
 		}

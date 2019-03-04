@@ -56,7 +56,6 @@
 		"ERC20_TOKEN_TXNS": "Erc20 Token Txns",
 		"LILO": "LILO",
 		"TOKEN_BALANCE": "Token Balance",
-		"BALANCE":"Balance",
 		"BLOCKS_TITLE": "Block #{{param}} To #{{param}} (Total of {{param}} Blocks)",
 		"TXNS_TITLE": "{{param}} Transactions found",
 		"PENDING_TITLE": "A total of {{param}} Pending Txns found",

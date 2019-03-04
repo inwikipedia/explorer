@@ -146,6 +146,7 @@ export default {
 		}
 	},
 	mounted () {
+		socket.connect()
 		// this.addLoading()
 		// console.log(this.params)
 		if (this.dataUrl) {
@@ -177,6 +178,7 @@ export default {
 // 			})
 // 			window.open(routeUrl.href, '_blank')
 		}
+		// console.log(this.count)
 	},
 	methods: {
 		getInitData () {
@@ -218,15 +220,10 @@ export default {
 			this.addLoading()
 			this.tableData = []
 			this.tableHtml = ''
-			// this.titleTxt = ''
-			// console.log(this.titleTxt)
-			// this.$$.ajax(this.$http, this.dataUrl, params).then(res => {
-				// let count = 0
-			this.count = 0
 			socket.emit(this.dataUrl, params)
 			socket.on(this.dataUrl, (res) => {
 				this.count ++
-				// console.log(this.count)
+				console.log(this.count)
 				if (this.count > 1) return
 				// console.log(this.count)
 				console.log(res)
@@ -242,7 +239,7 @@ export default {
 				this.totalPage = Math.ceil(Number(pageTatal / pageSizeNum))
 				this.titleTxt = ''
 				if (this.title) {
-					console.log(this.title)
+					// console.log(this.title)
 					let _html = this.title.txt ? this.title.txt.split('{{param}}') : ''
 					// console.log(_html)
 					for (let i = 0; i < _html.length; i++) {

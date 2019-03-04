@@ -51,6 +51,9 @@ import 'element-ui/lib/theme-chalk/index.css'
 import 'element-ui/lib/theme-chalk/display.css'
 import '@/assets/css/css.css'
 import '@/assets/css/style.css'
+import '@etc/icon/iconfont.css'
+
+import '@etc/icon/iconfont.js'
 
 import publicTable from '@/components/public/publicTable'
 import tableData from '@/components/public/tableData'

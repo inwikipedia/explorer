@@ -11,6 +11,7 @@ let web3 = new Web3(new Web3.providers.HttpProvider('https://api.nodes.run'))
 
 // router.post('/transaction', (req, res) => {
 function transaction(socket, req, type) {
+// const transaction = (socket, req, type) => {
 	let setData = {
 		pageSize: req.pageSize ? req.pageSize : 20,
 		skip: 0
@@ -33,8 +34,12 @@ function transaction(socket, req, type) {
 				data.msg = 'Error'
 				data.info = ''
 			}
+			console.log('transaction')
+			// console.log(socket)
 			// socket.emit('transaction', data)
 			socket.emit(type, data)
+			// console.log(socket)
+			
 		})
 	}
 	Transaction.find({}).countDocuments((err, result) => {
@@ -109,7 +114,6 @@ function transferPage(socket, req, type) {
 // router.post('/transferAvg', (req, res) => {
 function transferAvg(socket, req, type) {
 	let dataArr = req.dataArr.length > 0 ? req.dataArr : []
-	// console.log('blockAvg:')
 	let data = {
 		msg: '',
 		info: []
@@ -176,6 +180,7 @@ function blocks(socket, req, type) {
 				data.info = ''
 			}
 			socket.emit(type, data)
+			socket = null
 		})
 	}
 		
@@ -251,39 +256,6 @@ function blockNum(socket, req, type) {
 	})
 }
 
-// function blockPage(socket, req, type) {
-// 	let setData = {
-// 		timestamp: req.timestamp ? req.timestamp : 0
-// 	}
-// 	if (req.page === 'next') {
-// 		setData.page = {'$gt': setData.timestamp}
-// 	} else {
-// 		setData.page = {'$lt': setData.timestamp}
-// 	}
-// 	let data = {
-// 		msg: '',
-// 		info: ''
-// 	}
-// 	console.log('blockPage:')
-// 	console.log(setData)
-// 	let info = () => {			
-// 		Block.find({'timestamp': setData.page}).lean(true).limit(1).exec((err,result) => {
-// 			if (!err) {
-// 				// total()
-// 				data.msg = 'Success'
-// 				data.info = result[0]
-// 				console.log(data)
-// 			} else {
-// 				console.log(err)
-// 				data.msg = 'Error'
-// 				data.info = ''
-// 			}
-// 			socket.emit(type, data)
-// 		})
-// 	}
-// 	info()
-// }
-
 // router.post('/blockAvg', (req, res) => {
 function blockAvg(socket, req, type) {
 	let dataArr = req.dataArr.length > 0 ? req.dataArr : []
@@ -312,6 +284,8 @@ function blockAvg(socket, req, type) {
 							}
 						}
 					}
+					console.log('blockAvg')
+					console.log(data)
 					data.info.sort(compare('timestamp'))
 					socket.emit(type, data)
 				}
@@ -474,8 +448,6 @@ function accountDtil (socket, req) {
 		msg: '',
 		info: ''
 	}
-// 	console.log('accountDtil')
-// 	console.log(setData)
 	let updateAccount = (TxCount) => {
 		AccountInfo.update({'address': setData}, {'TxCount': TxCount}, {'updateTime': Date.parse(new Date()) / 1000}).exec((err, result) => {
 			if (err) {
@@ -526,7 +498,7 @@ function accountDtil (socket, req) {
 function sendData (socket) {
 	// let newBlocks = web3.eth.filter('latest')
 	socket.on('transaction', (req) => {
-		console.log(req)
+		// console.log(req)
 		transaction(socket, req, 'transaction')
 	})
 	socket.on('transactionRefresh', (req) => {
@@ -554,13 +526,6 @@ function sendData (socket) {
 		setInterval(() => {
 			blocks(socket, req, 'blocksRefresh')
 		}, 3000)
-// 		newBlocks.watch(function (error,latestBlock) {
-// 			if (error) {
-// 				console.log(error)
-// 			} else {
-// 				blocks(socket, req, 'blocksRefresh')
-// 			}
-// 		})
 	})
 	socket.on('pendingBlocks', (req) => {
 		pendingBlocks(socket, req, 'pendingBlocks')
@@ -568,9 +533,6 @@ function sendData (socket) {
 	socket.on('blockNum', (req) => {
 		blockNum(socket, req, 'blockNum')
 	})
-// 	socket.on('blockPage', (req) => {
-// 		blockPage(socket, req, 'blockPage')
-// 	})
 	socket.on('blockAvg', (req) => {
 		blockAvg(socket, req, 'blockAvg')
 	})
