@@ -115,7 +115,7 @@ export default {
 			selectValue: this.params && this.params.pageSize ? this.params.pageSize : 20,
 			titleTxt: '',
 			tableFlag: true,
-			count: 0
+			socket: null
 		}
 	},
 	watch: {
@@ -146,7 +146,9 @@ export default {
 		}
 	},
 	mounted () {
-		socket.connect()
+		this.socket = io(this.$$.serverUrl)
+		// this.socket = socket
+		// socket.connect()
 		// this.addLoading()
 		// console.log(this.params)
 		if (this.dataUrl) {
@@ -178,7 +180,6 @@ export default {
 // 			})
 // 			window.open(routeUrl.href, '_blank')
 		}
-		// console.log(this.count)
 	},
 	methods: {
 		getInitData () {
@@ -220,12 +221,8 @@ export default {
 			this.addLoading()
 			this.tableData = []
 			this.tableHtml = ''
-			socket.emit(this.dataUrl, params)
-			socket.on(this.dataUrl, (res) => {
-				this.count ++
-				console.log(this.count)
-				if (this.count > 1) return
-				// console.log(this.count)
+			this.socket.emit(this.dataUrl, params)
+			this.socket.on(this.dataUrl, (res) => {
 				console.log(res)
 				let data
 				if (this.resData) {
@@ -396,6 +393,9 @@ export default {
 	beforeDestroy() {
 		clearInterval(this.refreshSetInterval)
 		this.refreshSetInterval = null
+		console.log("over connect")
+		this.socket.close()
+		this.socket.disconnect()
 	}
 }
 </script>

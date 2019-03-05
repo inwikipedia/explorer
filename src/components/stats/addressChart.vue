@@ -61,10 +61,12 @@ export default {
 			beforeDate: '',
 			highestBlock: '',
 			lowestBlock: '',
-			chartPic: ''
+			chartPic: '',
+			socket: null
 		}
 	},
 	mounted () {
+		this.socket = io(this.$$.serverUrl)
 		this.getData()
 	},
 	methods: {
@@ -76,8 +78,8 @@ export default {
 			this.nowDate = this.$$.timeToEN(_params.endTime, 'all')
 			this.beforeDate = this.$$.timeToEN(_params.startTime, 'all')
 			// this.$$.ajax(this.$http, this.$$.serverUrl + '/chart/transfer', _params).then(res => {
-			socket.emit('transfer', _params)
-			socket.on('transfer', (res) => {
+			this.socket.emit('transfer', _params)
+			this.socket.on('transfer', (res) => {
 				// console.log(res)
 				let data = res.info.sort((val1, val2) => {
 					if (val1.timestamp < val2.timestamp) {
@@ -204,6 +206,10 @@ export default {
 				}]
 			}, true)
 		}
+	},
+	beforeDestroy() {
+		this.socket.close()
+		this.socket.disconnect()
 	}
 }
 </script>

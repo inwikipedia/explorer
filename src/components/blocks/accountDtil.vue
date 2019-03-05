@@ -208,10 +208,11 @@ export default {
 			GUSDbalance: '0 GUSD',
 			BNBbalance: '0 BNB',
 			txnsNum: 'txns',
-			count: 0
+			socket: null
 		}
 	},
 	mounted () {
+		this.socket = io(this.$$.serverUrl)
 		this.address = this.$route.query.params
 		window.toUrl2 = (url, params) => {
 			this.$router.push({
@@ -225,11 +226,8 @@ export default {
 		let addressData = {
 			address: this.address
 		}
-		this.count = 0
-		socket.emit('accountDtil', addressData)
-		socket.on('accountDtil', (res) => {
-			this.count ++
-			if (this.count > 1) return
+		this.socket.emit('accountDtil', addressData)
+		this.socket.on('accountDtil', (res) => {
 			console.log(res)
 			this.fsnBalance = this.$$.thousandBit(res.info.balance, 'no') + ' FSN'
 			this.txnsNum =  this.$$.thousandBit(res.info.TxCount, 'no') + ' txns'
@@ -269,6 +267,10 @@ export default {
 			console.log(tab)
 			console.log(event)
 		}
+	},
+	beforeDestroy() {
+		this.socket.close()
+		this.socket.disconnect()
 	}
 }
 </script>

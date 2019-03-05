@@ -306,11 +306,15 @@
 .DARK .broadCast_textarea .gray
   ,.DARK .accountInfo_tab .el-tabs__item .tab
 {background:#01263f}
+
 .DARK .accountInfo_tab .el-tabs__item .tab{border:1px solid #2472a6!important;color:#999}
 
 .DARK .broadCast_cont .btn-primary
   ,.DARK .accountInfo_tab .is-active .tab
-{background:#2472a6;}
+{background:#2472a6;color:#999}
+
+.DARK .broadCast_textarea .gray
+{background:#01263f;color:#999}
 
 
 @media (max-width: 992px) {

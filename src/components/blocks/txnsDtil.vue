@@ -88,7 +88,7 @@ export default {
 			}],
 			web3: '',
 			timestamp: 0,
-			count: 0
+			socket: null
 		}
 	},
 	watch: {
@@ -97,6 +97,7 @@ export default {
 		}
 	},
 	mounted () {
+		this.socket = io(this.$$.serverUrl)
 		this.hash = this.$route.query.params
 		window.toUrl = (params) => {
 			this.$router.push({
@@ -115,11 +116,8 @@ export default {
 				hash: this.hash
 			}
 			// this.$$.ajax(this.$http, this.$$.serverUrl + '/data/transferDtil', _params).then(res => {
-			this.count = 0
-			socket.emit('transferDtil', _params)
-			socket.on('transferDtil', (res) => {
-				this.count ++
-				if (this.count > 1) return
+			this.socket.emit('transferDtil', _params)
+			this.socket.on('transferDtil', (res) => {
 				console.log(res)
 				if (!res.info) {
 					this.$message({
@@ -206,5 +204,9 @@ export default {
 			})
 		}
 	},
+	beforeDestroy() {
+		this.socket.close()
+		this.socket.disconnect()
+	}
 }
 </script>

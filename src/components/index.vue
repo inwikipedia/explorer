@@ -5,7 +5,7 @@
 				<div class="headerNav_box pubBg_white">
 					<div class="flex-bc container" style="height:70px;">
 						<div class="logo">
-							<router-link to="/"><img src="@/assets/img/logo.svg"></router-link>
+							<router-link to="/"><img :src="dayAndnightLogo"></router-link>
 						</div>
 						<div class="flex-bc">
 							<el-menu class="el-menu-demo hidden-sm-and-down" mode="horizontal">
@@ -165,7 +165,8 @@ export default {
 					]
 				}
 			],
-			dayAndNightIimg: ''
+			dayAndNightIimg: '',
+			dayAndnightLogo: ''
     }
 	},
 	mounted () {
@@ -201,10 +202,12 @@ export default {
 				document.body.classList.add('DARK')
 				document.body.classList.remove('WHITE')
 				this.dayAndNightIimg = require('@/assets/img/night.svg')
+				this.dayAndnightLogo = require('@/assets/img/logo_night.svg')
 			} else {
 				document.body.classList.add('WHITE')
 				document.body.classList.remove('DARK')
 				this.dayAndNightIimg = require('@/assets/img/day.svg')
+				this.dayAndnightLogo = require('@/assets/img/logo.svg')
 			}
 		},
 		dayAndNight () {
@@ -213,11 +216,13 @@ export default {
 				document.body.classList.add('WHITE')
 				document.body.classList.remove('DARK')
 				this.dayAndNightIimg = require('@/assets/img/day.svg')
+				this.dayAndnightLogo = require('@/assets/img/logo.svg')
 			} else {
 				this.dayAndNightData = 'DARK'
 				document.body.classList.add('DARK')
 				document.body.classList.remove('WHITE')
 				this.dayAndNightIimg = require('@/assets/img/night.svg')
+				this.dayAndnightLogo = require('@/assets/img/logo_night.svg')
 			}
 			localStorage.setItem('FUSION_EXPLORER_DAY_AND_NIGHT_TYPE', this.dayAndNightData)
 		}

@@ -63,25 +63,18 @@ export default {
 			highestBlock: '',
 			lowestBlock: '',
 			chartPic: '',
-			count: 0,
-			loadingView: true
+			loadingView: true,
+			socket: null
 		}
 	},
 	mounted () {
+		this.socket = io(this.$$.serverUrl)
 		this.getData()
 	},
 	methods: {
 		getData () {
-			this.count = 0
-			socket.emit('transfer')
-			socket.on('transfer', (res) => {
-				this.count ++
-				console.log(this.count)
-				if (this.count > 1) {
-					// this.count = 0
-					return
-				}
-				console.log(this.count)
+			this.socket.emit('transfer')
+			this.socket.on('transfer', (res) => {
 				let data = res.info.sort((val1, val2) => {
 					if (val1.timestamp < val2.timestamp) {
 						return -1
@@ -199,6 +192,10 @@ export default {
 			}, true)
 			this.loadingView = false
 		}
+	},
+	beforeDestroy() {
+		this.socket.close()
+		this.socket.disconnect()
 	}
 }
 </script>

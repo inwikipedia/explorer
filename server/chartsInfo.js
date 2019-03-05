@@ -37,6 +37,7 @@ let syncChart = function () {
         if (err) {
           callback(err)
         } else {
+          // console.log(res)
           if (res.length <= 0) {
             callback(null, 0)
           } else {
@@ -190,4 +191,5 @@ function initMethod (){
 	setTimeout(initMethod, 1500)
 }
 initMethod()
-syncChart()
+setTimeout(syncChart, 60 * 1000 * 6)
+// syncChart()

@@ -58,8 +58,8 @@ export default {
 		return {
 			blockNumber: 0,
 			blocksInfo: [],
-			count: 0,
-			timestamp: 0
+			timestamp: 0,
+			socket: null
 		}
 	},
 	watch: {
@@ -68,6 +68,7 @@ export default {
 		}
 	},
 	mounted () {
+		this.socket = io(this.$$.serverUrl)
 		this.blockNumber = this.$route.query.params
 	},
 	methods: {
@@ -76,11 +77,8 @@ export default {
 				number: this.blockNumber
 			}
 			// this.$$.ajax(this.$http, this.$$.serverUrl + '/data/blockNum', _params).then(res => {
-			this.count = 0
-			socket.emit('blockNum', _params)
-			socket.on('blockNum', (res) => {
-				this.count ++
-				if (this.count > 1) return
+			this.socket.emit('blockNum', _params)
+			this.socket.on('blockNum', (res) => {
 				if (!res.info) {
 					// this.$message('Temporarily no data!')
 					this.$message({
@@ -122,5 +120,9 @@ export default {
 			]
 		}
 	},
+	beforeDestroy() {
+		this.socket.close()
+		this.socket.disconnect()
+	}
 }
 </script>

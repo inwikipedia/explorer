@@ -81,15 +81,21 @@ export default {
 				pageSize: 20,
 				count: 0,
 				balance: 0
-			}
+			},
+			socket: null
 		}
 	},
 	mounted () {
+		this.socket = io(this.$$.serverUrl)
 		let params = {}
-		socket.emit(this.dataUrl, params)
-		socket.on(this.dataUrl, (res) => {
+		this.socket.emit(this.dataUrl, params)
+		this.socket.on(this.dataUrl, (res) => {
 			
 		})
+	},
+	beforeDestroy() {
+		this.socket.close()
+		this.socket.disconnect()
 	}
 }
 </script>

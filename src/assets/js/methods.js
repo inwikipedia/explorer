@@ -8,7 +8,14 @@ if (process.env.NODE_ENV === 'development') {
 // $$.baseUrl = 'http://54.164.7.63:40445'
 // $$.baseUrl = 'http://54.169.254.177:40415'
 $$.baseUrl = window.location.protocol + '//api.dcrm.network'
-$$.serverUrl = 'http://localhost:8083'
+
+if (location.protocol === 'https:') {
+	$$.serverUrl = 'http://localhost:8081'
+} else {
+	$$.serverUrl = 'http://localhost:8082'
+	// socket = io('http://47.92.255.230:8082')
+}
+// $$.serverUrl = 'http://localhost:8083'
 
 $$.timesFun = function (time, now) {
 	// let nowTime = Date.parse(now)

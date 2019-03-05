@@ -209,10 +209,12 @@ export default {
 			transferPerent: 0,
 			web3: '',
 			refreshSetInterval: '',
-			searchVal: ''
+			searchVal: '',
+			socket: null
 		}
 	},
 	mounted () {
+		this.socket = io(this.$$.serverUrl)
 		this.getData()
 		this.setIintervalGetData()
 		this.getAvgChart()
@@ -265,8 +267,8 @@ export default {
 			this.blockHeightChart = []
 			this.blockTimeChart = []
 			this.transferChart = []
-			socket.emit('blockAvg', dataArr)
-			socket.on('blockAvg', (data) => {
+			this.socket.emit('blockAvg', dataArr)
+			this.socket.on('blockAvg', (data) => {
 				console.log('blockAvg')
 				console.log(data)
 				let resData = data
@@ -298,8 +300,8 @@ export default {
 // 					this.barChart('blockTime', this.blockTimeChart, 'Avg Block Time')
 // 				} 
 // 			})
-			socket.emit('transferAvg', dataArr)
-			socket.on('transferAvg', (data) => {
+			this.socket.emit('transferAvg', dataArr)
+			this.socket.on('transferAvg', (data) => {
 				console.log('transferAvg')
 				console.log(data)
 				let resData = data
@@ -319,7 +321,8 @@ export default {
 						this.transferPerent = (Number(this.transferChart[4]) - Number(this.transferChart[3])) / Number(this.transferChart[3])
 						this.transferPerent = this.transferPerent.toFixed(2)
 					}
-					if (this.transferPerent >= 0) {
+					// console.log(this.transferPerent)
+					if (this.transferPerent > 0) {
 						this.transferPerent = '<span style="color:red">+' + this.transferPerent + '%</span>'
 					} else {
 						this.transferPerent = '<span>' + this.transferPerent + '%</span>'
@@ -353,8 +356,8 @@ export default {
 // 				} 
 // 			})
 			
-			socket.emit('blockTime', dataArr)
-			socket.on('blockTime', (data) => {
+			this.socket.emit('blockTime', dataArr)
+			this.socket.on('blockTime', (data) => {
 				// console.log(data)
 				let resData = data
 				if (resData && resData.info) {
@@ -373,8 +376,8 @@ export default {
 				pageNum: 1,
 				pageSize: 20
 			}
-			socket.emit('blocksRefresh', _params)
-			socket.on('blocksRefresh', (data) => {
+			this.socket.emit('blocksRefresh', _params)
+			this.socket.on('blocksRefresh', (data) => {
 				// console.log(data)
 				let resData = data
 				if (resData.info.length > 0) {
@@ -385,8 +388,8 @@ export default {
 					this.blockHeight = 0
 				}
 			})
-			socket.emit('transactionRefresh', _params)
-			socket.on('transactionRefresh', (data) => {
+			this.socket.emit('transactionRefresh', _params)
+			this.socket.on('transactionRefresh', (data) => {
 				// console.log(data)
 				let resData = data
 				if (resData.info) {
@@ -495,6 +498,10 @@ export default {
 		clearInterval(this.refreshSetInterval)
 		this.refreshSetInterval = null
 		document.getElementById('publicSearchId').style.display = 'block'
+		this.socket.emit('clearInterval')
+		
+		this.socket.close()
+		this.socket.disconnect()
 		// socket.close()
 		// console.log(socket)
 		// socket.connect()

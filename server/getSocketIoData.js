@@ -38,6 +38,9 @@ function transaction(socket, req, type) {
 			// console.log(socket)
 			// socket.emit('transaction', data)
 			socket.emit(type, data)
+			socket.on('disconnect', () => {
+				console.log('disconnect')
+			})
 			// console.log(socket)
 			
 		})
@@ -494,18 +497,23 @@ function accountDtil (socket, req) {
 	})
 }
 
+let clearTransaction
+let clearBlocks
 
 function sendData (socket) {
-	// let newBlocks = web3.eth.filter('latest')
 	socket.on('transaction', (req) => {
-		// console.log(req)
 		transaction(socket, req, 'transaction')
 	})
 	socket.on('transactionRefresh', (req) => {
-		transaction(socket, req, 'transactionRefresh')
-		setInterval(() => {
-			transaction(socket, req, 'transactionRefresh')
-		}, 3000)
+		clearTransaction = () => {
+			try {
+				setTimeout(clearTransaction, 3000)
+				transaction(socket, req, 'transactionRefresh')
+			} catch (error) {
+				// console.log(error)
+			}
+		}
+		clearTransaction()
 	})
 	socket.on('transferDtil', (req) => {
 		transferDtil(socket, req, 'transferDtil')
@@ -522,10 +530,15 @@ function sendData (socket) {
 	})
 	socket.on('blocksRefresh', (req) => {
 		console.log('blocksRefresh')
-		blocks(socket, req, 'blocksRefresh')
-		setInterval(() => {
-			blocks(socket, req, 'blocksRefresh')
-		}, 3000)
+		clearBlocks = () => {
+			try {
+				setTimeout(clearBlocks, 3000)
+				blocks(socket, req, 'blocksRefresh')
+			} catch (error) {
+				// console.log(error)
+			}
+		}
+		clearBlocks()
 	})
 	socket.on('pendingBlocks', (req) => {
 		pendingBlocks(socket, req, 'pendingBlocks')
@@ -550,6 +563,13 @@ function sendData (socket) {
 	})
 	socket.on('accountDtil', (req) => {
 		accountDtil(socket, req, 'accountDtil')
+	})
+	socket.on('clearInterval', () => {
+		console.log('clear setInterval')
+		clearTransaction = null
+		clearBlocks = null
+		// clearTimeout(clearTransaction)
+		// clearInterval(clearBlocks)
 	})
 }
 
