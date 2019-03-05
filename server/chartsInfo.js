@@ -37,9 +37,20 @@ let syncChart = function () {
         if (err) {
           callback(err)
         } else {
-          // console.log(res)
+          console.log(res)
           if (res.length <= 0) {
-            callback(null, 0)
+            Transaction.find({}).lean(true).sort({'timestamp': 1}).limit(1).exec((error, resTime) => {
+              if (error) {
+                callback(error)
+              } else {
+                if (resTime.length <= 0) {
+                  callback(null, 0)
+                } else {
+                  callback(null, resTime[0].timestamp)
+                }
+              }
+            })
+            // callback(null, 0)
           } else {
             callback(null, res[0].timestamp)
           }
@@ -47,14 +58,18 @@ let syncChart = function () {
       })
     },
     (time, callback) => {
+      console.log(time)
       let nowTime = Date.parse(new Date()) / 1000
       time = time.toString().length > 10 ? (time / 1000) : time
       let timeInterval = Math.floor((nowTime - time) / (60 * 60 * 24))
+      console.log(timeInterval)
       let dateArr = []
       for (let i = 1; i < timeInterval; i++) {
         let beforeDays = timeInterval - i
         dateArr.push(getBeforeDate(beforeDays))
       }
+      // console.log(dateArr)
+      // return
       getTransactionData(dateArr)
       callback(null)
     }
@@ -154,6 +169,20 @@ function getTransactionData(results) {
         })
       },
       (data, callback) => {
+        TransactionChart.find({'timestamp': data.timestamp}).exec((err, res) => {
+          if (err) {
+            console.log(err)
+          } else {
+            console.log(res)
+            if (res.length > 0) {
+              callback('Date already exists')
+            } else {
+              callback(null, data)
+            }
+          }
+        })
+      },
+      (data, callback) => {
         let transactionChart = new TransactionChart({
           'timestamp': data.timestamp,
           'difficultyAvg': data.difficulty,
@@ -174,13 +203,17 @@ function getTransactionData(results) {
             callback('insert transaction charts success')
           }
         })
-        cb(null)
       }
     ], (err, res) => {
-
+      cb(null)
+      console.log('waterfall')
+      console.log(err)
+      console.log(res)
     })
   }, (err, res) => {
-
+    console.log('eachSeries')
+    console.log(err)
+    console.log(res)
   })
 }
 
@@ -191,5 +224,5 @@ function initMethod (){
 	setTimeout(initMethod, 1500)
 }
 initMethod()
-setTimeout(syncChart, 60 * 1000 * 6)
+setTimeout(syncChart, 60 * 1000 * 10)
 // syncChart()

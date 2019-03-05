@@ -393,7 +393,7 @@ export default {
 	beforeDestroy() {
 		clearInterval(this.refreshSetInterval)
 		this.refreshSetInterval = null
-		console.log("over connect")
+		// console.log("over connect")
 		this.socket.close()
 		this.socket.disconnect()
 	}

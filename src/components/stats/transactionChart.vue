@@ -82,7 +82,7 @@ export default {
 						return 1
 					}
 				})
-				console.log(data)
+				// console.log(data)
 				this.chartView(data)
 				let tranData = res.info.sort((val1, val2) => {
 					if (val1.blockCount < val2.blockCount) {
