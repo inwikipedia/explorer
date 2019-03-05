@@ -58,11 +58,11 @@ let syncChart = function () {
       })
     },
     (time, callback) => {
-      console.log(time)
+      // console.log(time)
       let nowTime = Date.parse(new Date()) / 1000
       time = time.toString().length > 10 ? (time / 1000) : time
       let timeInterval = Math.floor((nowTime - time) / (60 * 60 * 24))
-      console.log(timeInterval)
+      // console.log(timeInterval)
       let dateArr = []
       for (let i = 1; i < timeInterval; i++) {
         let beforeDays = timeInterval - i

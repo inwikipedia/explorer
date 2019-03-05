@@ -8,16 +8,6 @@
 							<router-link to="/"><img :src="dayAndnightLogo"></router-link>
 						</div>
 						<div class="flex-bc">
-							<el-menu class="el-menu-demo hidden-sm-and-down" mode="horizontal">
-								<el-menu-item index="1"><router-link to="/" class="itemNav" exact>{{LANG.NAV.HOME}}</router-link></el-menu-item>
-								<el-submenu :index="'' + (indexs + 2)" v-for="(items, indexs) in navArr" :key="indexs">
-									<template slot="title">{{items.name}}<div class="icon"><img src="@/assets/img/updown.svg"></div></template>
-									<el-menu-item :index="(indexs + 2) + '-' + index" v-for="(item, index) in items.subNav" :key="index">
-										<router-link class="itemNav" :to="item.url" v-html="item.name"></router-link>
-									</el-menu-item>
-								</el-submenu>
-							</el-menu>
-
 							<div class="headerNav_search" id="publicSearchId">
 								<el-input :placeholder="LANG.PH.SEARCH_PLACEHOLDER" clearable v-model="searchVal">
 									<template slot="prepend" class="flex-c">
@@ -28,6 +18,16 @@
 								</el-input>
 							</div>
 
+							<el-menu class="el-menu-demo hidden-sm-and-down" mode="horizontal">
+								<el-menu-item index="1"><router-link to="/" class="itemNav" exact>{{LANG.NAV.HOME}}</router-link></el-menu-item>
+								<el-submenu :index="'' + (indexs + 2)" v-for="(items, indexs) in navArr" :key="indexs">
+									<template slot="title">{{items.name}}<div class="icon"><img src="@/assets/img/updown.svg"></div></template>
+									<el-menu-item :index="(indexs + 2) + '-' + index" v-for="(item, index) in items.subNav" :key="index">
+										<router-link class="itemNav" :to="item.url" v-html="item.name"></router-link>
+									</el-menu-item>
+								</el-submenu>
+							</el-menu>
+							
 							<div class="headerTop_langBox">
 								<el-select v-model="language" size="mini" @change="changLanguage">
 									<el-option

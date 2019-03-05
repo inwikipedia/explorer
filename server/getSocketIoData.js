@@ -34,13 +34,14 @@ function transaction(socket, req, type) {
 				data.msg = 'Error'
 				data.info = ''
 			}
-			console.log('transaction')
+			console.log('transaction: ' + (Date.parse(new Date()) / 1000))
 			// console.log(socket)
 			// socket.emit('transaction', data)
 			socket.emit(type, data)
-			socket.on('disconnect', () => {
-				console.log('disconnect')
-			})
+			console.log('transaction callback data success')
+			// socket.on('disconnect', () => {
+			// 	console.log('disconnect')
+			// })
 			// console.log(socket)
 			
 		})
@@ -83,6 +84,7 @@ function transferDtil(socket, req, type) {
 			data.info = ''
 		}
 		socket.emit(type, data)
+		console.log('transferDtil callback data success')
 	})
 }
 
@@ -111,6 +113,7 @@ function transferPage(socket, req, type) {
 			data.info = ''
 		}
 		socket.emit(type, data)
+		console.log('transferPage callback data success')
 	})
 }
 
@@ -143,6 +146,7 @@ function transferAvg(socket, req, type) {
 					}
 					data.info.sort(compare('timestamp'))
 					socket.emit(type, data)
+					console.log('transferAvg callback data success')
 					// total()
 				}
 			} else {
@@ -183,7 +187,7 @@ function blocks(socket, req, type) {
 				data.info = ''
 			}
 			socket.emit(type, data)
-			socket = null
+			console.log('blocks callback data success')
 		})
 	}
 		
@@ -222,6 +226,7 @@ function pendingBlocks(socket, req, type) {
 				data.info = ''
 			}
 			socket.emit(type, data)
+			console.log('pendingBlocks callback data success')
 		})
 	}
 			
@@ -256,6 +261,7 @@ function blockNum(socket, req, type) {
 			data.info = ''
 		}
 		socket.emit(type, data)
+		console.log('blockNum callback data success')
 	})
 }
 
@@ -287,10 +293,11 @@ function blockAvg(socket, req, type) {
 							}
 						}
 					}
-					console.log('blockAvg')
-					console.log(data)
+					// console.log('blockAvg')
+					// console.log(data)
 					data.info.sort(compare('timestamp'))
 					socket.emit(type, data)
+					console.log('blockAvg callback data success')
 				}
 			} else {
 				data.msg = 'Error'
@@ -321,6 +328,7 @@ function blockTime(socket, req, type) {
 			data.info = ''
 		}
 		socket.emit(type, data)
+		console.log('blockTime callback data success')
 	})
 }
 
@@ -348,7 +356,8 @@ function topAccounts(socket, req, type) {
 				data.info = ''
 			}
 			console.log(data)
-			socket.emit(type, data) 
+			socket.emit(type, data)
+			console.log('topAccounts callback data success')
 		})
 	}
 	
@@ -389,6 +398,7 @@ function getAccounts (socket, req, type) {
 				data.info = ''
 			}
 			socket.emit(type, data)
+			console.log('getAccounts callback data success')
 		})
 	}
 	AccountInfo.find({'balance': {'$gte': setData.balance}}).lean(true).sort({"balance": -1}).countDocuments((err, result) => {
@@ -429,6 +439,7 @@ function accountTxn(socket, req, type) {
 				data.info = ''
 			}
 			socket.emit(type, data)
+			console.log('accountTxn callback data success')
 		})
 	}
 		
@@ -474,6 +485,7 @@ function accountDtil (socket, req) {
 				data.info = ''
 			}
 			socket.emit('accountDtil', data)
+			console.log('accountDtil callback data success')
 		})
 	}
 	AccountInfo.find({'address': setData}).exec((err, result) => {
@@ -487,6 +499,7 @@ function accountDtil (socket, req) {
 				data.msg = 'Null'
 				data.info = ''
 				socket.emit('accountDtil', data)
+				console.log('accountDtil callback data success')
 			} else {
 				// console.log(2)
 				data.msg = 'Success'
