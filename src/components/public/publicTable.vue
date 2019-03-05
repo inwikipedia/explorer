@@ -276,7 +276,7 @@ export default {
 					// console.log(res.info.length)
 					this.$message({
 						showClose: true,
-						message: this.LANG.ERROR_TIP_0,
+						message: this.LANG.ERROR.TIP_0,
 						type: 'warning'
 					})
 					this.removeLoading()
