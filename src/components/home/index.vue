@@ -216,11 +216,56 @@ export default {
 	mounted () {
 		this.socket = io(this.$$.serverUrl)
 		this.getData()
-		this.setIintervalGetData()
 		this.getAvgChart()
-			document.getElementById('publicSearchId').style.display = 'none'
+		document.getElementById('publicSearchId').style.display = 'none'
+
+		// let _params = {
+		// 	pageNum: 1,
+		// 	pageSize: 20
+		// }
+		this.refreshSetInterval = () => {
+			// console.log(this.refreshSetInterval)
+			if (this.refreshSetInterval) {
+				setTimeout(this.refreshSetInterval, 3000)
+				this.socket.emit('blocksRefresh')
+				this.socket.emit('transactionRefresh')
+			}
+		}
+		this.refreshSetInterval()
+		this.setIintervalGetData()
+
 	},
 	methods: {
+		setIintervalGetData () {
+			// let _params = {
+			// 	pageNum: 1,
+			// 	pageSize: 20
+			// }
+			// this.socket.emit('blocksRefresh', _params)
+			this.socket.on('blocksRefresh', (data) => {
+				// console.log(data)
+				let resData = data
+				if (resData.info.length > 0) {
+					this.blockData = resData.info
+					this.blockHeight = this.$$.thousandBit(resData.info[0].number, 'no')
+				} else {
+					this.blockData = []
+					this.blockHeight = 0
+				}
+			})
+			// this.socket.emit('transactionRefresh', _params)
+			this.socket.on('transactionRefresh', (data) => {
+				// console.log(data)
+				let resData = data
+				if (resData.info) {
+					this.transData = resData.info
+					this.txnsData = this.$$.thousandBit(resData.total, 'no')
+				} else {
+					this.transData = []
+					this.txnsData = 0
+				}
+			})
+		},
 		searchBtn () {
 			if (!this.searchVal) {
 				this.$message({
@@ -264,6 +309,7 @@ export default {
 			let dataArr = {
 				dataArr: [this.getBeforeDate(0), this.getBeforeDate(1), this.getBeforeDate(2), this.getBeforeDate(3), this.getBeforeDate(4), this.getBeforeDate(5)]
 			}
+			console.log(dataArr)
 			this.blockHeightChart = []
 			this.blockTimeChart = []
 			this.transferChart = []
@@ -285,21 +331,6 @@ export default {
 					this.barChart('blockTime', this.blockTimeChart, this.LANG.TITLE.AVG_BLOCK_TIME)
 				} 
 			})
-// 			this.$$.ajax(this.$http, this.$$.serverUrl + '/data/blockAvg', dataArr).then(res => {
-// 				// console.log(res)
-// 				if (res && res.info) {
-// 					for (let i = res.info.length - 1; i >= 0 ; i--) {
-// 						if (i === 0) break
-// 						let blockDayHeight = Number(res.info[i - 1].data.number) - Number(res.info[i].data.number)
-// 						let blockDayTimeAvg = Number(res.info[i - 1].data.timestamp) - Number(res.info[i].data.timestamp)
-// 						blockDayTimeAvg = Number(blockDayTimeAvg / blockDayHeight).toFixed(2)
-// 						this.blockHeightChart.push(blockDayHeight)
-// 						this.blockTimeChart.push(blockDayTimeAvg)
-// 					}
-// 					this.barChart('blockHeight', this.blockHeightChart, 'Avg Block Helght')
-// 					this.barChart('blockTime', this.blockTimeChart, 'Avg Block Time')
-// 				} 
-// 			})
 			this.socket.emit('transferAvg', dataArr)
 			this.socket.on('transferAvg', (data) => {
 				console.log('transferAvg')
@@ -309,7 +340,6 @@ export default {
 					for (let i = resData.info.length - 1; i >= 0 ; i--) {
 						// if (i === 0) break
 						let transferNum = resData.info[i].data
-						// blockDayTimeAvg = Number(blockDayTimeAvg / blockDayHeight).toFixed(2)
 						this.transferChart.push(transferNum)
 						
 						// console.log(this.$$.timeChange({date: resData.info[i].timestamp * 1000, type: 'yyyy-mm-dd hh:mm:ss'}))
@@ -330,31 +360,6 @@ export default {
 					this.barChart('transactionsChart', this.transferChart, this.LANG.TITLE.TRANSACTIONS)
 				}  
 			})
-// 			this.$$.ajax(this.$http, this.$$.serverUrl + '/data/transferAvg', dataArr).then(res => {
-// 				console.log(res)
-// 				if (res && res.info) {
-// 					for (let i = res.info.length - 1; i >= 0 ; i--) {
-// 						// if (i === 0) break
-// 						let transferNum = res.info[i].data
-// 						// blockDayTimeAvg = Number(blockDayTimeAvg / blockDayHeight).toFixed(2)
-// 						this.transferChart.push(transferNum)
-// 						
-// 						// console.log(this.$$.timeChange({date: res.info[i].timestamp * 1000, type: 'yyyy-mm-dd hh:mm:ss'}))
-// 					}
-// 					// console.log(this.transferChart)
-// 					if (this.transferChart[3] === 0) {
-// 						this.transferPerent = 0
-// 					} else {
-// 						this.transferPerent = (Number(this.transferChart[4]) - Number(this.transferChart[3])) / Number(this.transferChart[3])
-// 					}
-// 					if (this.transferPerent >= 0) {
-// 						this.transferPerent = '<span style="color:red">+' + this.transferPerent + '%</span>'
-// 					} else {
-// 						this.transferPerent = '<span>' + this.transferPerent + '%</span>'
-// 					}
-// 					this.barChart('transactionsChart', this.transferChart, 'Transactions')
-// 				} 
-// 			})
 			
 			this.socket.emit('blockTime', dataArr)
 			this.socket.on('blockTime', (data) => {
@@ -364,64 +369,6 @@ export default {
 					this.blockTime = Number(resData.info).toFixed(2)
 				}
 			})
-// 			this.$http.get(this.$$.serverUrl + '/data/blockTime').then(res => {
-// 				if (res && res.data && res.data.info) {
-// 					this.blockTime = Number(res.data.info).toFixed(2)
-// 				}
-// 				// console.log(res)
-// 			})
-		},
-		setIintervalGetData () {
-			let _params = {
-				pageNum: 1,
-				pageSize: 20
-			}
-			this.socket.emit('blocksRefresh', _params)
-			this.socket.on('blocksRefresh', (data) => {
-				// console.log(data)
-				let resData = data
-				if (resData.info.length > 0) {
-					this.blockData = resData.info
-					this.blockHeight = this.$$.thousandBit(resData.info[0].number, 'no')
-				} else {
-					this.blockData = []
-					this.blockHeight = 0
-				}
-			})
-			this.socket.emit('transactionRefresh', _params)
-			this.socket.on('transactionRefresh', (data) => {
-				// console.log(data)
-				let resData = data
-				if (resData.info) {
-					this.transData = resData.info
-					this.txnsData = this.$$.thousandBit(resData.total, 'no')
-				} else {
-					this.transData = []
-					this.txnsData = 0
-				}
-			})
-// 			this.$$.ajax(this.$http, this.blockUrl, _params).then(res => {
-// 				// console.log(res)
-// 				let data = res.info
-// 				if (data.length > 0) {
-// 					this.blockData = data
-// 					this.blockHeight = this.$$.thousandBit(data[0].number, 'no')
-// 				} else {
-// 					this.blockData = []
-// 					this.blockHeight = 0
-// 				}
-// 			})
-// 			this.$$.ajax(this.$http, this.transUrl, _params).then(res => {
-// 				// console.log(res)
-// 				let data = res.info
-// 				if (data) {
-// 					this.transData = data
-// 					this.txnsData = this.$$.thousandBit(res.total, 'no')
-// 				} else {
-// 					this.transData = []
-// 					this.txnsData = 0
-// 				}
-// 			})
 		},
 		toUrl (url) {
 			this.$router.push(url)
@@ -495,10 +442,11 @@ export default {
     }
 	},
 	beforeDestroy() {
-		clearInterval(this.refreshSetInterval)
+		// clearInterval(this.refreshSetInterval)
+		console.log('beforeDestroy')
 		this.refreshSetInterval = null
 		document.getElementById('publicSearchId').style.display = 'block'
-		this.socket.emit('clearInterval')
+		// this.socket.emit('clearInterval')
 		
 		this.socket.close()
 		this.socket.disconnect()

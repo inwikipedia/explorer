@@ -5,6 +5,8 @@ let Transaction = mongoose.model( 'Transaction' )
 let Account = mongoose.model( 'Account' )
 let AccountInfo = mongoose.model( 'AccountInfo' )
 
+let async = require('async')
+
 let Web3 = require('web3')
 // let web3 = new Web3(new Web3.providers.HttpProvider('http://54.169.254.177:40415'))
 let web3 = new Web3(new Web3.providers.HttpProvider('https://api.nodes.run'))
@@ -13,7 +15,7 @@ let web3 = new Web3(new Web3.providers.HttpProvider('https://api.nodes.run'))
 function transaction(socket, req, type) {
 // const transaction = (socket, req, type) => {
 	let setData = {
-		pageSize: req.pageSize ? req.pageSize : 20,
+		pageSize: req && req.pageSize ? req.pageSize : 20,
 		skip: 0
 	}
 	let data = {
@@ -22,39 +24,44 @@ function transaction(socket, req, type) {
 		total: ''
 	}
 	type = type ? type : 'transaction'
-	setData.skip = req.pageNum ? (Number(req.pageNum - 1) * Number(setData.pageSize)) : 0
-	// console.log('setData')
-	// console.log(setData)	
-	let info = () => {			
-		Transaction.find({}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err, result) => {
-			if (!err) {
-				data.msg = 'Success'
-				data.info = result
-			} else {
-				data.msg = 'Error'
-				data.info = ''
-			}
-			console.log('transaction: ' + (Date.parse(new Date()) / 1000))
-			// console.log(socket)
-			// socket.emit('transaction', data)
-			socket.emit(type, data)
-			console.log('transaction callback data success')
-			// socket.on('disconnect', () => {
-			// 	console.log('disconnect')
-			// })
-			// console.log(socket)
-			
-		})
-	}
-	Transaction.find({}).countDocuments((err, result) => {
-		if (!err) {
-			data.msg = 'Success'
-			data.total = result
-		} else {
-			data.msg = 'Error'
-			data.info = ''
+	setData.skip = req && req.pageNum ? (Number(req.pageNum - 1) * Number(setData.pageSize)) : 0
+
+	async.waterfall([
+		(cb) => {
+			Transaction.find({}).countDocuments((err, result) => {
+				if (!err) {
+					data.msg = 'Success'
+					data.total = result
+					cb(null, data)
+				} else {
+					data.msg = 'Error'
+					data.info = ''
+					cb(data)
+				}
+			})
+		},
+		(data, cb) => {
+			Transaction.find({}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(setData.pageSize)).exec((err, result) => {
+				if (!err) {
+					data.msg = 'Success'
+					data.info = result
+					cb(null, data)
+				} else {
+					data.msg = 'Error'
+					data.info = ''
+					cb(data)
+				}
+			})
 		}
-		info()
+	], (err, data) => {
+		if (err) {
+			socket.emit(type, err)
+		} else {
+			socket.emit(type, data)
+		}
+		console.log('transaction: ' + (Date.parse(new Date()) / 1000))
+		// socket.emit(type, data)
+		console.log('transaction callback data success')
 	})
 }
 
@@ -104,7 +111,6 @@ function transferPage(socket, req, type) {
 	}			
 	Transaction.find({'timestamp': setData.page}).lean(true).limit(1).exec((err,result) => {
 		if (!err) {
-			// total()
 			data.msg = 'Success'
 			data.info = result[0]
 			
@@ -166,7 +172,7 @@ function transferAvg(socket, req, type) {
 // router.post('/blocks', (req, res) => {
 function blocks(socket, req, type) {
 	let setData = {
-		pageSize: req.pageSize ? req.pageSize : 20,
+		pageSize: req && req.pageSize ? req.pageSize : 20,
 		skip: 0
 	}
 	let data = {
@@ -174,32 +180,46 @@ function blocks(socket, req, type) {
 		info: '',
 		total: ''
 	}
-	setData.skip = req.pageNum ? (Number(req.pageNum - 1) * Number(setData.pageSize)) : 0
+	setData.skip = req && req.pageNum ? (Number(req.pageNum - 1) * Number(setData.pageSize)) : 0
 	type = type ? type : 'blocks'
-	let info = () => {			
-		Block.find({}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
-			if (!err) {
-				// total()
-				data.msg = 'Success'
-				data.info = result
-			} else {
-				data.msg = 'Error'
-				data.info = ''
-			}
-			socket.emit(type, data)
-			console.log('blocks callback data success')
-		})
-	}
-		
-	Block.find({}).countDocuments((err, result) => {
-		if (!err) {
-			data.msg = 'Success'
-			data.total = result
-		} else {
-			data.msg = 'Error'
-			data.info = ''
+
+	async.waterfall([
+		(cb) => {
+			Block.find({}).countDocuments((err, result) => {
+				if (!err) {
+					data.msg = 'Success'
+					data.total = result
+					cb(null, data)
+				} else {
+					data.msg = 'Error'
+					data.info = ''
+					cb(data)
+				}
+				// info()
+			})
+		},
+		(data, cb) => {
+			Block.find({}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(setData.pageSize)).exec((err,result) => {
+				if (!err) {
+					// total()
+					data.msg = 'Success'
+					data.info = result
+					cb(null, data)
+				} else {
+					data.msg = 'Error'
+					data.info = ''
+					cb(data)
+				}
+			})
 		}
-		info()
+	], (err, data) => {
+		if (err) {
+			socket.emit(type, err)
+		} else {
+			socket.emit(type, data)
+		}
+		// socket.emit(type, data)
+		console.log('blocks callback data success')
 	})
 }
 
@@ -215,31 +235,46 @@ function pendingBlocks(socket, req, type) {
 		total: ''
 	}
 	setData.skip = req.pageNum ? (Number(req.pageNum - 1) * Number(setData.pageSize)) : 0
-	let info = () => {			
-		Block.find({"hash": ""}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
-			if (!err) {
-				// total()
-				data.msg = 'Success'
-				data.info = result
-			} else {
-				data.msg = 'Error'
-				data.info = ''
-			}
-			socket.emit(type, data)
-			console.log('pendingBlocks callback data success')
-		})
-	}
-			
-	Block.find({"hash": ""}).countDocuments((err, result) => {
-		if (!err) {
-			data.msg = 'Success'
-			data.total = result
-		} else {
-			data.msg = 'Error'
-			data.info = ''
+
+	async.waterfall([
+		(cb) => {
+			Block.find({"hash": ""}).countDocuments((err, result) => {
+				if (!err) {
+					data.msg = 'Success'
+					data.total = result
+					cb(null, data)
+				} else {
+					data.msg = 'Error'
+					data.info = ''
+					cb(data)
+				}
+				// info()
+			})
+		},
+		(data, cb) => {
+			Block.find({"hash": ""}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
+				if (!err) {
+					// total()
+					data.msg = 'Success'
+					data.info = result
+					cb(null, data)
+				} else {
+					data.msg = 'Error'
+					data.info = ''
+					cb(data)
+				}
+			})
 		}
-		info()
+	], (err, data) => {
+		if (err) {
+			socket.emit(type, err)
+		} else {
+			socket.emit(type, data)
+		}
+		// socket.emit(type, data)
+		console.log('pendingBlocks callback data success')
 	})
+
 }
 
 // router.post('/blockNum', (req, res) => {
@@ -345,31 +380,41 @@ function topAccounts(socket, req, type) {
 		total: ''
 	}
 	setData.skip = req.pageNum ? (Number(req.pageNum - 1) * Number(setData.pageSize)) : 0
-	let info = () => {			
-		Account.find({}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
-			if (!err) {
-				// total()
-				data.msg = 'Success'
-				data.info = result
-			} else {
-				data.msg = 'Error'
-				data.info = ''
-			}
-			console.log(data)
-			socket.emit(type, data)
-			console.log('topAccounts callback data success')
-		})
-	}
-	
-	Account.find({}).countDocuments((err, result) => {
-		if (!err) {
-			data.msg = 'Success'
-			data.total = result
-		} else {
-			data.msg = 'Error'
-			data.info = ''
+
+	async.waterfall([
+		(cb) => {
+			Account.find({}).countDocuments((err, result) => {
+				if (!err) {
+					data.msg = 'Success'
+					data.total = result
+					cb(null, data)
+				} else {
+					data.msg = 'Error'
+					data.info = ''
+					cb(data)
+				}
+			})
+		},
+		(data, cb) => {
+			Account.find({}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
+				if (!err) {
+					data.msg = 'Success'
+					data.info = result
+					cb(null, data)
+				} else {
+					data.msg = 'Error'
+					data.info = ''
+					cb(data)
+				}
+			})
 		}
-		info()
+	], (err, data) => {
+		if (err) {
+			socket.emit(type, err)
+		} else {
+			socket.emit(type, data)
+		}
+		console.log('topAccounts callback data success')
 	})
 }
 
@@ -386,36 +431,48 @@ function getAccounts (socket, req, type) {
 	}
 	setData.skip = req.pageNum ? (Number(req.pageNum - 1) * Number(setData.pageSize)) : 0
 	console.log(setData)	
-	let info = () => {			
-		AccountInfo.find({'balance': {'$gte': setData.balance}}).lean(true).sort({"balance": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
-		// AccountInfo.find({}).lean(true).sort({"balance": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
-			if (!err) {
-				// total()
-				data.msg = 'Success'
-				data.info = result
-			} else {
-				data.msg = 'Error'
-				data.info = ''
-			}
-			socket.emit(type, data)
-			console.log('getAccounts callback data success')
-		})
-	}
-	AccountInfo.find({'balance': {'$gte': setData.balance}}).lean(true).sort({"balance": -1}).countDocuments((err, result) => {
-	// AccountInfo.find({}).lean(true).sort({"balance": -1}).countDocuments((err, result) => {
-		if (!err) {
-			data.msg = 'Success'
-			data.total = result
-			// console.log(result)
-		} else {
-			data.msg = 'Error'
-			data.info = ''
+
+	async.waterfall([
+		(cb) => {
+			AccountInfo.find({'balance': {'$gte': setData.balance}}).lean(true).sort({"balance": -1}).countDocuments((err, result) => {
+			// AccountInfo.find({}).lean(true).sort({"balance": -1}).countDocuments((err, result) => {
+				if (!err) {
+					data.msg = 'Success'
+					data.total = result
+					cb(null, data)
+				} else {
+					data.msg = 'Error'
+					data.info = ''
+					cb(data)
+				}
+			})
+		},
+		(data, cb) => {
+			AccountInfo.find({'balance': {'$gte': setData.balance}}).lean(true).sort({"balance": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
+			// AccountInfo.find({}).lean(true).sort({"balance": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
+				if (!err) {
+					data.msg = 'Success'
+					data.info = result
+					cb(null, data)
+				} else {
+					data.msg = 'Error'
+					data.info = ''
+					cb(data)
+				}
+			})
 		}
-		info()
+	], (err, data) => {
+		if (err) {
+			socket.emit(type, err)
+		} else {
+			socket.emit(type, data)
+		}
+		// socket.emit(type, data)
+		console.log('getAccounts callback data success')
 	})
+
 }
 
-// router.post('/accountTxn', (req, res) => {
 function accountTxn(socket, req, type) {
 	let setData = {
 		pageSize: req.pageSize ? req.pageSize : 20,
@@ -428,31 +485,42 @@ function accountTxn(socket, req, type) {
 		total: ''
 	}
 	setData.skip = req.pageNum ? (Number(req.pageNum - 1) * Number(setData.pageSize)) : 0
-	let info = () => {			
-		Transaction.find({ $or: [{"to": setData.addr}, {"from": setData.addr}] }).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
-			if (!err) {
-				// total()
-				data.msg = 'Success'
-				data.info = result
-			} else {
-				data.msg = 'Error'
-				data.info = ''
-			}
-			socket.emit(type, data)
-			console.log('accountTxn callback data success')
-		})
-	}
-		
-	Transaction.find({ $or: [{"to": setData.addr}, {"from": setData.addr}] }).countDocuments((err, result) => {
-		if (!err) {
-			data.msg = 'Success'
-			data.total = result
-			// console.log(result)
-		} else {
-			data.msg = 'Error'
-			data.info = ''
+
+	async.waterfall([
+		(cb) => {
+			Transaction.find({ $or: [{"to": setData.addr}, {"from": setData.addr}] }).countDocuments((err, result) => {
+				if (!err) {
+					data.msg = 'Success'
+					data.total = result
+					cb(null, data)
+				} else {
+					data.msg = 'Error'
+					data.info = ''
+					cb(data)
+				}
+			})
+		},
+		(data, cb) => {
+			Transaction.find({ $or: [{"to": setData.addr}, {"from": setData.addr}] }).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
+				if (!err) {
+					data.msg = 'Success'
+					data.info = result
+					cb(null, data)
+				} else {
+					data.msg = 'Error'
+					data.info = ''
+					cb(data)
+				}
+			})
 		}
-		info()
+	], (err, data) => {
+		if (err) {
+			socket.emit(type, err)
+		} else {
+			socket.emit(type, data)
+		}
+		// socket.emit(type, data)
+		console.log('accountTxn callback data success')
 	})
 }
 
@@ -462,51 +530,58 @@ function accountDtil (socket, req) {
 		msg: '',
 		info: ''
 	}
-	let updateAccount = (TxCount) => {
-		AccountInfo.update({'address': setData}, {'TxCount': TxCount}, {'updateTime': Date.parse(new Date()) / 1000}).exec((err, result) => {
-			if (err) {
-				console.log(err)
-			} else {
-				console.log(result)
-			}
-		})
-	}
-	let total = (TxCount) => {		
-		Transaction.find({ $or: [{"to": setData}, {"from": setData}] }).countDocuments((err, result) => {
-			if (!err) {
-				data.msg = 'Success'
-				if (TxCount !== result) {
-					data.info.TxCount = result
-					updateAccount(result)
+
+	async.waterfall([
+		(cb) => {
+			AccountInfo.find({'address': setData}).exec((err, result) => {
+				if (err) {
+					console.log(err)
+					data.msg = 'Error'
+					data.info = ''
+					cb(data)
+				} else {
+					if (result.length <= 0) {
+						data.msg = 'Null'
+						data.info = ''
+						cb(data)
+					} else {
+						data.msg = 'Success'
+						data.info = result[0]
+						cb(null, data)
+					}
 				}
-				// console.log(result)
-			} else {
-				data.msg = 'Error'
-				data.info = ''
-			}
-			socket.emit('accountDtil', data)
-			console.log('accountDtil callback data success')
-		})
-	}
-	AccountInfo.find({'address': setData}).exec((err, result) => {
-		if (err) {
-			console.log(err)
-		} else {
-// 			console.log(result)
-// 			console.log(result.length)
-			if (result.length <= 0) {
-				// console.log(1)
-				data.msg = 'Null'
-				data.info = ''
-				socket.emit('accountDtil', data)
-				console.log('accountDtil callback data success')
-			} else {
-				// console.log(2)
-				data.msg = 'Success'
-				data.info = result[0]
-				total(result[0].TxCount)
-			}
+			})
+		},
+		(data, cb) => {
+			Transaction.find({ $or: [{"to": setData}, {"from": setData}] }).countDocuments((err, result) => {
+				if (!err) {
+					data.msg = 'Success'
+					if (data.info.TxCount !== result) {
+						data.info.TxCount = result
+						AccountInfo.update({'address': setData}, {'TxCount': data.info.TxCount}, {'updateTime': Date.parse(new Date()) / 1000}).exec((err, result) => {
+							if (err) {
+								console.log(err)
+							} else {
+								console.log(result)
+							}
+						})
+					}
+					cb(null, data)
+				} else {
+					data.msg = 'Error'
+					data.info = ''
+					cb(data)
+				}
+			})
 		}
+	], (err, data) => {
+		if (err) {
+			socket.emit('accountDtil', err)
+		} else {
+			socket.emit('accountDtil', data)
+		}
+		// socket.emit('accountDtil', data)
+		console.log('accountDtil callback data success')
 	})
 }
 
@@ -518,15 +593,16 @@ function sendData (socket) {
 		transaction(socket, req, 'transaction')
 	})
 	socket.on('transactionRefresh', (req) => {
-		clearTransaction = () => {
-			try {
-				setTimeout(clearTransaction, 3000)
-				transaction(socket, req, 'transactionRefresh')
-			} catch (error) {
-				// console.log(error)
-			}
-		}
-		clearTransaction()
+		transaction(socket, req, 'transactionRefresh')
+		// clearTransaction = () => {
+		// 	try {
+		// 		setTimeout(clearTransaction, 3000)
+		// 		transaction(socket, req, 'transactionRefresh')
+		// 	} catch (error) {
+		// 		// console.log(error)
+		// 	}
+		// }
+		// clearTransaction()
 	})
 	socket.on('transferDtil', (req) => {
 		transferDtil(socket, req, 'transferDtil')
@@ -543,15 +619,16 @@ function sendData (socket) {
 	})
 	socket.on('blocksRefresh', (req) => {
 		console.log('blocksRefresh')
-		clearBlocks = () => {
-			try {
-				setTimeout(clearBlocks, 3000)
-				blocks(socket, req, 'blocksRefresh')
-			} catch (error) {
-				// console.log(error)
-			}
-		}
-		clearBlocks()
+		blocks(socket, req, 'blocksRefresh')
+		// clearBlocks = () => {
+		// 	try {
+		// 		setTimeout(clearBlocks, 3000)
+		// 		blocks(socket, req, 'blocksRefresh')
+		// 	} catch (error) {
+		// 		// console.log(error)
+		// 	}
+		// }
+		// clearBlocks()
 	})
 	socket.on('pendingBlocks', (req) => {
 		pendingBlocks(socket, req, 'pendingBlocks')

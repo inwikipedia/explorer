@@ -59,6 +59,18 @@ let syncChart = function () {
     },
     (time, callback) => {
       // console.log(time)
+      if (time) {
+        let resTimeDay = (new Date(time * 1000)).getDate()
+        let nowTimeDay = (new Date()).getDate()
+        // console.log("resTimeDay")
+        // console.log(resTimeDay)
+        // console.log(nowTimeDay)
+        if (resTimeDay === (nowTimeDay - 1)) {
+          // console.log(resTimeDay === (nowTimeDay - 1))
+          callback(null)
+          return
+        }
+      }
       let nowTime = Date.parse(new Date()) / 1000
       time = time.toString().length > 10 ? (time / 1000) : time
       let timeInterval = Math.floor((nowTime - time) / (60 * 60 * 24))

@@ -61,8 +61,14 @@ let getSocketIoChart = require('./server/getSocketIoChart')
 // var socket = io.connect()
 // getSocketIoData.sendData(socket)
 // getSocketIoChart.sendData(socket)
+let peopleCount = 0
 io.on('connection', function (socket) {
-  console.log('a user')
+  peopleCount ++
+  console.log(peopleCount + 'user')
 	getSocketIoData.sendData(socket)
-	getSocketIoChart.sendData(socket)
+  getSocketIoChart.sendData(socket)
+  socket.on('disconnect',function(){
+    peopleCount--;
+    console.log(peopleCount + 'user')
+  })
 })
