@@ -224,11 +224,9 @@ export default {
 		// 	pageSize: 20
 		// }
 		this.refreshSetInterval = () => {
-			// console.log(this.refreshSetInterval)
 			if (this.refreshSetInterval) {
-				setTimeout(this.refreshSetInterval, 3000)
-				this.socket.emit('blocksRefresh')
-				this.socket.emit('transactionRefresh')
+				setTimeout(this.refreshSetInterval, 12000)
+				this.socket.emit('RefreshData')
 			}
 		}
 		this.refreshSetInterval()
@@ -237,11 +235,6 @@ export default {
 	},
 	methods: {
 		setIintervalGetData () {
-			// let _params = {
-			// 	pageNum: 1,
-			// 	pageSize: 20
-			// }
-			// this.socket.emit('blocksRefresh', _params)
 			this.socket.on('blocksRefresh', (data) => {
 				// console.log(data)
 				let resData = data
@@ -253,7 +246,6 @@ export default {
 					this.blockHeight = 0
 				}
 			})
-			// this.socket.emit('transactionRefresh', _params)
 			this.socket.on('transactionRefresh', (data) => {
 				// console.log(data)
 				let resData = data
@@ -313,61 +305,48 @@ export default {
 			this.blockHeightChart = []
 			this.blockTimeChart = []
 			this.transferChart = []
-			this.socket.emit('blockAvg', dataArr)
-			this.socket.on('blockAvg', (data) => {
-				console.log('blockAvg')
+			this.socket.emit('getAvgData', dataArr)
+			this.socket.on('getAvgData', (data) => {
+				console.log('getAvgData')
 				console.log(data)
+				// return
 				let resData = data
-				if (resData && resData.info) {
-					for (let i = resData.info.length - 1; i >= 0 ; i--) {
+				if (resData && resData.blocks) {
+					for (let i = resData.blocks.length - 1; i >= 0 ; i--) {
 						if (i === 0) break
-						let blockDayHeight = Number(resData.info[i - 1].data.number) - Number(resData.info[i].data.number)
-						let blockDayTimeAvg = Number(resData.info[i - 1].data.timestamp) - Number(resData.info[i].data.timestamp)
+						let blockDayHeight = Number(resData.blocks[i - 1].data.number) - Number(resData.blocks[i].data.number)
+						let blockDayTimeAvg = Number(resData.blocks[i - 1].data.timestamp) - Number(resData.blocks[i].data.timestamp)
 						blockDayTimeAvg = Number(blockDayTimeAvg / blockDayHeight).toFixed(2)
 						this.blockHeightChart.push(blockDayHeight)
 						this.blockTimeChart.push(blockDayTimeAvg)
 					}
 					this.barChart('blockHeight', this.blockHeightChart, this.LANG.TITLE.AVG_BLOCK_HEIGHT)
 					this.barChart('blockTime', this.blockTimeChart, this.LANG.TITLE.AVG_BLOCK_TIME)
-				} 
-			})
-			this.socket.emit('transferAvg', dataArr)
-			this.socket.on('transferAvg', (data) => {
-				console.log('transferAvg')
-				console.log(data)
-				let resData = data
-				if (resData && resData.info) {
-					for (let i = resData.info.length - 1; i >= 0 ; i--) {
-						// if (i === 0) break
-						let transferNum = resData.info[i].data
+				}
+
+				if (resData && resData.trans) {
+					for (let i = resData.trans.length - 1; i >= 0 ; i--) {
+						let transferNum = resData.trans[i].data
 						this.transferChart.push(transferNum)
-						
-						// console.log(this.$$.timeChange({date: resData.info[i].timestamp * 1000, type: 'yyyy-mm-dd hh:mm:ss'}))
 					}
-					// console.log(this.transferChart)
 					if (this.transferChart[3] === 0) {
 						this.transferPerent = 0
 					} else {
 						this.transferPerent = (Number(this.transferChart[4]) - Number(this.transferChart[3])) / Number(this.transferChart[3])
 						this.transferPerent = this.transferPerent.toFixed(2)
 					}
-					// console.log(this.transferPerent)
 					if (this.transferPerent > 0) {
 						this.transferPerent = '<span style="color:red">+' + this.transferPerent + '%</span>'
 					} else {
 						this.transferPerent = '<span>' + this.transferPerent + '%</span>'
 					}
 					this.barChart('transactionsChart', this.transferChart, this.LANG.TITLE.TRANSACTIONS)
-				}  
-			})
-			
-			this.socket.emit('blockTime', dataArr)
-			this.socket.on('blockTime', (data) => {
-				// console.log(data)
-				let resData = data
-				if (resData && resData.info) {
-					this.blockTime = Number(resData.info).toFixed(2)
 				}
+
+				if (resData && resData.blockTime) {
+					this.blockTime = Number(resData.blockTime).toFixed(2)
+				}
+
 			})
 		},
 		toUrl (url) {
@@ -442,18 +421,12 @@ export default {
     }
 	},
 	beforeDestroy() {
-		// clearInterval(this.refreshSetInterval)
 		console.log('beforeDestroy')
 		this.refreshSetInterval = null
 		document.getElementById('publicSearchId').style.display = 'block'
-		// this.socket.emit('clearInterval')
 		
 		this.socket.close()
 		this.socket.disconnect()
-		// socket.close()
-		// console.log(socket)
-		// socket.connect()
-		// console.log(socket)
 	}
 }
 </script>
