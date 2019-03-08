@@ -189,8 +189,8 @@ export default {
 		},
 		getPageUrl (_params) {
 			// this.$$.ajax(this.$http, this.$$.serverUrl + '/data/transferPage', _params).then(res => {
-			socket.emit('transferPage', _params)
-			socket.on('transferPage', (res) => {
+			this.socket.emit('transferPage', _params)
+			this.socket.on('transferPage', (res) => {
 				if (!res.info) {
 					this.$message({
 						message: this.LANG.ERROR.TIP_0,
