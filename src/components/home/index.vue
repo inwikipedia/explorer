@@ -218,7 +218,7 @@ export default {
 		this.getData()
 		this.getAvgChart()
 		document.getElementById('publicSearchId').style.display = 'none'
-
+		// console.log(vm)
 		// let _params = {
 		// 	pageNum: 1,
 		// 	pageSize: 20
