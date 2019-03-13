@@ -38,23 +38,23 @@
 					<table-data :tableData="{
 						th: LANG.NAV.TXNS,
 						width: '2',
-						params: [{param: 'blockNumber', type: 2}],
-						html: '<span class=\'ellipsis\'>{{param}}</span>'
+						params: [{param: 'number'}, {param: 'Txns', type: 2}],
+						html: '<div class=\'trans_style\'><span class=\'ellipsis cursorP blue\' onclick=toUrl(\'/blockIndex/txns\',\'{{param}}\')>{{param}}</span></div>'
 					}"></table-data>
 					<table-data 
 						:tableData="{
 							th: LANG.TABLE.UNCLES,
 							width: '2',
-							params: [{param: 'uncles'}],
-							html: '<div class=\'trans_style\'><p class=\'rowItem\'><a onclick=toUrl(\'/blocks?id=\') class=\'cursorP\'><span class=\'blue\'>{{param}}</span></a></p></div>'
+							params: [{param: 'uncles', type: 4}],
+							html: '<div class=\'trans_style\'><p class=\'rowItem\'><span>{{param}}</span></p></div>'
 						}"
 					></table-data>
 					<table-data 
 						:tableData="{
 							th: LANG.TABLE.MINER,
 							width: '4',
-							params: [{param: 'miner', type: 1, start: 10, end: 8}],
-							html: '<div class=\'trans_style\'><p class=\'rowItem\'><span class=\'blue\'>{{param}}</span></p></div>'
+							params: [{param: 'miner'}, {param: 'miner', type: 1, start: 10, end: 8}],
+							html: '<div class=\'trans_style\'><p class=\'rowItem\'><span onclick=toUrl(\'/blockIndex/accountDtil\',\'{{param}}\') class=\'blue cursorP\'>{{param}}</span></p></div>'
 						}"
 					></table-data>
 					<table-data 
@@ -109,8 +109,8 @@ export default {
 			dataUrl: 'blocks',
 			blockData: [],
 			params: {
-				pageSize: 20,
-				count: 0
+				pageSize: 50,
+				pageNum: 0
 			}
 		}
 	},

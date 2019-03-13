@@ -94,7 +94,7 @@ export default {
 			blockData: [],
 			params: {
 				pageSize: 20,
-				count: 0
+				pageNum: 0
 			}
 		}
 	},

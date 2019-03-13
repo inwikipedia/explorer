@@ -108,11 +108,11 @@ export default {
 			isNext: true,
 			selectPageSize: [
 				{label: 10, value: 10 },
-				{label: 15, value: 15 },
-				{label: 20, value: 20 },
-				{label: 25, value: 25 }
+				{label: 25, value: 25 },
+				{label: 50, value: 50 },
+				{label: 100, value: 100 }
 			],
-			selectValue: this.params && this.params.pageSize ? this.params.pageSize : 20,
+			selectValue: this.params && this.params.pageSize ? this.params.pageSize : 50,
 			titleTxt: '',
 			tableFlag: true,
 			socket: null
@@ -147,19 +147,12 @@ export default {
 	},
 	mounted () {
 		this.socket = io(this.$$.serverUrl)
-		// this.socket = socket
-		// socket.connect()
-		// this.addLoading()
-		// console.log(this.params)
 		if (this.dataUrl) {
-			// console.log(1)
 			this.getInitData()
 		} else {
-			// console.log(2)
 			this.setInitData()
 		}
 		if (this.isSetTimeout) {
-			// console.log(3)
 			this.setTimeout = this.setTimeout ? this.setTimeout : 15000
 			this.refreshSetInterval = setInterval(() => {
 				this.getInitData()
@@ -172,52 +165,42 @@ export default {
 					params: params
 				}
 			})
-// 			let routeUrl = this.$router.resolve({
-// 				path: url,
-// 				query: {
-// 					params: params
-// 				}
-// 			})
-// 			window.open(routeUrl.href, '_blank')
 		}
 	},
 	methods: {
 		getInitData () {
 			if (!this.params) return
-			let _params = this.params
-			_params.pageNum = this.currPage
-			_params.pageSize = this.selectValue
-			this.getData(_params)
+			// let _params = this.params
+			// _params.pageNum = this.currPage
+			// _params.pageSize = this.selectValue
+			// console.log(this.params)
+			this.params.pageNum = this.currPage
+			this.getData(this.params)
 		},
 		prevBtn () {
 			if (this.currPage <= 1) {
-				// this.isPrev = true
 				return
 			}
 			this.currPage --
-// 			let _params = {
-// 				pageNum: this.currPage,
-// 				pageSize: this.selectValue,
-// 				addr: this.params.addr ? this.params.addr : '',
-// 				balance: this.params.balance ? this.params.balance : ''
-// 			}
-			let _params = this.params
-			_params.pageNum = this.currPage
-			_params.pageSize = this.selectValue
-			this.getData(_params)
+			// let _params = this.params
+			// _params.pageNum = this.currPage
+			// _params.pageSize = this.selectValue
+			this.params.pageNum = this.currPage
+			this.getData(this.params)
 		},
 		nextBtn () {
 			if (this.currPage >= this.totalPage) {
-				// this.isNext = true
 				return
 			}
 			this.currPage ++
-			let _params = this.params
-			_params.pageNum = this.currPage
-			_params.pageSize = this.selectValue
-			this.getData(_params)
+			// let _params = this.params
+			// _params.pageNum = this.currPage
+			// _params.pageSize = this.selectValue
+			this.params.pageNum = this.currPage
+			this.getData(this.params)
 		},
 		getData (params) {
+			// console.log(params)
 			this.addLoading()
 			this.tableData = []
 			this.tableHtml = ''
@@ -366,11 +349,11 @@ export default {
 					callback = this.$$.thousandBit(data[param.param], 'no')
 				}
 			} else if (Number(param.type) === 3) { //multiplication
-				// console.log(Number(data[param.param2].c[0]))
-				// this.$$.web3(this)
 				let _number = Number(data[param.param]) * Number(data[param.param2].c[0])
 				_number = web3.fromWei(_number, 'ether')
 				callback = this.$$.thousandBit(_number, 'no')
+			} else if (Number(param.type) === 4) {
+				callback = data[param.param].length
 			}
 			return callback
 		},

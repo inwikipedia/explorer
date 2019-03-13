@@ -30,8 +30,8 @@
 					<table-data :tableData="{
 						th: LANG.NAV.BLOCKS,
 						width: '3',
-						params: [{param: 'blockNumber', type: 2}],
-						html: '<span class=\'ellipsis\'>{{param}}</span>'
+						params: [{param: 'blockNumber'}, {param: 'blockNumber', type: 2}],
+						html: '<div class=\'trans_style\'><span class=\'ellipsis blue cursorP\' onclick=toUrl(\'/blockIndex/blocksDtil\',\'{{param}}\')>{{param}}</span></div>'
 					}"></table-data>
 					<table-data 
 						:tableData="{
@@ -93,14 +93,14 @@ export default {
 			dataUrl: 'transaction',
 			blockData: [],
 			params: {
-				pageSize: 20,
-				count: 0
+				pageSize: 50,
+				pageNum: 0
 			},
 			web3: ''
 		}
 	},
 	mounted () {
-		
+		this.params.blockNumber = this.$route.query.params ? Number(this.$route.query.params) : undefined
 	}
 }
 </script>

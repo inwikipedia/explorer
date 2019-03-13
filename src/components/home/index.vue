@@ -11,7 +11,7 @@
 								<li><router-link to="/assetsIndex/liloAssets">{{LANG.NAV.LILO_TOKENS}}</router-link></li>
 							</ul>
 						</div>
-						<el-input :placeholder="LANG.PH.SEARCH_PLACEHOLDER" v-model="searchVal">
+						<el-input :placeholder="LANG.PH.SEARCH_PLACEHOLDER" v-model="searchVal" class="searchBtnInput">
 							<template slot="suffix" class="flex-c">
 								<div class="icon" @click="searchBtn">
 									<!-- <img src="@/assets/img/search.svg" /> -->
@@ -110,13 +110,13 @@
 								<table-data 
 									:tableData="{
 										params: [{param: 'miner'}, {param: 'miner', type: 1, start: 10, end: 8}],
-										html: '<div class=\'trans_style\'><p class=\'rowItem\'>By <a  onclick=toUrl(\'/blockIndex/blocksDtil\',\'{{param}}\') class=\'cursorP\'><span class=\'blue\'>{{param}}</span></a></p></div>'
+										html: '<div class=\'trans_style\'><p class=\'rowItem\'>By <a  onclick=toUrl(\'/blockIndex/accountDtil\',\'{{param}}\') class=\'cursorP\'><span class=\'blue\'>{{param}}</span></a></p></div>'
 									}"
 								></table-data>
 								<table-data 
 									:tableData="{
-										params: [{param: 'txn'}, {param: 'txn', type: 2}],
-										html: '<div class=\'trans_style\'><p class=\'rowItem\'><a  onclick=toUrl(\'/blockIndex/blocksDtil\',\'{{param}}\') class=\'cursorP\'><span class=\'blue\'>{{param}}</span></a>Txns</p></div>'
+										params: [{param: 'number'}, {param: 'Txns', type: 2}],
+										html: '<div class=\'trans_style\'><p class=\'rowItem\'><a onclick=toUrl(\'/blockIndex/txns\',\'{{param}}\') class=\'cursorP\'><span class=\'blue\'>{{param}}</span></a>Txns</p></div>'
 									}"
 								></table-data>
 								<table-data 
@@ -218,11 +218,6 @@ export default {
 		this.getData()
 		this.getAvgChart()
 		document.getElementById('publicSearchId').style.display = 'none'
-		// console.log(vm)
-		// let _params = {
-		// 	pageNum: 1,
-		// 	pageSize: 20
-		// }
 		this.refreshSetInterval = () => {
 			if (this.refreshSetInterval) {
 				setTimeout(this.refreshSetInterval, 12000)
@@ -232,6 +227,16 @@ export default {
 		this.refreshSetInterval()
 		this.setIintervalGetData()
 
+	},
+	updated () {
+		let searchBtn = document.querySelectorAll('.searchBtnInput')
+		for (let i = 0; i < searchBtn.length; i++) {
+			searchBtn[i].onkeypress = (e) => {
+				if (e.which === 13) {
+					this.searchBtn()
+				}
+			}
+		}
 	},
 	methods: {
 		setIintervalGetData () {
@@ -259,7 +264,8 @@ export default {
 			})
 		},
 		searchBtn () {
-			if (!this.searchVal) {
+			let _searchVal = this.searchVal.replace(/\s/g, '')
+			if (!_searchVal) {
 				this.$message({
 					showClose: true,
 					message: 'Can\'t be empty!',
@@ -267,12 +273,17 @@ export default {
 				})
 				return
 			}
-			this.$router.push({
-				path: '/blockIndex/accountDtil',
-				query: {
-					params: this.searchVal
-				}
-			})
+			// console.log()
+			if (web3.isAddress(_searchVal)) {
+				this.$router.push({ path: '/blockIndex/accountDtil', query: {params: _searchVal} })
+			} else if (!isNaN(_searchVal)) {
+				this.$router.push({ path: '/blockIndex/blocksDtil', query: {params: _searchVal} })
+			} else if (_searchVal.indexOf('0x') === 0) {
+				console.log('txns')
+				this.$router.push({ path: '/blockIndex/txnsDtil', query: {params: _searchVal} })
+			} else {
+				this.$router.push({ path: '/error'})
+			}
 			this.searchVal = ''
 		},
 		getData () {

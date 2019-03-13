@@ -9,9 +9,9 @@
 						</div>
 						<div class="flex-bc">
 							<div class="headerNav_search" id="publicSearchId">
-								<el-input :placeholder="LANG.PH.SEARCH_PLACEHOLDER" clearable v-model="searchVal">
+								<el-input :placeholder="LANG.PH.SEARCH_PLACEHOLDER" clearable v-model="searchVal" class="searchBtnInput">
 									<template slot="prepend" class="flex-c">
-										<div class="icon" @click="searchBtn">
+										<div class="icon searchBtnInputIcon">
 											<i class="el-input__icon el-icon-search"></i>
 										</div>
 									</template>
@@ -174,9 +174,20 @@ export default {
 		this.dayAndNightData = localStorage.getItem('FUSION_EXPLORER_DAY_AND_NIGHT_TYPE') ? localStorage.getItem('FUSION_EXPLORER_DAY_AND_NIGHT_TYPE') : 'WHITE'
 		this.dayAndNightInit()
 	},
+	updated () {
+		let searchBtn = document.querySelectorAll('.searchBtnInput')
+		for (let i = 0; i < searchBtn.length; i++) {
+			searchBtn[i].onkeypress = (e) => {
+				if (e.which === 13) {
+					this.searchBtn()
+				}
+			}
+		}
+	},
 	methods: {
 		searchBtn () {
-			if (!this.searchVal) {
+			let _searchVal = this.searchVal.replace(/\s/g, '')
+			if (!_searchVal) {
 				this.$message({
 					showClose: true,
 					message: 'Can\'t be empty!',
@@ -184,12 +195,19 @@ export default {
 				})
 				return
 			}
-			this.$router.push({
-				path: '/blockIndex/accountDtil',
-				query: {
-					params: this.searchVal
-				}
-			})
+			// console.log(web3.isAddress(_searchVal))
+			if (web3.isAddress(_searchVal)) {
+				console.log('address')
+				this.$router.push({ path: '/blockIndex/accountDtil', query: {params: _searchVal} })
+			} else if (!isNaN(_searchVal) && _searchVal.indexOf('0x') !== 0) {
+				console.log('block')
+				this.$router.push({ path: '/blockIndex/blocksDtil', query: {params: _searchVal} })
+			} else if (_searchVal.indexOf('0x') === 0) {
+				console.log('txns')
+				this.$router.push({ path: '/blockIndex/txnsDtil', query: {params: _searchVal} })
+			} else {
+				this.$router.push({ path: '/error'})
+			}
 			this.searchVal = ''
 		},
     changLanguage () {

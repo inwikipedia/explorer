@@ -58,6 +58,9 @@ const broadcastTXN = resolve =>
 const verifyContracts = resolve =>
 	require.ensure([], () => resolve(require('@/components/more/verifyContracts')), 'group-more')
 
+const error = resolve =>
+	require.ensure([], () => resolve(require('@/components/public/error')), 'group-public')
+
 Vue.use(Router)
 // Vue.use(axios)
 
@@ -177,9 +180,13 @@ const routers = new Router({
 						name: 'verifyContracts',
 						component: verifyContracts
 					}]
+				}, {
+					path: '*',
+					name: 'error',
+					component: error
 				}
 			]
-    }
+		}
   ]
 })
 // 

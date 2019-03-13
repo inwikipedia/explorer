@@ -86,7 +86,6 @@ export default {
 				label: 'Get Raw TxHash',
 				value: 2
 			}],
-			web3: '',
 			timestamp: 0,
 			socket: null
 		}
@@ -94,6 +93,9 @@ export default {
 	watch: {
 		hash (cur, old) {
 			this.getBlocksInfo()
+		},
+		'$route' () {
+			this.hash = this.$route.query.params
 		}
 	},
 	mounted () {
@@ -110,8 +112,7 @@ export default {
 		
 	},
 	methods: {
-		getBlocksInfo (number) {
-			this.$$.web3(this)
+		getBlocksInfo () {
 			let _params = {
 				hash: this.hash
 			}
@@ -128,27 +129,7 @@ export default {
 					this.blocksInfo = []
 					return
 				}
-				// let hashData = this.hash
-// 				let blockNumData = res.info.blockNumber
-// 				// console.log(hashData)
-// 				let blockData = this.web3.eth.getBlock(blockNumData)
-// 				if (blockData === null) {
-// 					blockData = {
-// 						gasLimit: 0,
-// 						gasUsed: 0
-// 					}
-// 				}
 				let transGasPrice = res.info.gasPrice && res.info.gasPrice.c && res.info.gasPrice.c[0] ? res.info.gasPrice.c[0] : 0
-// 				if (transData === null) {
-// 					transData = {
-// 						gasPrice: 0
-// 					}
-// 				}
-				// console.log(this.web3.createBatch())
-				// console.log(blockData.gasUsed)
-				// console.log(res.info.gasPrice.c[0])
-				// console.log(this.toNonExponential(res.info.gasPrice))
-				// console.log(new BigNumber(res.info.gasPrice).toNumber())
 				let nowTime = Date.parse(new Date())
 				this.blocksInfo = [
 					{name: this.LANG.TABLE.TXHASH + ':', value: res.info.hash},
@@ -169,10 +150,6 @@ export default {
 				this.timestamp = res.info.timestamp
 			})
 		},
-// 		toNonExponential (num) {
-//         let m = num.toExponential().match(/\d(?:\.(\d*))?e([+-]\d+)/)
-//         return num.toFixed(Math.max(0, (m[1] || '').length - m[2]))
-// 		},
 		prevBtn () {
 			let _params = {
 				timestamp: this.timestamp,

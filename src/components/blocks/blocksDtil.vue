@@ -65,6 +65,9 @@ export default {
 	watch: {
 		blockNumber(cur, old) {
 			this.getBlocksInfo()
+		},
+		'$route' (to, from) {
+			this.blockNumber = this.$route.query.params
 		}
 	},
 	mounted () {
@@ -76,6 +79,7 @@ export default {
 			let _params = {
 				number: this.blockNumber
 			}
+			// console.log(_params)
 			// this.$$.ajax(this.$http, this.$$.serverUrl + '/data/blockNum', _params).then(res => {
 			this.socket.emit('blockNum', _params)
 			this.socket.on('blockNum', (res) => {

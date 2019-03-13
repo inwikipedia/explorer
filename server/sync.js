@@ -118,6 +118,7 @@ var syncChain = function (config, nextBlock) {
         }else if(blockData == null) {
           console.log('Warning: null block data received from the block with hash/number: ' + nextBlock);
         }else{
+          console.log('测试循环')
           writeBlockToDB(config, blockData);
           writeTransactionsToDB(config, blockData);
         }
@@ -140,7 +141,9 @@ var writeBlockToDB = function (config, blockData, flush) {
   if (!self.bulkOps) {
     self.bulkOps = []
   }
+  // console.log(blockData)
   if (blockData && blockData.number >= 0) {
+    blockData.Txns = blockData.transactions ? blockData.transactions.length : 0
     self.bulkOps.push(new Block(blockData))
     console.log('\t- block #' + blockData.number.toString() + ' inserted.')
   }
@@ -149,7 +152,8 @@ var writeBlockToDB = function (config, blockData, flush) {
     var bulk = self.bulkOps
     self.bulkOps = []
     if(bulk.length == 0) return
-
+    console.log('插入块')
+    // console.log(bulk)
     Block.collection.insert(bulk, function (err, blocks) {
       if (typeof err !== 'undefined' && err) {
         if (err.code === 11000) {
@@ -190,6 +194,8 @@ var writeTransactionsToDB = function (config, blockData, flush) {
 // 		console.log('web3.eth.getTransaction: ')
 // 		console.log(web3.eth.getTransaction(blockData.hash))
 // 	}
+// console.log('测试块')
+// console.log(blockData)
   if (blockData && blockData.transactions.length > 0) {
     for (d in blockData.transactions) {
       var txData = blockData.transactions[d]

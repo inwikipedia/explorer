@@ -199,7 +199,7 @@ export default {
 			blockData: [],
 			params: {
 				pageSize: 20,
-				count: 0,
+				pageNum: 0,
 				addr: this.$route.query.params
 			},
 			fsnBalance: 'FSN',
@@ -209,6 +209,14 @@ export default {
 			BNBbalance: '0 BNB',
 			txnsNum: 'txns',
 			socket: null
+		}
+	},
+	watch: {
+		address (cur, old) {
+			this.getInitData()
+		},
+		'$route' () {
+			this.address = this.$route.query.params
 		}
 	},
 	mounted () {
@@ -223,21 +231,24 @@ export default {
 			})
 			this.reload()
 		}
-		let addressData = {
-			address: this.address
-		}
-		this.socket.emit('accountDtil', addressData)
-		this.socket.on('accountDtil', (res) => {
-			console.log(res)
-			this.fsnBalance = this.$$.thousandBit(res.info.balance, 'no') + ' FSN'
-			this.txnsNum =  this.$$.thousandBit(res.info.TxCount, 'no') + ' txns'
-			this.BTCbalance = res.info.BTCbalance ? this.$$.thousandBit(res.info.BTCbalance, 'no') + ' BTC' : '0 BTC'
-			this.ETHbalance = res.info.ETHbalance ? this.$$.thousandBit(res.info.ETHbalance, 'no') + ' ETH' : '0 ETH'
-			this.GUSDbalance = res.info.GUSDbalance ? this.$$.thousandBit(res.info.GUSDbalance, 'no') + ' GUSD' : '0 GUSD'
-			this.BNBbalance = res.info.BNBbalance ? this.$$.thousandBit(res.info.BNBbalance, 'no') + ' BNB' : '0 BNB'
-		})
+		// this.getInitData()
 	},
 	methods: {
+		getInitData () {
+			let addressData = {
+				address: this.address
+			}
+			this.socket.emit('accountDtil', addressData)
+			this.socket.on('accountDtil', (res) => {
+				console.log(res)
+				this.fsnBalance = this.$$.thousandBit(res.info.balance, 'no') + ' FSN'
+				this.txnsNum =  this.$$.thousandBit(res.info.TxCount, 'no') + ' txns'
+				this.BTCbalance = res.info.BTCbalance ? this.$$.thousandBit(res.info.BTCbalance, 'no') + ' BTC' : '0 BTC'
+				this.ETHbalance = res.info.ETHbalance ? this.$$.thousandBit(res.info.ETHbalance, 'no') + ' ETH' : '0 ETH'
+				this.GUSDbalance = res.info.GUSDbalance ? this.$$.thousandBit(res.info.GUSDbalance, 'no') + ' GUSD' : '0 GUSD'
+				this.BNBbalance = res.info.BNBbalance ? this.$$.thousandBit(res.info.BNBbalance, 'no') + ' BNB' : '0 BNB'
+			})
+		},
 		codeViewBtn() {
 			this.codeViewVisible = true
 			this.$nextTick(() => {

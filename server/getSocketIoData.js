@@ -18,17 +18,44 @@ function transaction(socket, req, type) {
 		pageSize: req && req.pageSize ? req.pageSize : 20,
 		skip: 0
 	}
+	setData.skip = req && req.pageNum ? (Number(req.pageNum - 1) * Number(setData.pageSize)) : 0
 	let data = {
 		msg: '',
 		info: '',
 		total: ''
 	}
 	type = type ? type : 'transaction'
-	setData.skip = req && req.pageNum ? (Number(req.pageNum - 1) * Number(setData.pageSize)) : 0
-
+	let params = {}
+	console.log(req)
+	if (req) {
+		if (req.blockHash) {
+			params.blockHash = req.blockHash
+		} else if (req.blockNumber || req.blockNumber === 0) {
+			params.blockNumber = req.blockNumber
+		} else if (req.from) {
+			params.from = req.from
+		} else if (req.gas || req.gas === 0) {
+			params.gas = req.gas
+		} else if (req.gasPrice) {
+			params.gasPrice = req.gasPrice
+		} else if (req.hash) {
+			params.hash = req.hash
+		} else if (req.input) {
+			params.input = req.input
+		} else if (req.nonce || req.nonce === 0) {
+			params.nonce = req.nonce
+		} else if (req.timestamp || req.timestamp === 0) {
+			params.timestamp = req.timestamp
+		} else if (req.to) {
+			params.to = req.to
+		} else if (req.transactionIndex || req.transactionIndex === 0) {
+			params.transactionIndex = req.transactionIndex
+		}
+	}
+	console.log(params)
 	async.waterfall([
 		(cb) => {
-			Transaction.find({}).countDocuments((err, result) => {
+			Transaction.find(params).countDocuments((err, result) => {
 				if (!err) {
 					data.msg = 'Success'
 					data.total = result
@@ -41,7 +68,7 @@ function transaction(socket, req, type) {
 			})
 		},
 		(data, cb) => {
-			Transaction.find({}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(setData.pageSize)).exec((err, result) => {
+			Transaction.find(params).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(setData.pageSize)).exec((err, result) => {
 				if (!err) {
 					data.msg = 'Success'
 					data.info = result
@@ -129,17 +156,58 @@ function blocks(socket, req, type) {
 		pageSize: req && req.pageSize ? req.pageSize : 20,
 		skip: 0
 	}
+	setData.skip = req && req.pageNum ? (Number(req.pageNum - 1) * Number(setData.pageSize)) : 0
 	let data = {
 		msg: '',
 		info: '',
 		total: ''
 	}
-	setData.skip = req && req.pageNum ? (Number(req.pageNum - 1) * Number(setData.pageSize)) : 0
 	type = type ? type : 'blocks'
-
+	let params = {}
+	console.log(req)
+	if (req) {
+		if (req.Txns || req.Txns === 0) {
+			params.Txns = req.Txns
+		} else if (req.difficulty) {
+			params.difficulty = req.difficulty
+		} else if (req.extraData) {
+			params.extraData = req.extraData
+		} else if (req.gasLimit || req.gasLimit === 0) {
+			params.gasLimit = req.gasLimit
+		} else if (req.gasUsed || req.gasUsed === 0) {
+			params.gasUsed = req.gasUsed
+		} else if (req.hash) {
+			params.hash = req.hash
+		} else if (req.logsBloom) {
+			params.logsBloom = req.logsBloom
+		} else if (req.miner) {
+			params.miner = req.miner
+		} else if (req.nonce || req.nonce === 0) {
+			params.nonce = req.nonce
+		} else if (req.number || req.number === 0) {
+			params.number = req.number
+		} else if (req.parentHash) {
+			params.parentHash = req.parentHash
+		} else if (req.sha3Uncles) {
+			params.sha3Uncles = req.sha3Uncles
+		} else if (req.size || req.size === 0) {
+			params.size = req.size
+		} else if (req.stateRoot) {
+			params.stateRoot = req.stateRoot
+		} else if (req.timestamp || req.timestamp === 0) {
+			params.timestamp = req.timestamp
+		} else if (req.totalDifficulty || req.totalDifficulty === 0) {
+			params.totalDifficulty = req.totalDifficulty
+		} else if (req.transactionsRoot) {
+			params.transactionsRoot = req.transactionsRoot
+		} else if (req.uncles) {
+			params.uncles = req.uncles
+		}
+	}
+	console.log(params)
 	async.waterfall([
 		(cb) => {
-			Block.find({}).countDocuments((err, result) => {
+			Block.find(params).countDocuments((err, result) => {
 				if (!err) {
 					data.msg = 'Success'
 					data.total = result
@@ -153,7 +221,7 @@ function blocks(socket, req, type) {
 			})
 		},
 		(data, cb) => {
-			Block.find({}).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(setData.pageSize)).exec((err,result) => {
+			Block.find(params).lean(true).sort({"timestamp": -1}).skip(setData.skip).limit(Number(setData.pageSize)).exec((err,result) => {
 				if (!err) {
 					// total()
 					data.msg = 'Success'

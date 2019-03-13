@@ -79,7 +79,7 @@ export default {
 			blockData: [],
 			params: {
 				pageSize: 20,
-				count: 0,
+				pageNum: 0,
 				balance: 500
 			},
 			socket: null

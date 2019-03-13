@@ -73,7 +73,7 @@
 		"DOWNLOAD_PDF_DOCUMENT": "Download PDF document"
 	},
 	"PH": {
-		"SEARCH_PLACEHOLDER": "Search by Address...",
+		"SEARCH_PLACEHOLDER": "Search by Address / Txhash / Block",
 		"PLEASE_SELECT": "Please Select"
 	},
 	"TABLE": {
