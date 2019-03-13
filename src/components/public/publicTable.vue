@@ -158,14 +158,7 @@ export default {
 				this.getInitData()
 			}, this.setTimeout)
 		}
-		window.toUrl = (url, params) => {
-			this.$router.push({
-				path: url,
-				query: {
-					params: params
-				}
-			})
-		}
+		
 	},
 	methods: {
 		getInitData () {
@@ -352,7 +345,7 @@ export default {
 				let _number = Number(data[param.param]) * Number(data[param.param2].c[0])
 				_number = web3.fromWei(_number, 'ether')
 				callback = this.$$.thousandBit(_number, 'no')
-			} else if (Number(param.type) === 4) {
+			} else if (Number(param.type) === 4) { // array length
 				callback = data[param.param].length
 			}
 			return callback

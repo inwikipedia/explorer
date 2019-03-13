@@ -38,7 +38,7 @@
 					<table-data :tableData="{
 						th: LANG.NAV.TXNS,
 						width: '2',
-						params: [{param: 'number'}, {param: 'Txns', type: 2}],
+						params: [{param: 'number'}, {param: 'txns', type: 2}],
 						html: '<div class=\'trans_style\'><span class=\'ellipsis cursorP blue\' onclick=toUrl(\'/blockIndex/txns\',\'{{param}}\')>{{param}}</span></div>'
 					}"></table-data>
 					<table-data 
@@ -75,17 +75,17 @@
 					></table-data>
 					<table-data 
 						:tableData="{
-							th: LANG.TABLE.GAS_PRICE,
+							th: LANG.TABLE.AVG_GAS_PRICE,
 							width: '2',
-							params: [{param: 'gas', type: 2}],
-							html: '<div class=\'trans_style\'><p class=\'rowItem\'>{{param}}</p></div>'
+							params: [{param: 'avgGasprice'}],
+							html: '<div class=\'trans_style\'><p class=\'rowItem\'>{{param}} Gwei</p></div>'
 						}"
 					></table-data>
 					<table-data 
 						:tableData="{
 							th: LANG.TABLE.REWARD,
 							width: '2',
-							params: [{param: 'miner', type: 2}],
+							params: [{param: 'reward', type: 2}],
 							html: '<div class=\'trans_style\'><p class=\'rowItem\'>{{param}}</p></div>'
 						}"
 					></table-data>
@@ -115,21 +115,7 @@ export default {
 		}
 	},
 	mounted () {
-		// console.log(this.lang)
-		// 1545696000,
-		// 1548547200
-// 		console.log(this.$$.timeChange({
-// 			type: 'yyyy-mm-dd hh:mm:ss',
-// 			date: 1545696000 * 1000
-// 		}))
-		// this.dataUrl = this.$$.serverUrl + '/data/transaction'
-// 		this.params = {
-// 			pageSize: 20,
-// 			count: 0
-// 		}
-// 		this.$$.ajax(this.$http, this.dataUrl, this.params).then(res => {
-// 			console.log(res)
-// 		})
+		
 	}
 }
 </script>

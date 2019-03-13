@@ -2,7 +2,7 @@
 	<div>
 		<div class="container">
 			<div class="flex-bc breadcrumb_box">
-				<h3 class="title">{{LANG.TITLE.TRANSACTIONS}}  {{hash}}</h3>
+				<h3 class="title">{{LANG.TITLE.TRANSACTIONS}}  <span class="subTitl">{{hash}}</span></h3>
 				<el-breadcrumb separator="/">
 					<el-breadcrumb-item :to="{ path: '/' }">{{LANG.NAV.HOME}}</el-breadcrumb-item>
 					<el-breadcrumb-item :to="{ path: '/blockIndex/txns' }">{{LANG.TITLE.TRANSACTIONS}}</el-breadcrumb-item>
@@ -36,18 +36,16 @@
 						style="width: 100%"
 						size="mini"
 						empty-text="Null"
+						:show-header="false"
 					>
 						<el-table-column
 							prop="name"
-							:label="LANG.TABLE.TITLE"
+							width="260"
 						>
 						</el-table-column>
 						<el-table-column
 							align="left"
 						>
-							<template slot="header">
-								{{LANG.TABLE.DETAILS}}
-							</template>
 							<template slot-scope="scope">
 								<span v-html="scope.row.value"></span>
 							</template>
@@ -101,15 +99,6 @@ export default {
 	mounted () {
 		this.socket = io(this.$$.serverUrl)
 		this.hash = this.$route.query.params
-		window.toUrl = (params) => {
-			this.$router.push({
-				path: '/blockIndex/accountDtil',
-				query: {
-					params: params
-				}
-			})
-		}
-		
 	},
 	methods: {
 		getBlocksInfo () {
@@ -130,22 +119,23 @@ export default {
 					return
 				}
 				let transGasPrice = res.info.gasPrice && res.info.gasPrice.c && res.info.gasPrice.c[0] ? res.info.gasPrice.c[0] : 0
+				let ActualTx = this.$$.thousandBit(web3.fromWei(Number(res.info.gasLimit) * Number(transGasPrice), 'ether'), 'no')
 				let nowTime = Date.parse(new Date())
 				this.blocksInfo = [
 					{name: this.LANG.TABLE.TXHASH + ':', value: res.info.hash},
 					{name: this.LANG.TABLE.TXRECEIPT_STATUS + ':', value: res.info.hash ? '<span style="color:#3bad4b">Success</span>' : '<span style="color:#ff5959">Pending</span>'},
-					{name: this.LANG.TITLE.BLOCK_TIME + ':', value: this.$$.thousandBit(res.info.blockNumber, 'no')},
-					{name: this.LANG.TABLE.TIMESTAMP + ':', value: this.$$.timesFun(res.info.timestamp, nowTime)},
-					{name: this.LANG.TABLE.FROM + ':', value: '<span style="color:#1665d8" onclick=toUrl("' + res.info.from + '") class="cursorP">' + res.info.from + '</span'},
-					{name: this.LANG.TABLE.TO + ':', value: '<span style="color:#1665d8" onclick=toUrl("' + res.info.from + '") class="cursorP">' + res.info.to + '</span'},
+					{name: this.LANG.TITLE.BLOCK_HEIGHT + ':', value: '<span class="cursorP blue" onclick=toUrl(\'/blockIndex/blocksDtil\','+ res.info.blockNumber +')>' + res.info.blockNumber + '</span>'},
+					{name: this.LANG.TABLE.TIMESTAMP + ':', value: this.$$.timesFun(res.info.timestamp, nowTime)  + ' (' + new Date(res.info.timestamp * 1000) + ')'},
+					{name: this.LANG.TABLE.FROM + ':', value: '<span onclick=toUrl(\'/blockIndex/accountDtil\',"' + res.info.from + '") class="cursorP blue">' + res.info.from + '</span'},
+					{name: this.LANG.TABLE.TO + ':', value: '<span onclick=toUrl(\'/blockIndex/accountDtil\',"' + res.info.to + '") class="cursorP blue">' + res.info.to + '</span'},
 					{name: this.LANG.TABLE.VALUE + ':', value: this.$$.thousandBit(res.info.value, 'no')},
 					{name: this.LANG.TABLE.GAS_LIMIT + ':', value: this.$$.thousandBit(res.info.gasLimit, 'no')},
-					{name: this.LANG.TABLE.GAS_USED_BY_TRANSACTION, value: res.info.gasUsed === 0 ? '100%' : (this.$$.thousandBit(Number(res.info.gas) / Number(res.info.gasUsed) * 100, 'no') + '%')},
-					{name: this.LANG.TABLE.GAS_PRICE + ':', value: this.$$.thousandBit(transGasPrice, 'no')},
-					{name: this.LANG.TABLE.ACTUAL_TX_COST + ':', value: this.$$.thousandBit(Number(res.info.gasLimit) * Number(transGasPrice), 'no')},
-					{name: this.LANG.TABLE.NONCE_POSITION + ':', value: this.$$.thousandBit(res.info.nonce, 'no')},
+					{name: this.LANG.TABLE.GAS_USED_BY_TRANSACTION + ':', value: this.$$.thousandBit(res.info.gasUsed, 'no') + ' (' + (res.info.gasUsed === 0 ? '100%' : (this.$$.thousandBit(Number(res.info.gas) / Number(res.info.gasUsed) * 100, 2) + '%')) + ')'},
+					{name: this.LANG.TABLE.GAS_PRICE + ':', value: this.$$.thousandBit(transGasPrice, 'no') + ' (' + web3.fromWei(transGasPrice, 'ether') + ' Gwei)'},
+					{name: this.LANG.TABLE.ACTUAL_TX_COST + ':', value: ActualTx + ' Gwei'},
+					{name: this.LANG.TABLE.NONCE_POSITION + ':', value: this.$$.thousandBit(res.info.nonce, 'no') + ' & ' + res.info.transactionIndex},
 					{name: this.LANG.TABLE.INPUT_DATA + ':', value: '<textarea class="textarea" disabled>' + res.info.input + '</textarea>'},
-					{name: this.LANG.TABLE.PRIVATE_NOTE + ': ', value: '&ltTo access the Private Note Feature, you must be Logged In&gt'}
+					// {name: this.LANG.TABLE.PRIVATE_NOTE + ': ', value: '&ltTo access the Private Note Feature, you must be Logged In&gt'}
 				]
 				this.timestamp = res.info.timestamp
 			})

@@ -3,7 +3,16 @@
 		<div class="container">
 			<input type="text" id="addressCopy" v-model="address" style="height: 0;opacity: 0;"/>
 			<div class="flex-bc breadcrumb_box">
-				<h3 class="title flex-sc">{{LANG.CRUMBS.ADDRESS}} <span v-html="address" class="ml-15"></span><div class="iconCopy flex-c ml-10 cursorP" @click="copyAddress('addressCopy')"><img src="@etc/img/copy.svg"></div></h3>
+				<h3 class="title flex-sc">
+					{{LANG.CRUMBS.ADDRESS}}
+					<span v-html="address" class="ml-15 subTitl"></span>
+					<div class="iconCopy flex-c ml-10 cursorP" @click="copyAddress('addressCopy')">
+						<img src="@etc/img/copy.svg">
+					</div>
+					<div class="iconQrcode flex-c ml-10 cursorP" @click="codeViewBtn">
+						<img src="@etc/img/QRcode.svg">
+					</div>
+				</h3>
 				<el-breadcrumb separator="/">
 					<el-breadcrumb-item :to="{ path: '/' }">{{LANG.NAV.HOME}}</el-breadcrumb-item>
 					<el-breadcrumb-item :to="{ path: '/blockIndex/topAccounts' }">{{LANG.CRUMBS.ACCOUNT}}</el-breadcrumb-item>
@@ -14,15 +23,15 @@
 			<div class="accountHeader_box bgbox">
 				<el-row :gutter="20">
 					<el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-						<div class="accountHeader_item flex-sc">
+						<!-- <div class="accountHeader_item flex-sc">
 							<p class="p p1 flex-sc"><span>{{LANG.SUBTITLE.OVERVIEW}}:</span></p>
 							<div class="icon cursorP" @click="codeViewBtn">
 								<img src="@etc/img/QRcode.svg">
 							</div>
-						</div>
+						</div> -->
 						<div class="accountHeader_item flex-sc">
 							<p class="p p1 flex-sc"><span>{{LANG.SUBTITLE.BALANCE}}:</span></p>
-							<p class="p p2" v-html="fsnBalance"></p>
+							<p class="p p2">{{fsnBalance}} FSN</p>
 						</div>
 						<div class="accountHeader_item flex-sc">
 							<p class="p p1 flex-sc"><span>{{LANG.SUBTITLE.ETHER_VALUE}}:</span></p>
@@ -32,11 +41,15 @@
 							<p class="p p1 flex-sc"><span>{{LANG.TITLE.TRANSACTIONS}}:</span></p>
 							<p class="p p2" v-html="txnsNum"></p>
 						</div>
+						<div class="accountHeader_item flex-sc">
+							<p class="p p1 flex-sc"><span>{{LANG.SUBTITLE.LATEST_TIME}}:</span></p>
+							<p class="p p2" v-html="latestTime"></p>
+						</div>
 					</el-col>
 					<el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
 						<div class="accountHeader_item flex-sc">
 							<p class="p p1 flex-sc"><img src="@etc/img/btc.svg" class="imgIcon"><span>BTC {{LANG.SUBTITLE.BALANCE}}:</span></p>
-							<p class="p p2" v-html="BTCbalance"></p>
+							<p class="p p2">{{BTCbalance}} BTC</p>
 						</div>
 						<div class="accountHeader_item flex-sc">
 							<p class="p p1 flex-sc"><img src="@etc/img/eth.svg" class="imgIcon"><span>ETH {{LANG.SUBTITLE.BALANCE}}:</span></p>
@@ -44,11 +57,11 @@
 						</div>
 						<div class="accountHeader_item flex-sc">
 							<p class="p p1 flex-sc"><img src="@etc/img/gusd.svg" class="imgIcon"><span>GUSD {{LANG.SUBTITLE.BALANCE}}:</span></p>
-							<p class="p p2" v-html="GUSDbalance"></p>
+							<p class="p p2">{{GUSDbalance}} GUSD</p>
 						</div>
 						<div class="accountHeader_item flex-sc">
 							<p class="p p1 flex-sc"><img src="@etc/img/bnb.svg" class="imgIcon"><span>BNB {{LANG.SUBTITLE.BALANCE}}:</span></p>
-							<p class="p p2" v-html="BNBbalance"></p>
+							<p class="p p2">{{BNBbalance}} BNB</p>
 						</div>
 					</el-col>
 				</el-row>
@@ -198,16 +211,17 @@ export default {
 			dataUrl: 'accountTxn',
 			blockData: [],
 			params: {
-				pageSize: 20,
+				pageSize: 25,
 				pageNum: 0,
 				addr: this.$route.query.params
 			},
-			fsnBalance: 'FSN',
-			BTCbalance: '0 BTC',
-			ETHbalance: '0 ETH',
-			GUSDbalance: '0 GUSD',
-			BNBbalance: '0 BNB',
+			fsnBalance: '0',
+			BTCbalance: '0',
+			ETHbalance: '0',
+			GUSDbalance: '0',
+			BNBbalance: '0',
 			txnsNum: 'txns',
+			latestTime: '',
 			socket: null
 		}
 	},
@@ -241,12 +255,13 @@ export default {
 			this.socket.emit('accountDtil', addressData)
 			this.socket.on('accountDtil', (res) => {
 				console.log(res)
-				this.fsnBalance = this.$$.thousandBit(res.info.balance, 'no') + ' FSN'
+				this.fsnBalance = this.$$.thousandBit(res.info.balance, 'no')
 				this.txnsNum =  this.$$.thousandBit(res.info.TxCount, 'no') + ' txns'
-				this.BTCbalance = res.info.BTCbalance ? this.$$.thousandBit(res.info.BTCbalance, 'no') + ' BTC' : '0 BTC'
-				this.ETHbalance = res.info.ETHbalance ? this.$$.thousandBit(res.info.ETHbalance, 'no') + ' ETH' : '0 ETH'
-				this.GUSDbalance = res.info.GUSDbalance ? this.$$.thousandBit(res.info.GUSDbalance, 'no') + ' GUSD' : '0 GUSD'
-				this.BNBbalance = res.info.BNBbalance ? this.$$.thousandBit(res.info.BNBbalance, 'no') + ' BNB' : '0 BNB'
+				this.BTCbalance = res.info.BTCbalance ? this.$$.thousandBit(res.info.BTCbalance, 'no') : '0'
+				this.ETHbalance = res.info.ETHbalance ? this.$$.thousandBit(res.info.ETHbalance, 'no') : '0'
+				this.GUSDbalance = res.info.GUSDbalance ? this.$$.thousandBit(res.info.GUSDbalance, 'no') : '0'
+				this.BNBbalance = res.info.BNBbalance ? this.$$.thousandBit(res.info.BNBbalance, 'no') : '0'
+				this.latestTime = this.$$.timesFun(res.info.updateTime)
 			})
 		},
 		codeViewBtn() {

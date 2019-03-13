@@ -139,7 +139,7 @@ $$.cutStr = (str, start, end) => {
 	return str1 + '...' + str2
 }
 
-$$.thousandBit = (num, dec = 2) => {
+$$.thousandBit = (num, dec = 2, fixed) => {
   num = Number(num)
   if (isNaN(num)) {
     num = 0
@@ -160,7 +160,13 @@ $$.thousandBit = (num, dec = 2) => {
     } else {
       num = num.toFixed(dec).replace(/(\d)(?=(\d{3})+\.)/g, '$1,').toLocaleString()
     }
-  }
+	}
+	// if (fixed && !isNaN(fixed)) {
+	// 	console.log(num)
+	// 	Number(num).toFixed(fixed)
+	// 	console.log(fixed)
+	// 	console.log(num)
+	// }
   return num
 }
 

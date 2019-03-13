@@ -21,7 +21,9 @@ var Block = new Schema(
     "gasUsed": Number,
     "timestamp": Number,
     "blockTime": Number,
-    "Txns": Number,
+    "txns": Number,
+    "reward": Number,
+    "avgGasprice": Number,
     "uncles": [String]
 });
 

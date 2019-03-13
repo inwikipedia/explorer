@@ -173,6 +173,14 @@ export default {
 		this.language = localStorage.getItem('FUSION_EXPLORER_LANGUAGE_TYPE') ? localStorage.getItem('FUSION_EXPLORER_LANGUAGE_TYPE') : 'en'
 		this.dayAndNightData = localStorage.getItem('FUSION_EXPLORER_DAY_AND_NIGHT_TYPE') ? localStorage.getItem('FUSION_EXPLORER_DAY_AND_NIGHT_TYPE') : 'WHITE'
 		this.dayAndNightInit()
+		window.toUrl = (url, params) => {
+			this.$router.push({
+				path: url,
+				query: {
+					params: params
+				}
+			})
+		}
 	},
 	updated () {
 		let searchBtn = document.querySelectorAll('.searchBtnInput')

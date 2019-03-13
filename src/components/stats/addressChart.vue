@@ -80,7 +80,7 @@ export default {
 			// this.$$.ajax(this.$http, this.$$.serverUrl + '/chart/transfer', _params).then(res => {
 			this.socket.emit('transfer', _params)
 			this.socket.on('transfer', (res) => {
-				// console.log(res)
+				console.log(res)
 				let data = res.info.sort((val1, val2) => {
 					if (val1.timestamp < val2.timestamp) {
 						return -1

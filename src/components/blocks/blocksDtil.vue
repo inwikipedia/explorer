@@ -2,7 +2,7 @@
 	<div>
 		<div class="container">
 			<div class="flex-bc breadcrumb_box">
-				<h3 class="title">{{LANG.NAV.BLOCKS}}  #{{blockNumber}}</h3>
+				<h3 class="title">{{LANG.NAV.BLOCKS}}  <span class="subTitl">#{{blockNumber}}</span></h3>
 				<el-breadcrumb separator="/">
 					<el-breadcrumb-item :to="{ path: '/' }">{{LANG.NAV.HOME}}</el-breadcrumb-item>
 					<el-breadcrumb-item :to="{ path: '/blocks' }">{{LANG.NAV.BLOCKS}}</el-breadcrumb-item>
@@ -24,18 +24,16 @@
 						style="width: 100%"
 						size="mini"
 						empty-text="Null"
+						:show-header="false"
 					>
 						<el-table-column
 							prop="name"
-							:label="LANG.TABLE.TITLE"
+							width="260"
 						>
 						</el-table-column>
 						<el-table-column
 							align="left"
 						>
-							<template slot="header">
-								{{LANG.TABLE.DETAILS}}
-							</template>
 							<template slot-scope="scope">
 								<span v-html="scope.row.value"></span>
 							</template>
@@ -104,22 +102,25 @@ export default {
 			this.$router.push({path: '/blockIndex/blocksDtil', query: {params: ++this.blockNumber}})
 		},
 		setDatd (res) {
+			console.log(res)
+			// console.log( this.$$.thousandBit((Number(res.info.gasUsed) / Number(res.info.gasLimit)), 2))
 			this.blocksInfo = [
 				{name: this.LANG.TABLE.HEIGHT + ':', value: this.$$.thousandBit(res.info.number, 'no')},
-				{name: this.LANG.TABLE.TIMESTAMP + ':', value: this.$$.timesFun(res.info.timestamp)},
-				{name: this.LANG.TITLE.TRANSACTIONS + ':', value: res.info.transactionsRoot},
-				{name: this.LANG.TABLE.HEIGHT + ':', value: this.$$.thousandBit(res.info.number, 'no')},
-				{name: this.LANG.TABLE.PARENT_HASH + ':', value: '<span style="color:#1665d8">' + res.info.parentHash + '</span'},
-				{name: this.LANG.TABLE.SHA3UNCLES + ':', value: res.info.sha3Uncles},
-				{name: this.LANG.TABLE.MINED_BY + ':', value: '<span style="color:#1665d8">' + res.info.miner + '</span'},
+				{name: this.LANG.TABLE.TIMESTAMP + ':', value: this.$$.timesFun(res.info.timestamp) + ' (' + new Date(res.info.timestamp * 1000) + ')'},
+				{name: this.LANG.TITLE.TRANSACTIONS + ':', value: '<span class="cursorP txnsBg" onclick=toUrl(\'/blockIndex/txns\','+ res.info.number +')>' + res.info.txns + ' transactions </span>in this block'},
+				{name: this.LANG.TABLE.MINED_BY + ':', value: '<span class="blue cursorP" onclick=toUrl(\'/blockIndex/accountDtil\',"'+ res.info.miner +'")>' + res.info.miner + '</span'},
+				{name: this.LANG.TABLE.BLOCK_REWARD + ':', value: this.$$.thousandBit(res.info.reward, 2)},
+				{name: this.LANG.TABLE.UNCLES_REWARD + ':', value: res.info.uncles.length},
 				{name: this.LANG.TABLE.DIFFICULTY + ':', value: this.$$.thousandBit(res.info.difficulty, 'no')},
 				{name: this.LANG.TABLE.TOTAL_DIFFICULTY + ':', value: this.$$.thousandBit(res.info.totalDifficulty, 'no')},
 				{name: this.LANG.TABLE.SIZE + ':', value: this.$$.thousandBit(res.info.size, 'no') + ' bytes'},
-				{name: this.LANG.TABLE.GAS_USED + ':', value: this.$$.thousandBit(res.info.gasUsed, 'no')},
+				{
+					name: this.LANG.TABLE.GAS_USED + ':',
+					value: this.$$.thousandBit(res.info.gasUsed, 'no') + ' (' + this.$$.thousandBit((Number(res.info.gasUsed) / Number(res.info.gasLimit)), 2) + '%)'},
 				{name: this.LANG.TABLE.GAS_LIMIT + ':', value: this.$$.thousandBit(res.info.gasLimit, 'no')},
+				{name: this.LANG.TABLE.PARENT_HASH + ':', value: '<span style="color:#1665d8">' + res.info.parentHash + '</span'},
+				{name: this.LANG.TABLE.SHA3UNCLES + ':', value: res.info.sha3Uncles},
 				{name: this.LANG.TABLE.NONCE + ':', value: Number(res.info.nonce)},
-				{name: this.LANG.TABLE.BLOCK_REWARD + ':', value: res.info.number},
-				{name: this.LANG.TABLE.UNCLES_REWARD + ':', value: res.info.uncles},
 				{name: this.LANG.TABLE.EXTRA_DATA + ':', value: res.info.extraData},
 			]
 		}

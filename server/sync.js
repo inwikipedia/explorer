@@ -143,7 +143,31 @@ var writeBlockToDB = function (config, blockData, flush) {
   }
   // console.log(blockData)
   if (blockData && blockData.number >= 0) {
-    blockData.Txns = blockData.transactions ? blockData.transactions.length : 0
+    blockData.txns = blockData.transactions ? blockData.transactions.length : 0
+    blockData.reward = 0
+    blockData.avgGasprice = 0
+    if (blockData.transactions && blockData.transactions.length > 0) {
+      for (let i = 0; i < blockData.transactions.length; i++) {
+        blockData.reward += blockData.transactions[i].value ? Number(blockData.transactions[i].value) : 0
+        if (isNaN(blockData.transactions[i].gasPrice)) {
+          blockData.avgGasprice += blockData.transactions[i].gasPrice ? Number(blockData.transactions[i].gasPrice.c[0]) : 0
+        } else {
+          blockData.avgGasprice += blockData.transactions[i].gasPrice ? Number(blockData.transactions[i].gasPrice) : 0  
+        }
+        // console.log("blockData.gasprice " + i)
+        // console.log(blockData.gasprice)
+        // blockData.gasprice += blockData.transactions[i].gasPrice ? Number(blockData.transactions[i].gasPrice) : 0
+      }
+      blockData.avgGasprice = web3.fromWei(blockData.avgGasprice, 'ether')
+      // console.log(blockData.avgGasprice)
+      // console.log(blockData.transactions.length)
+      blockData.avgGasprice = blockData.avgGasprice / Number(blockData.transactions.length)
+    }
+    console.log("blockData.avgGasprice")
+    console.log(blockData.avgGasprice)
+    blockData.reward = web3.fromWei(blockData.reward, 'ether')
+    // blockData.avgGasprice = web3.fromWei(blockData.avgGasprice, 'ether')
+    // console.log(blockData.avgGasprice)
     self.bulkOps.push(new Block(blockData))
     console.log('\t- block #' + blockData.number.toString() + ' inserted.')
   }

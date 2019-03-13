@@ -2,7 +2,7 @@ var async = require('async')
 require('./db.js')
 let mongoose = require('mongoose')
 let Transaction = mongoose.model('Transaction')
-// let AccountInfo = mongoose.model('AccountInfo')
+let AccountInfo = mongoose.model('AccountInfo')
 let TransactionChart = mongoose.model('TransactionChart')
 let Block = mongoose.model('Block')
 
@@ -146,21 +146,31 @@ function getTransactionData(results) {
       },
       (res, callback) => {
         let endTime = res.timestamp + (60 * 60 * 24)
-        Transaction.find({'timestamp': {'$lt': endTime}}).distinct('from').exec((err, resForm) => {
+        AccountInfo.find({'timestamp': {'$lt': endTime}}).countDocuments((err, accountNum) => {
           if (err) {
             callback(err)
           } else {
-            let addrData = []
-            for (let i = 0; i < resForm.length; i++) {
-              if (resForm[i] === null || resForm[i] === undefined) continue
-              if (addrData.indexOf(resForm[i]) === -1) {
-                addrData.push(resForm[i])
-              }
-            }
-            res.addressNum = addrData.length
+            console.log(result + "用户数")
+            console.log(accountNum)
+            res.addressNum = accountNum
             callback(null, res)
           }
         })
+        // Transaction.find({'timestamp': {'$lt': endTime}}).distinct('from').exec((err, resForm) => {
+        //   if (err) {
+        //     callback(err)
+        //   } else {
+        //     let addrData = []
+        //     for (let i = 0; i < resForm.length; i++) {
+        //       if (resForm[i] === null || resForm[i] === undefined) continue
+        //       if (addrData.indexOf(resForm[i]) === -1) {
+        //         addrData.push(resForm[i])
+        //       }
+        //     }
+        //     res.addressNum = addrData.length
+        //     callback(null, res)
+        //   }
+        // })
       },
       (res, callback) => {
         let endTime = res.timestamp + (60 * 60 * 24)

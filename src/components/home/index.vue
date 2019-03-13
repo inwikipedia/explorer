@@ -115,14 +115,14 @@
 								></table-data>
 								<table-data 
 									:tableData="{
-										params: [{param: 'number'}, {param: 'Txns', type: 2}],
+										params: [{param: 'number'}, {param: 'txns', type: 2}],
 										html: '<div class=\'trans_style\'><p class=\'rowItem\'><a onclick=toUrl(\'/blockIndex/txns\',\'{{param}}\') class=\'cursorP\'><span class=\'blue\'>{{param}}</span></a>Txns</p></div>'
 									}"
 								></table-data>
 								<table-data 
 									:tableData="{
-										params: [{param: 'miner', type: 2}],
-										html: '<div class=\'trans_style text-r\'>Reward <span class=\'rowItem greenBg\'>{{param}} FSN</span></div>'
+										params: [{param: 'reward', type: 2}],
+										html: '<div class=\'trans_style text-l\'>Reward <span class=\'rowItem greenBg\'>{{param}} FSN</span></div>'
 									}"
 								></table-data>
 							</public-table>
