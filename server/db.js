@@ -27,6 +27,7 @@ var Block = new Schema(
     "uncles": [String]
 });
 
+
 var Account = new Schema(
 {
     "address": {type: String, index: {unique: true}},
@@ -83,6 +84,8 @@ var Transaction = new Schema(
     "input": String
 }, {collection: "Transaction"});
 
+
+
 var TransactionChart = new Schema(
 {
     "timestamp": Number,
@@ -112,21 +115,23 @@ var BlockStat = new Schema(
 });
 
 // create indices
-Transaction.index({timestamp:-1});
-Transaction.index({blockNumber:-1});
-Transaction.index({from:1, blockNumber:-1});
-Transaction.index({to:1, blockNumber:-1});
+// Block.index({miner:1, blockNumber:-1});
+Block.index({number:-1, timestamp:-1});
+// Block.index({timestamp:-1});
+// Block.index({miner:1});
+Transaction.index({timestamp:-1, blockNumber:-1});
+// Transaction.index({blockNumber:-1});
+// Transaction.index({from:1, blockNumber:-1});
+// Transaction.index({to:1, blockNumber:-1});
 Account.index({balance:-1});
-Account.index({balance:-1, blockNumber:-1});
-Account.index({type:-1, balance:-1});
+// Account.index({balance:-1, blockNumber:-1});
+// Account.index({type:-1, balance:-1});
 // AccountInfo
-AccountInfo.index({balance:-1});
-AccountInfo.index({balance:-1, blockNumber:-1});
-AccountInfo.index({type:-1, balance:-1});
-Block.index({miner:1});
-Block.index({miner:1, blockNumber:-1});
+AccountInfo.index({balance:-1, updateTime: -1});
+// AccountInfo.index({balance:-1, blockNumber:-1});
+// AccountInfo.index({type:-1, balance:-1});
 TransactionChart.index({timestamp:1});
-TransactionChart.index({timestamp:1, blockCount:-1});
+// TransactionChart.index({timestamp:1, blockCount:-1});
 
 
 mongoose.model('BlockStat', BlockStat);

@@ -69,6 +69,7 @@
 		"SEND_TRANSACTION": "发送交易",
 		"FETCH_FROM_GIST": "从要点中提取",
 		"NEXT": "下一页",
+		"LAST": "最后",
 		"DOWNLOAD_PNG_IMAGE": "下载 PNG 图片",
 		"DOWNLOAD_JPG_IMAGE": "下载 JPG 图片",
 		"DOWNLOAD_PDF_DOCUMENT": "下载 PDF 文档"

@@ -69,6 +69,7 @@
 		"SEND_TRANSACTION": "Send Transaction",
 		"FETCH_FROM_GIST": "Fetch From Gist",
 		"NEXT": "Next",
+		"LAST": "Last",
 		"DOWNLOAD_PNG_IMAGE": "Download PNG image",
 		"DOWNLOAD_JPG_IMAGE": "Download JPG image",
 		"DOWNLOAD_PDF_DOCUMENT": "Download PDF document"

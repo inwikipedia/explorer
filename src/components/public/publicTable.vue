@@ -11,6 +11,7 @@
 					<i class="icon el-icon-arrow-right" @click="nextBtn" :class="isNext ? 'active' : ''"></i>
 				</li>
 				<li class="next" @click="nextBtn" :class="isNext ? 'active' : ''"><span>{{LANG.BTN.NEXT}}</span></li>
+				<li class="next" @click="lastBtn"><span>{{LANG.BTN.LAST}}</span></li>
 			</ul>
 		</div>
 		<!-- <div class="pubTable_thead pubTable_theadAbso" v-if="!isThead">
@@ -50,23 +51,25 @@
 					<i class="icon el-icon-arrow-right" @click="nextBtn" :class="isNext ? 'active' : ''"></i>
 				</li>
 				<li class="next" @click="nextBtn" :class="isNext ? 'active' : ''"><span>{{LANG.BTN.NEXT}}</span></li>
+				<li class="next" @click="lastBtn"><span>{{LANG.BTN.LAST}}</span></li>
 			</ul>
 		</div>
 	</div>
 </template>
 
 <style>
-.pageView_box{width:100%;padding:20px 15px;}
+.pageView_box{width:100%;padding:20px 0px;}
 .pageView_box .title{font-size:14px;color: #3e3f42;font-weight: bold;}
-.pageView_top{position: absolute;top:0px;left:0;border-bottom: 1px solid #eaedf3;}
+/* .pageView_top{position: absolute;top:0px;left:0;border-bottom: 1px solid #eaedf3;} */
+.pageView_top{border-bottom: 1px solid #eaedf3;}
 /* .pageView_bottom{}
 .pageView_btn{} */
-.pageView_btn li{display: inline-block;font-size: 12px;line-height: 16px;color:#333;border:1px solid #cccccc;color:#3e3f42;}
+.pageView_btn li{display: inline-block;font-size: 12px;height:18px;line-height: 16px;border:1px solid #cccccc;color:#3e3f42;}
 .pageView_btn .prev, .pageView_btn .next{padding:0px 15px;cursor: pointer;}
 .pageView_btn .active{background: #ebebff;}
 .pageView_btn .now{margin:0 5px;}
 .pageView_btn .now .curr{margin:0 5px;}
-.pageView_btn .now .icon{display: inline-block;cursor: pointer;}
+.pageView_btn .now .icon{line-height: 18px;display: inline-block;cursor: pointer;}
 .pageView_btn .now .el-icon-arrow-left{border-right: 1px solid #cccccc;}
 .pageView_btn .now .el-icon-arrow-right{border-left: 1px solid #cccccc;}
 .pageView_select .el-select{width:55px;margin: 0 5px;}
@@ -192,6 +195,12 @@ export default {
 			this.params.pageNum = this.currPage
 			this.getData(this.params)
 		},
+		lastBtn () {
+			this.currPage = this.totalPage
+			this.params.pageNum = this.totalPage
+			console.log(this.params)
+			this.getData(this.params)
+		},
 		getData (params) {
 			// console.log(params)
 			this.addLoading()
@@ -228,6 +237,8 @@ export default {
 								this.titleTxt += _html[i] + this.currPage
 							} else if (this.title.params[i].indexOf('strat#') === 0) {
 								let startArr = this.title.params[i].split('#')
+								// console.log(startArr)
+								// console.log(data)
 								this.titleTxt += _html[i] + ' ' + data[data.length - 1][startArr[1]]
 							} else if (this.title.params[i].indexOf('end#') === 0) {
 								let endArr = this.title.params[i].split('#')

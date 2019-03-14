@@ -90,7 +90,7 @@
 					<el-card class="box-card pubBg_white">
 						<div slot="header" class="clearfix">
 							<span class="title">{{LANG.NAV.BLOCKS}}</span>
-							<el-button style="float: right; padding: 3px 0;color:#3e3f42" type="text" @click="toUrl('/blocks')">View All</el-button>
+							<el-button style="float: right; padding: 3px 0;" type="text" @click="toUrl('/blocks')">View All</el-button>
 						</div>
 						<div class="newBlock_table">
 							<public-table
@@ -134,7 +134,7 @@
 					<el-card class="box-card pubBg_white">
 						<div slot="header" class="clearfix">
 							<span class="title">{{LANG.TITLE.TRANSACTIONS}}</span>
-							<el-button style="float: right; padding: 3px 0;color:#3e3f42" type="text" @click="toUrl('/blockIndex/txns')">View All</el-button>
+							<el-button style="float: right; padding: 3px 0;" type="text" @click="toUrl('/blockIndex/txns')">View All</el-button>
 						</div>
 						<div class="newBlock_table">
 							<public-table 

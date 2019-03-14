@@ -170,7 +170,7 @@ function transferPage(socket, req, type) {
 // router.post('/blocks', (req, res) => {
 function blocks(socket, req, type) {
 	let setData = {
-		pageSize: req && req.pageSize ? req.pageSize : 20,
+		pageSize: req && req.pageSize ? req.pageSize : 50,
 		skip: 0
 	}
 	setData.skip = req && req.pageNum ? (Number(req.pageNum - 1) * Number(setData.pageSize)) : 0
@@ -222,6 +222,7 @@ function blocks(socket, req, type) {
 		}
 	}
 	console.log(params)
+	console.log(setData)
 	async.waterfall([
 		(cb) => {
 			Block.find(params).countDocuments((err, result) => {
@@ -232,6 +233,8 @@ function blocks(socket, req, type) {
 				} else {
 					data.msg = 'Error'
 					data.info = ''
+					console.log('countDocuments')
+					console.log(err)
 					cb(data)
 				}
 				// info()
@@ -247,6 +250,9 @@ function blocks(socket, req, type) {
 				} else {
 					data.msg = 'Error'
 					data.info = ''
+					console.log('data.info err')
+					console.log(data)
+					console.log(err)
 					cb(data)
 				}
 			})

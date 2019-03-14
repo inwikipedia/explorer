@@ -43,19 +43,19 @@
 					<el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
 						<div class="accountHeader_item flex-sc">
 							<p class="p p1 flex-sc"><img src="@etc/img/btc.svg" class="imgIcon"><span>BTC {{LANG.SUBTITLE.BALANCE}}:</span></p>
-							<p class="p p2">{{BTCbalance}} BTC</p>
+							<p class="p p2 flex-sc"><span class="ellipsis WW80">{{BTCbalance}}</span> BTC</p>
 						</div>
 						<div class="accountHeader_item flex-sc">
 							<p class="p p1 flex-sc"><img src="@etc/img/eth.svg" class="imgIcon"><span>ETH {{LANG.SUBTITLE.BALANCE}}:</span></p>
-							<p class="p p2">{{ETHbalance}} ETC</p>
+							<p class="p p2 flex-sc"><span class="ellipsis WW80">{{ETHbalance}}</span> ETC</p>
 						</div>
 						<div class="accountHeader_item flex-sc">
 							<p class="p p1 flex-sc"><img src="@etc/img/gusd.svg" class="imgIcon"><span>GUSD {{LANG.SUBTITLE.BALANCE}}:</span></p>
-							<p class="p p2">{{GUSDbalance}} GUSD</p>
+							<p class="p p2 flex-sc"><span class="ellipsis WW80">{{GUSDbalance}}</span> GUSD</p>
 						</div>
 						<div class="accountHeader_item flex-sc">
 							<p class="p p1 flex-sc"><img src="@etc/img/bnb.svg" class="imgIcon"><span>BNB {{LANG.SUBTITLE.BALANCE}}:</span></p>
-							<p class="p p2">{{BNBbalance}} BNB</p>
+							<p class="p p2 flex-sc"><span class="ellipsis WW80">{{BNBbalance}}</span> BNB</p>
 						</div>
 					</el-col>
 				</el-row>
