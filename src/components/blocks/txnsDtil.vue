@@ -85,7 +85,8 @@ export default {
 				value: 2
 			}],
 			timestamp: 0,
-			socket: null
+			socket: null,
+			dollerPrice: 0
 		}
 	},
 	watch: {
@@ -99,6 +100,7 @@ export default {
 	mounted () {
 		this.socket = io(this.$$.serverUrl)
 		this.hash = this.$route.query.params
+		this.getDoller()
 	},
 	methods: {
 		getBlocksInfo () {
@@ -141,7 +143,7 @@ export default {
 					{name: this.LANG.TABLE.TIMESTAMP + ':', value: this.$$.timesFun(res.info.timestamp, nowTime)  + ' (' + new Date(res.info.timestamp * 1000) + ')'},
 					{name: this.LANG.TABLE.FROM + ':', value: '<span onclick=toUrl(\'/blockIndex/accountDtil\',"' + res.info.from + '") class="cursorP blue">' + res.info.from + '</span'},
 					{name: this.LANG.TABLE.TO + ':', value: '<span onclick=toUrl(\'/blockIndex/accountDtil\',"' + res.info.to + '") class="cursorP blue">' + res.info.to + '</span'},
-					{name: this.LANG.TABLE.VALUE + ':', value: this.$$.thousandBit(res.info.value, 'no')},
+					{name: this.LANG.TABLE.VALUE + ':', value: this.$$.thousandBit(res.info.value, 'no') + ' FSN($' + (this.dollerPrice * res.info.value) + ')'},
 					{name: this.LANG.TABLE.GAS_LIMIT + ':', value: this.$$.thousandBit(res.info.gasLimit, 'no')},
 					{name: this.LANG.TABLE.GAS_USED_BY_TRANSACTION + ':', value: this.$$.thousandBit(res.info.gasUsed, 'no') + ' (' + (res.info.gasUsed === 0 ? '100%' : (this.$$.thousandBit(Number(res.info.gas) / Number(res.info.gasUsed) * 100, 2) + '%')) + ')'},
 					{name: this.LANG.TABLE.GAS_PRICE + ':', value: this.$$.thousandBit(transGasPrice, 'no') + ' (' + web3.fromWei(transGasPrice, 'ether') + ' Gwei)'},
@@ -153,6 +155,15 @@ export default {
 				this.timestamp = res.info.timestamp
 			})
 		},
+		getDoller () {
+			this.$http.get('https://api.coinmarketcap.com/v1/ticker/fusion/').then(res => {
+				if (res.data.length > 0) {
+					this.dollerPrice = res.data[0].price_usd
+				} else {
+					this.dollerPrice = 0
+				}
+			})
+    },
 		prevBtn () {
 			let _params = {
 				timestamp: this.timestamp,

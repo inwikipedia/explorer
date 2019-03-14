@@ -106,7 +106,7 @@ function addAccounts (timestampInit) {
                   if (err) {
                     callback(err)
                   } else {
-                    callback(null, 'insert' + result + 'success')
+                    callback(null, 'Insert ' + result + ' success')
                   }
                 })
               }
@@ -134,10 +134,11 @@ function addAccounts (timestampInit) {
 	let getFromAddr = (data, cb) => {
     let params = {}
     if (data.length > 0) {
+      timestampInit = Date.parse(new Date()) / 1000
       params = {
         'timestamp': {
           '$gt': data[0].updateTime,
-          // '$lte': timestampInit
+          '$lte': timestampInit
         }
       }
     }
@@ -262,7 +263,7 @@ function addAccounts (timestampInit) {
     // }
 	}
 	let getAccountTime = (cb) => {
-		AccountInfo.find({}).lean(true).sort({"updateTime": 1}).limit(-1).exec((err, result) => {
+		AccountInfo.find({}).lean(true).sort({"updateTime": -1}).limit(-1).exec((err, result) => {
 			if (err) {
         // console.log(err)
         cb(err)

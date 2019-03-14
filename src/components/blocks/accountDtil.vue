@@ -266,6 +266,22 @@ export default {
 		},
 		moreSet (command) {
 			console.log(command)
+			// <el-dropdown-item command="Completed">{{LANG.SUBNAV.VIEW_COMPLETED_TXNS}}</el-dropdown-item>
+			// <el-dropdown-item command="Pending">{{LANG.SUBNAV.VIEW_PENDING_TXNS}}</el-dropdown-item>
+			// <el-dropdown-item command="Failed">{{LANG.SUBNAV.VIEW_FAILED_TXNS}}</el-dropdown-item>
+			// <el-dropdown-item command="Outgoing" divided>{{LANG.SUBNAV.VIEW_OUTGOING_TXNS}}</el-dropdown-item>
+			// <el-dropdown-item command="Incomiing">{{LANG.SUBNAV.VIEW_INCOMIING_TXNS}}</el-dropdown-item>
+			if (command === 'Completed') {
+				this.$router.push({ path: '/blockIndex/txns', query: { from: this.address, to: this.address } })
+			} else if (command === 'Pending') {
+				this.$router.push({ path: '/blockIndex/txns', query: { from: this.address, to: this.address, hash: '' } })
+			} else if (command === 'Failed') {
+				this.$router.push({ path: '/blockIndex/txns', query: { from: this.address, to: this.address } })
+			} else if (command === 'Outgoing') {
+				this.$router.push({ path: '/blockIndex/txns', query: { from: this.address} })
+			} else if (command === 'Incomiing') {
+				this.$router.push({ path: '/blockIndex/txns', query: {to: this.address } })
+			}
 		},
 		qrcode () {
 			document.getElementById('qrcode').innerHTML = ''

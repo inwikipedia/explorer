@@ -47,26 +47,40 @@ function transaction(socket, req, type) {
 	if (req) {
 		if (req.blockHash) {
 			params.blockHash = req.blockHash
-		} else if (req.blockNumber || req.blockNumber === 0) {
+		}
+		if (req.blockNumber || req.blockNumber === 0) {
 			params.blockNumber = req.blockNumber
-		} else if (req.from) {
+		}
+		if (req.from && !req.to) {
 			params.from = req.from
-		} else if (req.gas || req.gas === 0) {
+		}
+		if (req.gas || req.gas === 0) {
 			params.gas = req.gas
-		} else if (req.gasPrice) {
+		}
+		if (req.gasPrice) {
 			params.gasPrice = req.gasPrice
-		} else if (req.hash) {
+		}
+		if (req.hash !== undefined) {
 			params.hash = req.hash
-		} else if (req.input) {
+		}
+		if (req.input) {
 			params.input = req.input
-		} else if (req.nonce || req.nonce === 0) {
+		}
+		if (req.nonce || req.nonce === 0) {
 			params.nonce = req.nonce
-		} else if (req.timestamp || req.timestamp === 0) {
+		}
+		if (req.timestamp || req.timestamp === 0) {
 			params.timestamp = req.timestamp
-		} else if (req.to) {
+		}
+		if (req.to && !req.from) {
 			params.to = req.to
-		} else if (req.transactionIndex || req.transactionIndex === 0) {
+		}
+		if (req.transactionIndex || req.transactionIndex === 0) {
 			params.transactionIndex = req.transactionIndex
+		}
+		if (req.from && req.to) {
+			// { $or: [{"to": setData.addr}, {"from": setData.addr}] }
+			params.$or = [{"to": req.to}, {"from": req.from}]
 		}
 	}
 	console.log(params)
@@ -185,39 +199,56 @@ function blocks(socket, req, type) {
 	if (req) {
 		if (req.Txns || req.Txns === 0) {
 			params.Txns = req.Txns
-		} else if (req.difficulty) {
+		}
+		if (req.difficulty) {
 			params.difficulty = req.difficulty
-		} else if (req.extraData) {
+		}
+		if (req.extraData) {
 			params.extraData = req.extraData
-		} else if (req.gasLimit || req.gasLimit === 0) {
+		}
+		if (req.gasLimit || req.gasLimit === 0) {
 			params.gasLimit = req.gasLimit
-		} else if (req.gasUsed || req.gasUsed === 0) {
+		}
+		if (req.gasUsed || req.gasUsed === 0) {
 			params.gasUsed = req.gasUsed
-		} else if (req.hash) {
+		}
+		if (req.hash) {
 			params.hash = req.hash
-		} else if (req.logsBloom) {
+		}
+		if (req.logsBloom) {
 			params.logsBloom = req.logsBloom
-		} else if (req.miner) {
+		}
+		if (req.miner) {
 			params.miner = req.miner
-		} else if (req.nonce || req.nonce === 0) {
+		}
+		if (req.nonce || req.nonce === 0) {
 			params.nonce = req.nonce
-		} else if (req.number || req.number === 0) {
+		}
+		if (req.number || req.number === 0) {
 			params.number = req.number
-		} else if (req.parentHash) {
+		}
+		if (req.parentHash) {
 			params.parentHash = req.parentHash
-		} else if (req.sha3Uncles) {
+		}
+		if (req.sha3Uncles) {
 			params.sha3Uncles = req.sha3Uncles
-		} else if (req.size || req.size === 0) {
+		}
+		if (req.size || req.size === 0) {
 			params.size = req.size
-		} else if (req.stateRoot) {
+		}
+		if (req.stateRoot) {
 			params.stateRoot = req.stateRoot
-		} else if (req.timestamp || req.timestamp === 0) {
+		}
+		if (req.timestamp || req.timestamp === 0) {
 			params.timestamp = req.timestamp
-		} else if (req.totalDifficulty || req.totalDifficulty === 0) {
+		}
+		if (req.totalDifficulty || req.totalDifficulty === 0) {
 			params.totalDifficulty = req.totalDifficulty
-		} else if (req.transactionsRoot) {
+		}
+		if (req.transactionsRoot) {
 			params.transactionsRoot = req.transactionsRoot
-		} else if (req.uncles) {
+		}
+		if (req.uncles) {
 			params.uncles = req.uncles
 		}
 	}
@@ -526,7 +557,9 @@ function getAccounts (socket, req, type) {
 					// console.log("aggregate")
 					// console.log(result)
 					// console.log(web3.toBigNumber(result[0].balance).toString(10))
-					data.balance = web3.toBigNumber(result[0].balance).toString(10)
+					if (result.length >= 0) {
+						data.balance = web3.toBigNumber(result[0].balance).toString(10)
+					}
 					cb(null, data)
 				}
 			})

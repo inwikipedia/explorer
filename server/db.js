@@ -38,8 +38,8 @@ var Account = new Schema(
 
 var AccountInfo = new Schema(
 {
-    "address": {type: String, index: {unique: true}},
-    "balance": Number,
+    "address": String,
+    "balance": {type: Number, index: {unique: true}},
     "BTCbalance": Number,
     "ETHbalance": Number,
     "BNBbalance": Number,

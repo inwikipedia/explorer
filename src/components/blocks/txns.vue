@@ -101,6 +101,15 @@ export default {
 	},
 	mounted () {
 		this.params.blockNumber = this.$route.query.params ? Number(this.$route.query.params) : undefined
+		if (this.$route.query.from) {
+			this.params.from = this.$route.query.from
+		}
+		if (this.$route.query.to) {
+			this.params.to = this.$route.query.to
+		}
+		if (this.$route.query.hash !== undefined) {
+			this.params.hash = this.$route.query.hash
+		}
 	}
 }
 </script>

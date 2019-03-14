@@ -302,7 +302,7 @@ export default {
 					this.dollerPrice = '$ ' + Number(res.data[0].price_usd).toFixed(2)
 					this.dollerPerent = res.data[0].percent_change_1h + '%'
 					if (this.dollerPerent.indexOf('-') === -1) {
-						this.dollerPerent = '<span style="color:red">' + this.dollerPerent + '</span>'
+						this.dollerPerent = '<span class="red">' + this.dollerPerent + '</span>'
 					}
 				} else {
 					this.dollerPrice = 0

@@ -143,7 +143,7 @@ export default {
 		},
 		selectValue (cur, old) {
 			let _params = this.params
-			_params.pageNum = this.currPage
+			_params.pageNum = this.currPage = 1
 			_params.pageSize = this.selectValue
 			this.getData(_params)
 		}
@@ -166,10 +166,6 @@ export default {
 	methods: {
 		getInitData () {
 			if (!this.params) return
-			// let _params = this.params
-			// _params.pageNum = this.currPage
-			// _params.pageSize = this.selectValue
-			// console.log(this.params)
 			this.params.pageNum = this.currPage
 			this.getData(this.params)
 		},
@@ -178,9 +174,6 @@ export default {
 				return
 			}
 			this.currPage --
-			// let _params = this.params
-			// _params.pageNum = this.currPage
-			// _params.pageSize = this.selectValue
 			this.params.pageNum = this.currPage
 			this.getData(this.params)
 		},
@@ -189,9 +182,6 @@ export default {
 				return
 			}
 			this.currPage ++
-			// let _params = this.params
-			// _params.pageNum = this.currPage
-			// _params.pageSize = this.selectValue
 			this.params.pageNum = this.currPage
 			this.getData(this.params)
 		},
@@ -237,8 +227,6 @@ export default {
 								this.titleTxt += _html[i] + this.currPage
 							} else if (this.title.params[i].indexOf('strat#') === 0) {
 								let startArr = this.title.params[i].split('#')
-								// console.log(startArr)
-								// console.log(data)
 								this.titleTxt += _html[i] + ' ' + data[data.length - 1][startArr[1]]
 							} else if (this.title.params[i].indexOf('end#') === 0) {
 								let endArr = this.title.params[i].split('#')
