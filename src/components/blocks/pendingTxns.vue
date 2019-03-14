@@ -30,7 +30,7 @@
 					<table-data :tableData="{
 						th: LANG.NAV.BLOCK,
 						width: '3',
-						params: [{param: 'blockNumber', type: 2}],
+						params: [{param: 'blockNumber'}],
 						html: '<span class=\'ellipsis\'>{{param}}</span>'
 					}"></table-data>
 					<table-data 

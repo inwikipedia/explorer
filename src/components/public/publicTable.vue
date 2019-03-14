@@ -232,6 +232,8 @@ export default {
 							} else if (this.title.params[i].indexOf('end#') === 0) {
 								let endArr = this.title.params[i].split('#')
 								this.titleTxt += _html[i] + ' ' + data[0][endArr[1]]
+							} else if (this.title.params[i] === 'totalAmount') {
+								this.titleTxt += _html[i] + (res && res.balance ? Number(res.balance).toLocaleString() : 0)
 							}
 						}
 						// console.log(this.titleTxt)
@@ -335,6 +337,8 @@ export default {
 				param.end = param.end ? param.end : param.start
 				callback = this.$$.cutStr(data[param.param], param.start, param.end)
 			} else if (Number(param.type) === 2) { //number
+				// console.log(data[param.param])
+				data[param.param] = web3.toBigNumber(data[param.param]).toString(10)
 				// console.log(data[param.param])
 				if (data[param.param] && data[param.param].toString().indexOf('+') !== -1) {
 					callback = data[param.param]

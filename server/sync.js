@@ -163,8 +163,8 @@ var writeBlockToDB = function (config, blockData, flush) {
       // console.log(blockData.transactions.length)
       blockData.avgGasprice = blockData.avgGasprice / Number(blockData.transactions.length)
     }
-    console.log("blockData.avgGasprice")
-    console.log(blockData.avgGasprice)
+    // console.log("blockData.avgGasprice")
+    // console.log(blockData.avgGasprice)
     blockData.reward = web3.fromWei(blockData.reward, 'ether')
     // blockData.avgGasprice = web3.fromWei(blockData.avgGasprice, 'ether')
     // console.log(blockData.avgGasprice)

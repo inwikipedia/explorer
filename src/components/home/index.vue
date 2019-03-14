@@ -103,7 +103,7 @@
 							>
 								<table-data 
 									:tableData="{
-										params: [{param: 'number'},{param: 'number', type: 2}, {param: 'timestamp', type: 0}],
+										params: [{param: 'number'},{param: 'number'}, {param: 'timestamp', type: 0}],
 										html: '<div class=\'trans_style block_style cursorP\'><p class=\'rowItem\' onclick=toUrl(\'/blockIndex/blocksDtil\',\'{{param}}\')><span class=\'big\'>{{param}}</span> {{param}}</p></div>'
 									}"
 								></table-data>
@@ -245,7 +245,8 @@ export default {
 				let resData = data
 				if (resData.info.length > 0) {
 					this.blockData = resData.info
-					this.blockHeight = this.$$.thousandBit(resData.info[0].number, 'no')
+					// this.blockHeight = this.$$.thousandBit(resData.info[0].number, 'no')
+					this.blockHeight = resData.info[0].number
 				} else {
 					this.blockData = []
 					this.blockHeight = 0

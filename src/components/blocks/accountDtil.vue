@@ -23,15 +23,9 @@
 			<div class="accountHeader_box bgbox">
 				<el-row :gutter="20">
 					<el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-						<!-- <div class="accountHeader_item flex-sc">
-							<p class="p p1 flex-sc"><span>{{LANG.SUBTITLE.OVERVIEW}}:</span></p>
-							<div class="icon cursorP" @click="codeViewBtn">
-								<img src="@etc/img/QRcode.svg">
-							</div>
-						</div> -->
 						<div class="accountHeader_item flex-sc">
 							<p class="p p1 flex-sc"><span>{{LANG.SUBTITLE.BALANCE}}:</span></p>
-							<p class="p p2">{{fsnBalance}} FSN</p>
+							<p class="p p2 flex-sc" :title="fsnBalance"><span class="ellipsis WW80">{{fsnBalance}}</span> FSN</p>
 						</div>
 						<div class="accountHeader_item flex-sc">
 							<p class="p p1 flex-sc"><span>{{LANG.SUBTITLE.ETHER_VALUE}}:</span></p>
@@ -53,7 +47,7 @@
 						</div>
 						<div class="accountHeader_item flex-sc">
 							<p class="p p1 flex-sc"><img src="@etc/img/eth.svg" class="imgIcon"><span>ETH {{LANG.SUBTITLE.BALANCE}}:</span></p>
-							<p class="p p2" v-html="ETHbalance"></p>
+							<p class="p p2">{{ETHbalance}} ETC</p>
 						</div>
 						<div class="accountHeader_item flex-sc">
 							<p class="p p1 flex-sc"><img src="@etc/img/gusd.svg" class="imgIcon"><span>GUSD {{LANG.SUBTITLE.BALANCE}}:</span></p>
@@ -114,7 +108,7 @@
 									<table-data :tableData="{
 										th: LANG.NAV.BLOCKS,
 										width: '3',
-										params: [{param: 'blockNumber', type: 2}],
+										params: [{param: 'blockNumber'}],
 										html: '<span class=\'ellipsis\'>{{param}}</span>'
 									}"></table-data>
 									<table-data 
@@ -255,13 +249,13 @@ export default {
 			this.socket.emit('accountDtil', addressData)
 			this.socket.on('accountDtil', (res) => {
 				console.log(res)
-				this.fsnBalance = this.$$.thousandBit(res.info.balance, 'no')
+				this.fsnBalance = this.$$.thousandBit(web3.toBigNumber(res.info.balance).toString(10), 'no')
 				this.txnsNum =  this.$$.thousandBit(res.info.TxCount, 'no') + ' txns'
-				this.BTCbalance = res.info.BTCbalance ? this.$$.thousandBit(res.info.BTCbalance, 'no') : '0'
-				this.ETHbalance = res.info.ETHbalance ? this.$$.thousandBit(res.info.ETHbalance, 'no') : '0'
-				this.GUSDbalance = res.info.GUSDbalance ? this.$$.thousandBit(res.info.GUSDbalance, 'no') : '0'
-				this.BNBbalance = res.info.BNBbalance ? this.$$.thousandBit(res.info.BNBbalance, 'no') : '0'
-				this.latestTime = this.$$.timesFun(res.info.updateTime)
+				this.BTCbalance = res.info.BTCbalance ? this.$$.thousandBit(web3.toBigNumber(res.info.BTCbalance).toString(10), 'no') : '0'
+				this.ETHbalance = res.info.ETHbalance ? this.$$.thousandBit(web3.toBigNumber(res.info.ETHbalance).toString(10), 'no') : '0'
+				this.GUSDbalance = res.info.GUSDbalance ? this.$$.thousandBit(web3.toBigNumber(res.info.GUSDbalance).toString(10), 'no') : '0'
+				this.BNBbalance = res.info.BNBbalance ? this.$$.thousandBit(web3.toBigNumber(res.info.BNBbalance).toString(10), 'no') : '0'
+				this.latestTime = res.info.updateTime ? this.$$.timesFun(res.info.updateTime) : ''
 			})
 		},
 		codeViewBtn() {

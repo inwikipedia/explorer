@@ -61,6 +61,9 @@ function addAccounts (timestampInit) {
 					try {
 						balance = web3.eth.getBalance(result)
 						balance = web3.fromWei(balance, 'ether')
+            balance = web3.toBigNumber(balance).toString(10)
+            console.log("balance")
+            console.log(balance)
 						res.balance = balance
 						callback(null, res)
 					} catch (error) {
@@ -69,6 +72,7 @@ function addAccounts (timestampInit) {
         },
         (res, callback) => {
           if (res.resLen > 0) {
+            console.log('update arrress')
             AccountInfo.update({
               'address': result,
             }, {
@@ -83,22 +87,20 @@ function addAccounts (timestampInit) {
               }
             })
           } else {
-            Transaction.find({"address": result}).sort({"timestamp": 1}).limit(1).exec((err, resTime) => {
+            console.log('add arresss')
+            Transaction.find({ $or: [{"from": result}, {"to": result}] }).sort({"timestamp": 1}).limit(1).exec((err, resTime) => {
               if (err) {
                 callback(err)
               } else {
-                console.log(resTime)
-                if (resTime.length <= 0) {
-                  callback(err)
-                  return
-                }
+                // console.log("resTime")
+                // console.log(resTime)
                 let sendData = new AccountInfo({
                   "address": result,
                   "balance": res.balance,
                   "TxCount": res.TxCount,
                   "type": 0,
                   "timestamp": resTime[0].timestamp,
-                  "updateTime": Date.parse(new Date()) / 1000,
+                  "updateTime": resTime[0].timestamp,
                 })
                 sendData.save((err, insertInfo) => {
                   if (err) {
@@ -130,63 +132,142 @@ function addAccounts (timestampInit) {
     })
   }
 	let getFromAddr = (data, cb) => {
-    if (data.length <= 0) {
-      console.log('新')
-      Transaction.find({}).distinct('from').exec((err, result) => {
-        if (err) {
-          console.log(err)
-        } else {
-          if (result.length <= 0) {
-            return
-          }
-          cb(result)
-        }
-      })
-    } else {
-			console.log('旧')
-			let params = {
+    let params = {}
+    if (data.length > 0) {
+      params = {
         'timestamp': {
-          '$gt': (Date.parse(new Date()) / 1000) - 15
+          '$gt': data[0].updateTime,
+          // '$lte': timestampInit
         }
-			}
-			timestampInit = Date.parse(new Date()) / 1000
-			if (timestampInit) {
-				params = {
-					'timestamp': {
-						'$gt': data[0].updateTime,
-						'$lte': timestampInit
-					}
-				}
-			}
-			console.log("params")
-			console.log(params)
-      Transaction.find(params).sort({"timestamp": 1}).exec((err, result) => {
-        if (err) {
-          console.log(err)
-        } else {
-          if (result.length <= 0) {
-            return
-          }
-					// let arrPush = []
-					let arrPush = new Set()
-          for (let i = 0; i < result.length; i++) {
-						if (result[i].from) {
-							arrPush.add(result[i].from.toLowerCase())
-						}
-					}
-					addrLen = arrPush.size
-					console.log("Set length:")
-					console.log(addrLen)
-					cb(null, arrPush)
-        }
-      })
+      }
     }
+    Transaction.find(params).distinct('from').exec((err, from) => {
+      if (err) {
+        console.log(err)
+      } else {
+        let arrPush = new Set()
+        for (let i = 0; i < from.length; i++) {
+          arrPush.add(from[i])
+        }
+        Transaction.find(params).distinct('to').exec((error, to) => {
+          if (error) {
+            console.log(err)
+          } else {
+            for (let i = 0; i < to.length; i++) {
+              arrPush.add(to[i])
+            }
+            addrLen = arrPush.size
+            console.log("Set length:")
+            console.log(addrLen)
+            cb(null, arrPush)
+          }
+        })
+      }
+    })
+    // if (data.length <= 0) {
+    //   console.log('新')
+    //   Transaction.find({}).distinct('from').exec((err, from) => {
+    //     if (err) {
+    //       console.log(err)
+    //     } else {
+    //       // if (from.length <= 0) {
+    //       //   return
+    //       // }
+    //       let arrPush = new Set()
+    //       for (let i = 0; i < from.length; i++) {
+    //         arrPush.add(from[i])
+    //       }
+    //       Transaction.find({}).distinct('to').exec((error, to) => {
+    //         if (error) {
+    //           console.log(err)
+    //         } else {
+    //           for (let i = 0; i < to.length; i++) {
+    //             arrPush.add(to[i])
+    //           }
+    //           addrLen = arrPush.size
+    //           console.log("Set length:")
+    //           console.log(addrLen)
+    //           cb(null, arrPush)
+    //         }
+    //       })
+    //     }
+    //   })
+    // } else {
+		// 	console.log('旧')
+    //   timestampInit = Date.parse(new Date()) / 1000
+		// 	let params = {
+    //     'timestamp': {
+    //       '$gt': data[0].updateTime,
+    //       // '$lte': timestampInit
+    //     }
+    //   }
+		// 	console.log("params")
+    //   console.log(params)
+    //   Transaction.find(params).distinct('from').exec((err, from) => {
+    //     if (err) {
+    //       console.log(err)
+    //     } else {
+    //       let arrPush = new Set()
+    //       for (let i = 0; i < from.length; i++) {
+    //         arrPush.add(from[i])
+    //       }
+    //       Transaction.find({}).distinct('to').exec((error, to) => {
+    //         if (error) {
+    //           console.log(err)
+    //         } else {
+    //           for (let i = 0; i < to.length; i++) {
+    //             arrPush.add(to[i])
+    //           }
+    //           addrLen = arrPush.size
+    //           console.log("Set length:")
+    //           console.log(addrLen)
+    //           cb(null, arrPush)
+    //         }
+    //       })
+    //     }
+    //   })
+      // Transaction.aggregate([
+      //   {$match: params }
+      // ]).exec((err, result) => {
+      //   console.log(err)
+      //   console.log(result)
+      // })
+      // Transaction.find(params).sort({"timestamp": 1}).exec((err, result) => {
+      //   console.log('查找地址')
+      //   if (err) {
+      //     console.log(err)
+      //     cb(err)
+      //   } else {
+      //     console.log('旧地址')
+      //     console.log(result)
+      //     if (result.length <= 0) {
+      //       return
+      //     }
+			// 		// let arrPush = []
+			// 		let arrPush = new Set()
+      //     for (let i = 0; i < result.length; i++) {
+			// 			if (result[i].from) {
+			// 				arrPush.add(result[i].from.toLowerCase())
+			// 			}
+      //       if (result[i].to) {
+			// 				arrPush.add(result[i].to.toLowerCase())
+			// 			}
+			// 		}
+			// 		addrLen = arrPush.size
+			// 		console.log("Set length:")
+			// 		console.log(addrLen)
+			// 		cb(null, arrPush)
+      //   }
+      // })
+    // }
 	}
 	let getAccountTime = (cb) => {
-		AccountInfo.find({}).lean(true).sort({"updateTime": -1}).limit(1).exec((err, result) => {
+		AccountInfo.find({}).lean(true).sort({"updateTime": 1}).limit(-1).exec((err, result) => {
 			if (err) {
-				console.log(err)
+        // console.log(err)
+        cb(err)
 			} else {
+        // console.log(result)
         cb(null, result)
 			}
     })
@@ -214,4 +295,20 @@ function initMethod (){
 }
 initMethod()
 
-
+// let balance = web3.eth.getBalance('0x31b98d14007bdee637298086988a0bbd31184523')
+// balance = web3.toBigNumber(balance).toString(10)
+// console.log(balance)
+// balance = web3.fromWei(balance, 'ether')
+// console.log(balance)
+// AccountInfo.update({
+//   'address': '0x31b98d14007bdee637298086988a0bbd31184523',
+// }, {
+//   'balance': balance
+// }).exec((err, updateInfo) => {
+//   if (err) {
+//     console.log(err)
+//   } else {
+//     console.log(updateInfo)
+//     console.log(null, 'Update success:' + '0x31b98d14007bdee637298086988a0bbd31184523')
+//   }
+// })

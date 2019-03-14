@@ -30,7 +30,7 @@
 					<table-data :tableData="{
 						th: LANG.NAV.BLOCKS,
 						width: '3',
-						params: [{param: 'blockNumber'}, {param: 'blockNumber', type: 2}],
+						params: [{param: 'blockNumber'}, {param: 'blockNumber'}],
 						html: '<div class=\'trans_style\'><span class=\'ellipsis blue cursorP\' onclick=toUrl(\'/blockIndex/blocksDtil\',\'{{param}}\')>{{param}}</span></div>'
 					}"></table-data>
 					<table-data 

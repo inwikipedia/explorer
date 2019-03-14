@@ -16,7 +16,7 @@
 					:className="'topAccount'"
 					:title="{
 						txt: LANG.TOP_ACCOUNTS.TITLE_1 + params.balance + LANG.TOP_ACCOUNTS.TITLE_2,
-						params: ['totalNum']
+						params: ['totalAmount']
 					}"
 				>
 					<table-data 
@@ -38,15 +38,15 @@
 							th: 'Balance',
 							width: '4',
 							params: [{param: 'balance', type: 2}],
-							html: '<div class=\'trans_style\'><p class=\'rowItem\'>{{param}}</p></div>'
+							html: '<div class=\'trans_style\'><p class=\'rowItem\'>{{param}} FSN</p></div>'
 						}"
 					></table-data>
 					<table-data 
 						:tableData="{
 							th: 'Percentage',
 							width: '4',
-							params: [{param: 'from'}, {param: 'from', type: 1, start: 10, end: 8}],
-							html: '<div class=\'trans_style\'><p class=\'rowItem\'><span class=\'blue\'>{{param}}</span></p></div>'
+							params: [{param: 'percentage'}],
+							html: '<div class=\'trans_style\'><p class=\'rowItem\'><span>{{param}}</span></p></div>'
 						}"
 					></table-data>
 					<table-data 
@@ -88,10 +88,10 @@ export default {
 	mounted () {
 		this.socket = io(this.$$.serverUrl)
 		let params = {}
-		this.socket.emit(this.dataUrl, params)
-		this.socket.on(this.dataUrl, (res) => {
+		// this.socket.emit(this.dataUrl, params)
+		// this.socket.on(this.dataUrl, (res) => {
 			
-		})
+		// })
 	},
 	beforeDestroy() {
 		this.socket.close()

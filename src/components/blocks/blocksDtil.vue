@@ -105,7 +105,7 @@ export default {
 			console.log(res)
 			// console.log( this.$$.thousandBit((Number(res.info.gasUsed) / Number(res.info.gasLimit)), 2))
 			this.blocksInfo = [
-				{name: this.LANG.TABLE.HEIGHT + ':', value: this.$$.thousandBit(res.info.number, 'no')},
+				{name: this.LANG.TABLE.HEIGHT + ':', value: res.info.number},
 				{name: this.LANG.TABLE.TIMESTAMP + ':', value: this.$$.timesFun(res.info.timestamp) + ' (' + new Date(res.info.timestamp * 1000) + ')'},
 				{name: this.LANG.TITLE.TRANSACTIONS + ':', value: '<span class="cursorP txnsBg" onclick=toUrl(\'/blockIndex/txns\','+ res.info.number +')>' + res.info.txns + ' transactions </span>in this block'},
 				{name: this.LANG.TABLE.MINED_BY + ':', value: '<span class="blue cursorP" onclick=toUrl(\'/blockIndex/accountDtil\',"'+ res.info.miner +'")>' + res.info.miner + '</span'},

@@ -125,7 +125,7 @@
 	"TOP_ACCOUNTS": {
 		"TITLE_0": "Top Accounts By ETH Balance",
 		"TITLE_1": "A total of > ",
-		"TITLE_2": " Accounts found ({{param}} Ether)"
+		"TITLE_2": " Accounts found ({{param}} FSN)"
 	},
 	"MORE": {
 		"BROADCAST_RAW_TRANSACTION": "广播原始交易",

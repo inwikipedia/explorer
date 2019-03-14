@@ -23,7 +23,7 @@
 						:tableData="{
 							th: LANG.TABLE.HEIGHT,
 							width: '2',
-							params: [{param: 'number'}, {param: 'number', type: 2}],
+							params: [{param: 'number'}, {param: 'number'}],
 							html: '<div class=\'trans_style\'><p class=\'rowItem\'><a onclick=toUrl(\'/blockIndex/blocksDtil\',\'{{param}}\') class=\'cursorP\'><span class=\'blue\'>{{param}}</span></a></p></div>'
 						}"
 					></table-data>

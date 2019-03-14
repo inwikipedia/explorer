@@ -118,7 +118,20 @@ export default {
 					this.blocksInfo = []
 					return
 				}
-				let transGasPrice = res.info.gasPrice && res.info.gasPrice.c && res.info.gasPrice.c[0] ? res.info.gasPrice.c[0] : 0
+				// let transGasPrice = res.info.gasPrice && res.info.gasPrice.c && res.info.gasPrice.c[0] ? res.info.gasPrice.c[0] : 0
+				let transGasPrice = ''
+				console.log(res.info.gasPrice.toString(10))
+				console.log(web3)
+				console.log(web3.BigNumber(res.info.gasPrice))
+				if (res.info.gasPrice && res.info.gasPrice.c && res.info.gasPrice.c[0]) {
+					for (let i = 0; i < res.info.gasPrice.c.length; i++) {
+						transGasPrice += res.info.gasPrice.c[i] + ''
+					}
+				} else if (res.info.gasPrice) {
+					transGasPrice = res.info.gasPrice
+				} else {
+					transGasPrice = 0
+				}
 				let ActualTx = this.$$.thousandBit(web3.fromWei(Number(res.info.gasLimit) * Number(transGasPrice), 'ether'), 'no')
 				let nowTime = Date.parse(new Date())
 				this.blocksInfo = [

@@ -140,15 +140,16 @@ $$.cutStr = (str, start, end) => {
 }
 
 $$.thousandBit = (num, dec = 2, fixed) => {
-  num = Number(num)
+  // num = Number(num)
   if (isNaN(num)) {
     num = 0
     num = num.toFixed(dec)
   } else {
     if (isNaN(dec)) {
-      // console.log(num)
+			// console.log(web3.toBignum)
+			// web3.toBigNumber(data[num]).toString(10)
       if (num.toString().indexOf('.') === -1) {
-        num = num.toLocaleString().replace(/(\d)(?=(\d{3})+\.)/g, '$1,').toLocaleString()
+				num = Number(num).toLocaleString()
       } else {
         let numSplit = num.toString().split('.')
         numSplit[1] = numSplit[1].length > 9 ? numSplit[1].substr(0, 8) : numSplit[1]
@@ -161,12 +162,6 @@ $$.thousandBit = (num, dec = 2, fixed) => {
       num = num.toFixed(dec).replace(/(\d)(?=(\d{3})+\.)/g, '$1,').toLocaleString()
     }
 	}
-	// if (fixed && !isNaN(fixed)) {
-	// 	console.log(num)
-	// 	Number(num).toFixed(fixed)
-	// 	console.log(fixed)
-	// 	console.log(num)
-	// }
   return num
 }
 
@@ -174,7 +169,7 @@ $$.web3 = function () {
   let Web3 = require('web3')
   let web3
 	// let url = this.baseUrl
-	let url = 'http://54.169.254.177:40415'
+	let url = 'http://54.183.185.30:8018'
 	// console.log(this.baseUrl)
   try {
     web3 = new Web3(new Web3.providers.HttpProvider(url))

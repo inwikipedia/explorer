@@ -7,9 +7,26 @@ let AccountInfo = mongoose.model( 'AccountInfo' )
 
 let async = require('async')
 
+var _ = require('lodash');
+var config = { nodeAddr: 'localhost', gethPort: 8545, bulkSize: 100 };
+try {
+	var local = require('./config.json');
+	_.extend(config, local);
+	console.log('config.json found.');
+} catch (error) {
+	if (error.code === 'MODULE_NOT_FOUND') {
+			var local = require('./config.example.json');
+			_.extend(config, local);
+			console.log('No config file found. Using default configuration... (config.example.json)');
+	} else {
+			throw error;
+			process.exit(1);
+	}
+}
+
 let Web3 = require('web3')
-// let web3 = new Web3(new Web3.providers.HttpProvider('http://54.169.254.177:40415'))
-let web3 = new Web3(new Web3.providers.HttpProvider('https://api.nodes.run'))
+let web3 = new Web3(new Web3.providers.HttpProvider('http://' + config.nodeAddr + ':' + config.gethPort.toString()))
+
 
 // router.post('/transaction', (req, res) => {
 function transaction(socket, req, type) {
@@ -493,10 +510,29 @@ function getAccounts (socket, req, type) {
 			})
 		},
 		(data, cb) => {
+			AccountInfo.aggregate([
+				{$match: {'balance': {'$gte': setData.balance} } },
+				{$group: {_id: null, 'balance': {$sum: '$balance'}}}
+			]).exec((err, result) => {
+				if (err) {
+					console.log(err)
+				} else {
+					// console.log("aggregate")
+					// console.log(result)
+					// console.log(web3.toBigNumber(result[0].balance).toString(10))
+					data.balance = web3.toBigNumber(result[0].balance).toString(10)
+					cb(null, data)
+				}
+			})
+		},
+		(data, cb) => {
 			AccountInfo.find({'balance': {'$gte': setData.balance}}).lean(true).sort({"balance": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
 			// AccountInfo.find({}).lean(true).sort({"balance": -1}).skip(setData.skip).limit(Number(req.pageSize)).exec((err,result) => {
 				if (!err) {
 					data.msg = 'Success'
+					for (let i = 0; i < result.length; i++) {
+						result[i].percentage = ((Number(result[i].balance) / Number(data.balance)) * 100).toFixed(2) + '%'
+					}
 					data.info = result
 					cb(null, data)
 				} else {

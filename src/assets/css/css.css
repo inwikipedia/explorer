@@ -32,7 +32,7 @@ button[disabled], html input[disabled]{background-color:#DDD;}
 .cursorP{cursor:pointer;}
 .disabled{opacity: .3;}
 .nowrap{white-space:nowrap;}
-.ellipsis{display:block;overflow:hidden;text-overflow: ellipsis;white-space:nowrap;}
+.ellipsis{display:inline-block;overflow:hidden;text-overflow: ellipsis;white-space:nowrap;}
 
 /*select美化*/
 input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {color:#a9a9a9;}
