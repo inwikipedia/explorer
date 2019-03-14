@@ -58,7 +58,7 @@
 </template>
 
 <style>
-.pageView_box{width:100%;padding:20px 0px;}
+.pageView_box{width:100%;padding:10px 12px 15px;}
 .pageView_box .title{font-size:14px;color: #3e3f42;font-weight: bold;}
 /* .pageView_top{position: absolute;top:0px;left:0;border-bottom: 1px solid #eaedf3;} */
 .pageView_top{border-bottom: 1px solid #eaedf3;}

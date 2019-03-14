@@ -101,6 +101,7 @@
 		"DIFFICULTY": "Difficulty",
 		"TOTAL_DIFFICULTY": "Total Difficulty",
 		"SIZE": "Size",
+		"HASH": "Hash",
 		"NONCE": "Nonce",
 		"BLOCK_REWARD": "Block Reward",
 		"UNCLES_REWARD": "Uncles Reward",

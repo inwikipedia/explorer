@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="container">
-			<input type="text" id="addressCopy" v-model="address" style="height: 0;opacity: 0;"/>
+			<input type="text" id="addressCopy" v-model="address" style="height: 0;opacity: 0;position:fixed;z-index:0"/>
 			<div class="flex-bc breadcrumb_box">
 				<h3 class="title flex-sc">
 					{{LANG.CRUMBS.ADDRESS}}
@@ -25,7 +25,7 @@
 					<el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
 						<div class="accountHeader_item flex-sc">
 							<p class="p p1 flex-sc"><span>{{LANG.SUBTITLE.BALANCE}}:</span></p>
-							<p class="p p2 flex-sc" :title="fsnBalance"><span class="ellipsis WW80">{{fsnBalance}}</span> FSN</p>
+							<p class="p p2 flex-sc" :title="fsnBalance"><span class="ellipsis">{{fsnBalance}}</span> FSN</p>
 						</div>
 						<div class="accountHeader_item flex-sc">
 							<p class="p p1 flex-sc"><span>{{LANG.SUBTITLE.ETHER_VALUE}}:</span></p>
@@ -43,19 +43,19 @@
 					<el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
 						<div class="accountHeader_item flex-sc">
 							<p class="p p1 flex-sc"><img src="@etc/img/btc.svg" class="imgIcon"><span>BTC {{LANG.SUBTITLE.BALANCE}}:</span></p>
-							<p class="p p2 flex-sc"><span class="ellipsis WW80">{{BTCbalance}}</span> BTC</p>
+							<p class="p p2 flex-sc"><span class="ellipsis">{{BTCbalance}}</span> BTC</p>
 						</div>
 						<div class="accountHeader_item flex-sc">
 							<p class="p p1 flex-sc"><img src="@etc/img/eth.svg" class="imgIcon"><span>ETH {{LANG.SUBTITLE.BALANCE}}:</span></p>
-							<p class="p p2 flex-sc"><span class="ellipsis WW80">{{ETHbalance}}</span> ETC</p>
+							<p class="p p2 flex-sc"><span class="ellipsis">{{ETHbalance}}</span> ETC</p>
 						</div>
 						<div class="accountHeader_item flex-sc">
 							<p class="p p1 flex-sc"><img src="@etc/img/gusd.svg" class="imgIcon"><span>GUSD {{LANG.SUBTITLE.BALANCE}}:</span></p>
-							<p class="p p2 flex-sc"><span class="ellipsis WW80">{{GUSDbalance}}</span> GUSD</p>
+							<p class="p p2 flex-sc"><span class="ellipsis">{{GUSDbalance}}</span> GUSD</p>
 						</div>
 						<div class="accountHeader_item flex-sc">
 							<p class="p p1 flex-sc"><img src="@etc/img/bnb.svg" class="imgIcon"><span>BNB {{LANG.SUBTITLE.BALANCE}}:</span></p>
-							<p class="p p2 flex-sc"><span class="ellipsis WW80">{{BNBbalance}}</span> BNB</p>
+							<p class="p p2 flex-sc"><span class="ellipsis">{{BNBbalance}}</span> BNB</p>
 						</div>
 					</el-col>
 				</el-row>
@@ -184,7 +184,7 @@
 </template>
 
 <style>
-.topHeader_title{padding: 30px 28px;border-bottom: 1px solid #eaedf3;position: relative;}
+.topHeader_title{padding: 15px 12px;border-bottom: 1px solid #eaedf3;position: relative;}
 .topHeader_title .title{font-weight: bold;color: #333;}
 .topHeader_line{position: absolute;top: 50%;right: 30px;margin-top:-10px;}
 .topHeader_line .el-dropdown-link{height:22px;cursor: pointer;}

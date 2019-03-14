@@ -118,10 +118,11 @@ export default {
 					name: this.LANG.TABLE.GAS_USED + ':',
 					value: this.$$.thousandBit(res.info.gasUsed, 'no') + ' (' + this.$$.thousandBit((Number(res.info.gasUsed) / Number(res.info.gasLimit)), 2) + '%)'},
 				{name: this.LANG.TABLE.GAS_LIMIT + ':', value: this.$$.thousandBit(res.info.gasLimit, 'no')},
-				{name: this.LANG.TABLE.PARENT_HASH + ':', value: '<span style="color:#1665d8">' + res.info.parentHash + '</span'},
-				{name: this.LANG.TABLE.SHA3UNCLES + ':', value: res.info.sha3Uncles},
-				{name: this.LANG.TABLE.NONCE + ':', value: Number(res.info.nonce)},
 				{name: this.LANG.TABLE.EXTRA_DATA + ':', value: res.info.extraData},
+				{name: this.LANG.TABLE.HASH + ':', value: '<span>' + res.info.hash + '</span'},
+				{name: this.LANG.TABLE.PARENT_HASH + ':', value: '<span class="blue cursorP" onclick=toUrl(\'/blockIndex/blocksDtil\',"'+ (res.info.number - 1) +'")>' + res.info.parentHash + '</span'},
+				{name: this.LANG.TABLE.SHA3UNCLES + ':', value: res.info.sha3Uncles},
+				{name: this.LANG.TABLE.NONCE + ':', value: res.info.nonce},
 			]
 		}
 	},

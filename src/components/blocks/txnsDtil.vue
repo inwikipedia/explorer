@@ -109,7 +109,7 @@ export default {
 			this.socket.emit('transferDtil', _params)
 			this.socket.on('transferDtil', (res) => {
 				console.log(res)
-				if (!res.info) {
+				if (!res.info || res.info.length <= 0) {
 					this.$message({
 						showClose: true,
 						message: this.LANG.ERROR.TIP_0,
@@ -120,9 +120,9 @@ export default {
 				}
 				// let transGasPrice = res.info.gasPrice && res.info.gasPrice.c && res.info.gasPrice.c[0] ? res.info.gasPrice.c[0] : 0
 				let transGasPrice = ''
-				console.log(res.info.gasPrice.toString(10))
-				console.log(web3)
-				console.log(web3.BigNumber(res.info.gasPrice))
+				// console.log(res.info.gasPrice.toString(10))
+				// console.log(web3)
+				// console.log(web3.BigNumber(res.info.gasPrice))
 				if (res.info.gasPrice && res.info.gasPrice.c && res.info.gasPrice.c[0]) {
 					for (let i = 0; i < res.info.gasPrice.c.length; i++) {
 						transGasPrice += res.info.gasPrice.c[i] + ''
